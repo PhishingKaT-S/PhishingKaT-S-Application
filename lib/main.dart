@@ -3,6 +3,9 @@ import 'package:phishing_kat_pluss/launch/splash_screen.dart';
 import 'package:phishing_kat_pluss/providers/testProvider.dart';
 import 'package:provider/provider.dart';
 
+import 'homepage.dart';
+import 'launch/404_error.dart';
+
 void main() {
   runApp(
     /**
@@ -34,7 +37,7 @@ class MyApp extends StatelessWidget {
         /// future를 기다리는 중이면 Splash화면을 보여준다.
         builder: (context, AsyncSnapshot snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return const MaterialApp(home: SplashScreen()); // 초기 로딩 시 Splash Screen
+            return const MaterialApp(home: Error404()); // 초기 로딩 시 Splash Screen
           }
           ///future에서 데이터를 불러오는 중에 에러가 발생하면 에러 메시지를 띄워준다.
           // else if (snapshot.hasError) {
@@ -68,3 +71,21 @@ class MyApp extends StatelessWidget {
 }
 
 
+/**
+ * Init
+ * 앱 실행 초기에 데이터를 가져오거나 초기설정을 하는 부분
+ */
+class Init {
+  Init._();
+  static final instance = Init._();
+
+  Future<Widget?> initialize(BuildContext context) async {
+    await Future.delayed(const Duration(milliseconds: 20000));
+
+    // . . .
+    // 초기 로딩 작성
+    // . . .
+
+    return const HomePage(); // 초기 로딩 완료 시 띄울 앱 첫 화면
+  }
+}
