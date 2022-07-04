@@ -38,6 +38,10 @@ class SplashScreen extends StatelessWidget {
   }
 }
 
+/**
+ * Init
+ * 앱 실행 초기에 데이터를 가져오거나 초기설정을 하는 부분
+ */
 class Init {
   Init._();
   static final instance = Init._();

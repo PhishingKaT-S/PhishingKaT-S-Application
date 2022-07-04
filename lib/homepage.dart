@@ -11,6 +11,14 @@ class HomePage extends StatelessWidget {
     return Scaffold(
       appBar: const KaTAppBar(),
       drawer: KaTDrawer(),
+      body:Center(
+        child: Column(
+          children: [
+            TextButton(onPressed: () => Navigator.pushNamed(context, '/splash_screen'), child: const Text(''
+                'splash screen'))
+          ],
+        ),
+      )
     );
   }
 }
