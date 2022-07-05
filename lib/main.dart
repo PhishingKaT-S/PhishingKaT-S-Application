@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:phishing_kat_pluss/launch/splash_screen.dart';
+import 'package:phishing_kat_pluss/splash/splash_screen.dart';
 import 'package:phishing_kat_pluss/providers/testProvider.dart';
+import 'package:phishing_kat_pluss/splash/update_page.dart';
+import 'package:phishing_kat_pluss/testpage.dart';
 import 'package:provider/provider.dart';
 
 import 'homepage.dart';
-import 'launch/404_error.dart';
+import 'splash/404_error.dart';
 
 void main() {
   runApp(
@@ -40,9 +42,9 @@ class MyApp extends StatelessWidget {
             return const MaterialApp(home: Error404()); // 초기 로딩 시 Splash Screen
           }
           ///future에서 데이터를 불러오는 중에 에러가 발생하면 에러 메시지를 띄워준다.
-          // else if (snapshot.hasError) {
-          //   return MaterialApp(home: ErrorScreen()); // 초기 로딩 에러 시 Error Screen
-          // }
+          else if (snapshot.hasError) {
+            return const MaterialApp(home: Error404()); // 초기 로딩 에러 시 Error Screen
+          }
           ///future에서 데이터를 불러온 다음 home page로 이동
           else {
             return MaterialApp(
@@ -61,7 +63,10 @@ class MyApp extends StatelessWidget {
               ///앱에서 이동할 페이지의 이름 설정
               routes: {
                 //'/login': (BuildContext context) => const LoginPage(),
+                '/testpage': (BuildContext context) => const PageTest(),
                 '/splash_screen': (BuildContext context) => const SplashScreen(),
+                '/error404' : (BuildContext context) => const Error404(),
+                '/updatepage' : (BuildContext context) => const UpdateSplashPage(),
               },
             );
           }
@@ -86,6 +91,6 @@ class Init {
     // 초기 로딩 작성
     // . . .
 
-    return const HomePage(); // 초기 로딩 완료 시 띄울 앱 첫 화면
+    return const PageTest(); // 초기 로딩 완료 시 띄울 앱 첫 화면
   }
 }

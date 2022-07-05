@@ -1,3 +1,9 @@
+/**
+ * writer: 유이새
+ * Date: 2022.07.04
+ * Description: 404 error page
+ */
+
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
 
