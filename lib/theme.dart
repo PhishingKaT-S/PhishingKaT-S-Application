@@ -20,12 +20,16 @@ class AppTheme{
   static const Color deactivatedText = Color(0xFF767676);
   static const Color blueText = Color(0xFF0b80F5) ;
   static const Color greyText = Color(0xFF9b9b9b) ;
+  static const Color orangeText = Color(0xFFFF971E) ;
 
   static const Color dismissibleBackground = Color(0xFF364A54);
   static const Color chipBackground = Color(0xFFEEF1F3);
-  static const Color blueBackground = Color(0xFFEAF5FF) ;
+  static const Color blueBackground = Color(0xFFE8F4FF) ;
   static const Color whiteBackground = Color(0XFFFFFFFF);
-
+  static const Color skyBackground = Color(0xFF9BCDFF);
+  static const Color lightYellowBackground = Color(0xFFFCFDF5CE) ;
+  static const Color whiteGreyBackground = Color(0xFFF0F0F0) ;
+  static const Color blueLineChart = Color(0xFF0473E1);
   static const Color spacer = Color(0xFFF2F2F2);
   static const String fontName = 'WorkSans';
 
@@ -48,6 +52,22 @@ class AppTheme{
     color: darkerText,
   );
 
+  static const TextStyle display1_blue = TextStyle(
+    fontFamily: fontName,
+    fontWeight: FontWeight.bold,
+    fontSize: 36,
+    letterSpacing: 0.4,
+    height: 0.9,
+    color: blueText,
+  );
+
+  static const TextStyle display_orange = TextStyle(
+    fontFamily: fontName,
+    fontWeight: FontWeight.bold,
+    fontSize: 36,
+    color: orangeText,
+  );
+
   static const TextStyle headline = TextStyle( // h5 -> headline
     fontFamily: fontName,
     fontWeight: FontWeight.bold,
@@ -62,6 +82,14 @@ class AppTheme{
     fontSize: 20,
     letterSpacing: 0.18,
     color: darkerText,
+  );
+
+  static const TextStyle subtitle0 = TextStyle( // subtitle2 -> subtitle
+    fontFamily: fontName,
+    fontWeight: FontWeight.bold,
+    fontSize: 18,
+    letterSpacing: -0.04,
+    color: darkText,
   );
 
   static const TextStyle subtitle = TextStyle( // subtitle2 -> subtitle
@@ -94,6 +122,14 @@ class AppTheme{
     fontSize: 12,
     letterSpacing: 0.2,
     color: lightText, // was lightText
+  );
+
+  static const TextStyle caption2_black = TextStyle( // Caption -> caption
+    fontFamily: fontName,
+    fontWeight: FontWeight.w400,
+    fontSize: 10,
+    letterSpacing: 0.2,
+    color: AppTheme.nearlyBlack, // was lightText
   );
 
   static const TextStyle button = TextStyle(

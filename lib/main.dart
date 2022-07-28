@@ -1,8 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:phishing_kat_pluss/kat_pages/attendance_page.dart';
-import 'package:phishing_kat_pluss/launch/splash_screen.dart';
+import 'package:phishing_kat_pluss/kat_pages/home_page.dart';
+import 'package:phishing_kat_pluss/kat_pages/score_page.dart';
 import 'package:phishing_kat_pluss/providers/testProvider.dart';
+import 'package:phishing_kat_pluss/splash/splash_screen.dart';
 import 'package:provider/provider.dart';
+
+import 'launch/login_page.dart';
+import 'splash/test.dart';
 
 void main() {
   runApp(
@@ -60,12 +65,28 @@ class MyApp extends StatelessWidget {
               routes: {
                 //'/login': (BuildContext context) => const LoginPage(),
                 '/splash_screen': (BuildContext context) => const SplashScreen(),
-                '/attendance' : (BuildContext context) => const AttendancePage(),
+                '/kat_pages/attendance' : (BuildContext context) => const AttendancePage(),
+                '/kat_pages/score': (BuildContext context) => const ScorePage(),
+                '/launch/login' : (BuildContext context) => const LoginPage(),
+                '/splash/test' : (BuildContext context) => const TestPage(),
               },
             );
           }
         });
-
   }
 }
 
+class Init {
+  Init._();
+  static final instance = Init._();
+
+  Future<Widget?> initialize(BuildContext context) async {
+    await Future.delayed(const Duration(milliseconds: 2000));
+
+    // . . .
+    // 초기 로딩 작성
+    // . . .
+
+    return const HomePage(); // 초기 로딩 완료 시 띄울 앱 첫 화면
+  }
+}

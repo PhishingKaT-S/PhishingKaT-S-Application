@@ -19,6 +19,14 @@ class _KatBottomBar extends State<KatBottomBar> {
   void _onItemTapped(int index) {
     setState(() {
       _selectedIndex = index;
+
+      if ( _selectedIndex == 0 ) {
+        Navigator.pushNamed(context, '/kat_pages/home') ;
+      } else if ( _selectedIndex == 1 ) {
+        Navigator.pushNamed(context, '/splash/test') ;
+      } else if ( _selectedIndex == 2 ) {
+        Navigator.pushNamed(context, '/launch/login') ;
+      }
     });
   }
 

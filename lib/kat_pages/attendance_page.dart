@@ -110,8 +110,9 @@ class _AttendancePage extends State<AttendancePage> {
         headerVisible: false,
         calendarBuilders: CalendarBuilders(
           dowBuilder: (context, day) {
-          return Center(child: Text(days[day.weekday])) ;
-        }),
+            return Center(child: Text(days[day.weekday])) ;
+          },
+        ),
         selectedDayPredicate: (day) {
           // Use `selectedDayPredicate` to determine which day is currently selected.
           // If this returns true, then `day` will be marked as selected.
