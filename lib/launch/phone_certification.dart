@@ -1,7 +1,8 @@
 /*
 * write:Jiwon Jung
-* date: 7/26
+* date: 7/29
 * content: 0.4, phone number certication
+* 7/29: style change
 * */
 
 import 'package:flutter/material.dart';
@@ -68,8 +69,11 @@ class _Phone_CRTState extends State<PhoneCRT> {
                     height: 70,
                     child: Row(
                       children: <Widget>[
-                        Flexible(flex: 1,
-                        child:Text('+082 ')),
+                        Container(
+                          width:60,
+                        child: Center(
+                          child:
+                          Text('+082 ', style: AppTheme.body1))),
 
 
                         Flexible(
@@ -104,9 +108,9 @@ class _Phone_CRTState extends State<PhoneCRT> {
                     height: 70,
                     child: Row(
                       children: <Widget>[
-                        Flexible(
-                          flex:1,
-                            child: Text('4:46', style: AppTheme.body1)),
+                        Container(
+                          width:60,
+                            child: Center(child: Text('4:46', style: AppTheme.body1))),
                         Flexible(
                           flex: 9,
                           child: TextField(

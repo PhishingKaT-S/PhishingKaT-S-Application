@@ -17,7 +17,7 @@ Widget bottomBar({required String title, required void onPress()}) {
     height: 50,
     child: TextButton(
       style: ButtonStyle(
-          backgroundColor: MaterialStateProperty.all(Colors.blue)),
+          backgroundColor: MaterialStateProperty.all(AppTheme.startBackground)),
       onPressed: () {
         onPress();
         //여기에 detailed info로 넘어가야됨

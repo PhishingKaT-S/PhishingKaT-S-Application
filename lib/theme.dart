@@ -1,5 +1,12 @@
 import 'package:flutter/material.dart';
-
+/*
+* jiwon:
+*  content:
+*   7/29: adding
+*             color: the collor startBackground
+*             text style: button blue, start_caption
+*             buttonstyle: buttonStyle_white
+* */
 class AppTheme{
 
   static const Color notWhite = Color(0xFFEDF0F2);
@@ -31,6 +38,7 @@ class AppTheme{
   static const Color whiteGreyBackground = Color(0xFFF0F0F0) ;
   static const Color blueLineChart = Color(0xFF0473E1);
   static const Color spacer = Color(0xFFF2F2F2);
+  static const Color startBackground = Color(0xFF0473E1);
   static const String fontName = 'WorkSans';
 
   static const TextTheme textTheme = TextTheme(
@@ -138,5 +146,27 @@ class AppTheme{
     fontSize: 18,
     letterSpacing: 0.2,
     color: whiteText, // was lightText
+  );
+
+  static const TextStyle button_blue = TextStyle( // 로그인 버튼의 파란색 버튼
+    fontFamily: fontName,
+    fontWeight: FontWeight.w400,
+    fontSize: 19,
+    letterSpacing: 0.2,
+    color:blueText,
+  );
+
+  static const TextStyle start_caption = TextStyle( //스타트 하단 텍스트
+    fontFamily: fontName,
+    fontSize: 10,
+    letterSpacing: 0.2,
+    color: whiteText,
+  );
+
+  static final ButtonStyle buttonStyle_white = ButtonStyle( //LoginPage 시작하기 버튼
+    backgroundColor: MaterialStateProperty.all<Color>(Colors.white),
+    shape: MaterialStateProperty.all<RoundedRectangleBorder>(RoundedRectangleBorder(
+      borderRadius: BorderRadius.circular(17.5),
+    ))
   );
 }

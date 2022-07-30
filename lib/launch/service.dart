@@ -2,6 +2,7 @@
 * writer Jiwon Jung
 * date: 7/26
 * description: writing 0.2, 0.21
+* 7/29: modifying the inner scaffold.
 * */
 import 'package:flutter/material.dart';
 import '../Theme.dart';
@@ -11,10 +12,13 @@ class Service extends StatelessWidget {
   Widget build(BuildContext context) {
     return
       Container(
-          width: double.infinity,
-          height: double.infinity,
-          color: Colors.white,
-          child: ServiceWidget(serviceTitle: '서비스 이용 약관',conText: '제 1조 1항')
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(3),
+          ),
+            width: double.infinity,
+            height: double.infinity,
+          child: ServiceWidget(serviceTitle: '서비스 이용 약관',conText: '제 1조 1항'),
+
       );
   }
 }
