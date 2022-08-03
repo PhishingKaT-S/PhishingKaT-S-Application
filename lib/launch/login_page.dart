@@ -13,6 +13,7 @@ next Page=>Policy()
 * */
 
 import 'package:flutter/material.dart';
+import 'package:phishing_kat_pluss/launch/access_authority.dart';
 import 'policy.dart';
 
 import '../theme.dart';
@@ -23,25 +24,80 @@ class LoginPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      bottomNavigationBar: _bottom_bar(),
+      bottomNavigationBar:
+        Container(
+          width: double.infinity,
+          height: 50,
+          alignment: Alignment.topCenter,
+          color: AppTheme.startBackground,
+          padding: EdgeInsets.fromLTRB(0,0,0,20),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+
+              Text(
+                '시작하기를 누르면 ',
+                style: AppTheme.start_caption,
+              ),
+
+              TextButton(
+                onPressed: (){
+                  Navigator.push(context,
+                      MaterialPageRoute(builder: (context) => Policy()));
+                },
+                child: Text(
+                  '이용약관 및 정책 ',
+                  style: AppTheme.start_caption_button,
+                ),
+              ),
+
+              Text(
+                '동의로 간주합니다',
+                style: AppTheme.start_caption,
+              ),
+
+            ],
+          ),
+        ),
         body: Container(
       color: AppTheme.startBackground,
       child: Center(child: _start_view(context)),
     ));
   }
 
-  Container _bottom_bar() {
+  Widget _bottom_bar() {
     return Container(
-      child: Container(
-        width: double.infinity,
-        height: 50,
-        alignment: Alignment.topCenter,
-        color: AppTheme.startBackground,
-        padding: EdgeInsets.fromLTRB(0,0,0,20),
-        child: Text(
-          '시작하기를 누르면 이용약관 및 정책 동의로 간주합니다',
-          style: AppTheme.start_caption,
-        ),
+      width: double.infinity,
+      height: 50,
+      alignment: Alignment.topCenter,
+      color: AppTheme.startBackground,
+      padding: EdgeInsets.fromLTRB(0,0,0,20),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+
+            Text(
+              '시작하기를 누르면 ',
+              style: AppTheme.start_caption,
+            ),
+
+           TextButton(
+              onPressed: (){
+               // Navigator.push(LoginPage.context,
+                 //   MaterialPageRoute(builder: (context) => Policy()));
+              },
+              child: Text(
+                '이용약관 및 정책 ',
+                style: AppTheme.start_caption_button,
+              ),
+          ),
+
+          Text(
+              '동의로 간주합니다',
+              style: AppTheme.start_caption,
+            ),
+
+        ],
       ),
     );
   }
@@ -108,8 +164,7 @@ class LoginPage extends StatelessWidget {
                 child: TextButton(
                     style: AppTheme.buttonStyle_white,
                     onPressed: () {
-                      Navigator.push(context,
-                          MaterialPageRoute(builder: (context) => Policy()));
+                          Navigator.push(context, MaterialPageRoute(builder: (context) => AccessAuthority()));
                     },
                     child: Text("시작하기", style: AppTheme.button_blue)),
               ),

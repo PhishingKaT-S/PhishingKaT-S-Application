@@ -1,8 +1,9 @@
 /*
 * write: Jiwon Jung
-* date: 7/26
+* date: 7/30
 * content: bottom bar(title),
 * when the title in then return the bottom button
+* style change
 * */
 
 import 'package:flutter/material.dart';
@@ -16,13 +17,12 @@ Widget bottomBar({required String title, required void onPress()}) {
     width: double.infinity,
     height: 50,
     child: TextButton(
-      style: ButtonStyle(
-          backgroundColor: MaterialStateProperty.all(AppTheme.startBackground)),
+      style: AppTheme.bottom_button,
       onPressed: () {
         onPress();
         //여기에 detailed info로 넘어가야됨
       },
-      child: Text(_title, style: AppTheme.title),
+      child: Text(_title, style: AppTheme.button),
     ),
   );
 }

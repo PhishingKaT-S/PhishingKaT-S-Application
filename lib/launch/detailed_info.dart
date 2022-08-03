@@ -2,6 +2,7 @@
 * write:Jiwon Jung
 * date: 7/29
 * content: 0.5, birthday and nickname
+*   7/30: modifying the category of the jobs and outline was changed
 * */
 
 import 'package:flutter/material.dart';
@@ -29,8 +30,11 @@ class DetailInfo extends StatefulWidget {
 
 class _detailed_infoState extends State<DetailInfo> {
   List<String> itemTypes = ['남', '여'];
-//  List<bool> _selections = List.generate(2, (_)=> false);
-  List<bool> _isSelected = [false, false];
+  List<bool> _isSelected = [false, false]; // gender toggle button
+
+  List<bool> _categorySelected=[false, false, false, false];
+  List<String> _job_Category=['일반', '직장인','실버','주부'];
+
   DateTime selectedDate = DateTime.now();
   TextEditingController yController = TextEditingController();
   bool autovalidate = false;
@@ -110,6 +114,7 @@ class _detailed_infoState extends State<DetailInfo> {
 
                 Align(alignment: Alignment.bottomLeft,child: Text('나의 유형', style: AppTheme.title,),),
 
+                SizedBox(height: 10,),
 
                 //유형 중 하나만 선택할 수 있게 해야됨
                 _category_button()
@@ -121,27 +126,48 @@ class _detailed_infoState extends State<DetailInfo> {
     );
   }
 
-  Row _category_button() {
-    return Row(
-                children: <Widget>[
-                  Expanded(
-                      flex: 2,
-                      child: category_button('일반')),
-                  Expanded(
-                      flex:2,
-                      child: category_button('직장인')),
-                  Expanded(
-                      flex:2,
-                      child: category_button('실버')),
-                  Expanded(
-                      flex:2,
-                      child: category_button('주부'))
-                ],
-              );
+  Widget _category_button() {
+    return Container(
+      child: ToggleButtons(
+          selectedColor: Colors.white,
+          fillColor: Colors.white,
+          renderBorder: false,
+          onPressed: (int val) {
+            setState((){
+              for(int index =0; index<_categorySelected.length; index++) {
+                if(index == val) {
+                  _categorySelected[index] = true;
+                }else{
+                  _categorySelected[index] = false;
+                }
+
+              }
+            });
+          },
+          isSelected: _categorySelected,
+          children:List<Widget>.generate(4, (index)=>
+              Padding(padding: EdgeInsets.all(0),
+                child: Padding(
+                  padding: const EdgeInsets.only(left: 5, right: 5, top: 5),
+                  child: Container(
+                      padding: EdgeInsets.only(left: 28, right:28),
+                      height: double.infinity,
+                      decoration: BoxDecoration(
+                          color: _categorySelected[index] ? Colors.blue: Colors.grey[200],
+                          borderRadius: BorderRadius.circular(35) ),
+                      alignment: Alignment.center,
+                      child:Text(
+                          (_job_Category[index] ), style: _categorySelected[index] ? AppTheme.selected : AppTheme.unseleted),
+                  ),
+                ),
+              ))
+      )
+    );
   }
 
   Container _nickname() {
     return Container(
+                padding: EdgeInsets.only(right: 5),
                 height:52,
                 child: TextFormField(
                   controller: nicknameController,
@@ -164,7 +190,7 @@ class _detailed_infoState extends State<DetailInfo> {
                       Text('만 14세 이상만 회원으로 가입할 수 있습니다.', style: AppTheme.caption,));
   }
 
-  Container _birth_gender() {
+  Widget _birth_gender() {
     return Container(
                 height: 52,
                 child: Row(
@@ -178,6 +204,12 @@ class _detailed_infoState extends State<DetailInfo> {
                           child:TextFormField(
                             controller: yController,
                             decoration: InputDecoration(
+                              enabledBorder: OutlineInputBorder(
+                                borderSide: BorderSide(
+                                  color:Colors.blue,
+                                  width:2.0
+                                )
+                              ), //border 아웃라인
                               fillColor: Colors.white,
                               labelText: '출생년도',
                               border: OutlineInputBorder(
@@ -201,9 +233,10 @@ class _detailed_infoState extends State<DetailInfo> {
                       )
                       ),
                       SizedBox(width: 10,),// 이어피커
-                      Expanded(
+                      Flexible(
                           flex: 3,
                           child: ToggleButtons(
+                            selectedColor: Colors.white,
                             fillColor: Colors.white,
                             renderBorder: false,
                             onPressed: (int val) {
@@ -223,17 +256,17 @@ class _detailed_infoState extends State<DetailInfo> {
                             children:List<Widget>.generate(2, (index)=>
                               Padding(padding: EdgeInsets.all(0),
                               child: Padding(
-                                padding: const EdgeInsets.only(left: 10),
+                                padding: const EdgeInsets.only(left: 5, right: 5),
                                 child: Container(
-                                    padding: EdgeInsets.only(left: 20, right:20),
+                                    padding: EdgeInsets.only(left: 20, right:20,),
                                     height: double.infinity,
                                   decoration: BoxDecoration(
-                                    color: _isSelected[index] ? AppTheme.blueBackground: Colors.white,
-                                    border: Border.all(),
+                                    color: _isSelected[index] ? AppTheme.startBackground: Colors.white,
+                                    border: Border.all(color: Colors.blue, width: 2.0),
                                     borderRadius: BorderRadius.circular(5) ),
                                     alignment: Alignment.center,
                                   child:Text(
-                                      (itemTypes[index])
+                                      (itemTypes[index]), style: _isSelected[index] ? AppTheme.selected:AppTheme.unseleted
                                   )
                                   ),
                               ),
@@ -255,12 +288,4 @@ class _detailed_infoState extends State<DetailInfo> {
               );
   }
 
-  Widget category_button(String category) {
-    String _category = category;
-    return TextButton(
-              //style: 버튼 스타일에 맞춰야됨
-                child: Text(_category, style: AppTheme.caption),
-                onPressed: (){},
-              );
-  }
 }

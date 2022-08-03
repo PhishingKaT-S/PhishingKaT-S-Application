@@ -155,6 +155,14 @@ class AppTheme{
     letterSpacing: 0.2,
     color:blueText,
   );
+  static const TextStyle blue_normal = TextStyle( // 법규 화면의 개인정보 처리 방침
+    fontFamily: fontName,
+    fontWeight: FontWeight.bold,
+    fontSize: 15,
+    letterSpacing: 0.2,
+    color:blueBackground,
+
+  );
 
   static const TextStyle start_caption = TextStyle( //스타트 하단 텍스트
     fontFamily: fontName,
@@ -163,10 +171,56 @@ class AppTheme{
     color: whiteText,
   );
 
+  static const TextStyle start_caption_button = TextStyle( //스타트 하단 텍스트
+      fontFamily: fontName,
+      fontSize: 10,
+      letterSpacing: 0.2,
+      color: whiteText,
+      decoration: TextDecoration.underline
+  );
+
+  static const TextStyle unseleted = TextStyle(
+    fontFamily: fontName,
+    fontSize: 12,
+    letterSpacing: 0.2,
+    color: darkText,
+  );
+
+
+  static const TextStyle selected = TextStyle(
+    fontFamily: fontName,
+    fontSize: 12,
+    letterSpacing: 0.2,
+    color: whiteText,
+  );
+  /* 8/3 수정 purpose, law_content 추가 */
+  static const TextStyle purpose = TextStyle( //법규에 제1조 약관의 목적
+      fontFamily: fontName,
+      fontSize: 12,
+      letterSpacing: 0.2,
+      color: darkText,
+      fontWeight: FontWeight.bold
+  );
+  static const TextStyle law_content = TextStyle( //법규에 제1조 약관의 내용
+    fontFamily: fontName,
+    fontSize: 12,
+    letterSpacing: 0.2,
+    color: darkText,
+  );
   static final ButtonStyle buttonStyle_white = ButtonStyle( //LoginPage 시작하기 버튼
     backgroundColor: MaterialStateProperty.all<Color>(Colors.white),
     shape: MaterialStateProperty.all<RoundedRectangleBorder>(RoundedRectangleBorder(
       borderRadius: BorderRadius.circular(17.5),
-    ))
+    )),
+    //shadowColor: MaterialStateProperty.all<Color>(Colors.transparent),
+    //elevation: MaterialStateProperty.all<double>(0)
+  );
+  static final ButtonStyle bottom_button = ButtonStyle( //LoginPage 시작하기 버튼
+    backgroundColor: MaterialStateProperty.all<Color>(startBackground),
+    shape: MaterialStateProperty.all<RoundedRectangleBorder>(RoundedRectangleBorder(
+      borderRadius: BorderRadius.circular(0),
+    )),
+    //shadowColor: MaterialStateProperty.all<Color>(Colors.transparent),
+    //elevation: MaterialStateProperty.all<double>(0)
   );
 }
