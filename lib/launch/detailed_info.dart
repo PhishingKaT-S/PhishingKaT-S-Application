@@ -98,6 +98,7 @@ class _detailed_infoState extends State<DetailInfo> {
                 /*
                 * 출생년도 출력과 남 여 버튼 하나만 선택할 수 있게 해야됨
                 * */
+
                 _birth_gender(),
 
 
@@ -150,7 +151,7 @@ class _detailed_infoState extends State<DetailInfo> {
                 child: Padding(
                   padding: const EdgeInsets.only(left: 5, right: 5, top: 5),
                   child: Container(
-                      padding: EdgeInsets.only(left: 28, right:28),
+                      padding: EdgeInsets.only(left: MediaQuery.of(context).size.width*0.06, right:MediaQuery.of(context).size.width*0.06),
                       height: double.infinity,
                       decoration: BoxDecoration(
                           color: _categorySelected[index] ? Colors.blue: Colors.grey[200],
@@ -192,11 +193,12 @@ class _detailed_infoState extends State<DetailInfo> {
 
   Widget _birth_gender() {
     return Container(
+                width: double.infinity,
                 height: 52,
                 child: Row(
                   children: <Widget>[
                       Flexible( // 이어 피커
-                          flex: 5,
+                          flex: 4,
                           child:
                           GestureDetector(
                         onTap:  yearPicker,

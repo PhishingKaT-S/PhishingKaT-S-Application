@@ -86,19 +86,17 @@ class _tabviewState extends State<Policy> with SingleTickerProviderStateMixin {
                                     children: [
                                       Flexible(
                                           flex:6,
-                                          child: Container(child: Text('개인정보 처리 방침', style: AppTheme.button_blue), width: double.infinity,)
+                                          child: Container(
+                                            height: 50,
+                                            child: Text('개인정보 처리 방침', style: AppTheme.button_blue), width: double.infinity,)
                                       ),
                                       Flexible(
                                           flex:3,
                                           child: SizedBox(width: double.infinity,)),
-                                      Flexible(
-                                          flex:1,
-                                          child:
-                                          Container(child: IconButton(onPressed: (){}, icon: Icon(Icons.check, color: Colors.blue,)),width: double.infinity,)
-                                      ),
                                     ],
                                   ),
                                   Container(
+
                                     alignment: Alignment.bottomLeft,
                                     child: Text('제1조 약관의 목적', style: AppTheme.purpose),
                                   ),
@@ -132,16 +130,14 @@ class _tabviewState extends State<Policy> with SingleTickerProviderStateMixin {
                                 children: [
                                   Flexible(
                                       flex:6,
-                                      child: Container(child: Text('서비스 이용 약관', style: AppTheme.button_blue), width: double.infinity,)
+                                      child: Container(
+                                        height: 50,
+                                        child: Text('서비스 이용 약관', style: AppTheme.button_blue), width: double.infinity,)
                                   ),
                                   Flexible(
                                     flex:3,
                                       child: SizedBox(width: double.infinity,)),
-                                  Flexible(
-                                    flex:1,
-                                      child:
-                                      Container(child: IconButton(onPressed: (){}, icon: Icon(Icons.check, color: Colors.blue,)),width: double.infinity,)
-                                  ),
+
                                 ],
                               ),
                               Container(

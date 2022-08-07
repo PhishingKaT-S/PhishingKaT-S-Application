@@ -102,8 +102,8 @@ class _AttendancePage extends State<AttendancePage> {
       color: AppTheme.blueBackground,
       padding: EdgeInsets.symmetric(vertical: 10),
       child: TableCalendar(
-        firstDay: DateTime(2022, 7, 1),
-        lastDay: DateTime(2022, 7, 31),
+        firstDay: DateTime(2022, 8, 1),
+        lastDay: DateTime(2022, 8, 31),
         focusedDay: _focusedDay,
         calendarFormat: _calendarFormat,
         daysOfWeekHeight: 30,

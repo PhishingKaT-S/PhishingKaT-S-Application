@@ -8,7 +8,7 @@
 writer:정지원
 date: 7/26
 description: Creating the LoginPage
-next Page=>Policy()
+next Page=>AccessAuthority()
 *
 * */
 
@@ -150,9 +150,7 @@ class LoginPage extends StatelessWidget {
             expanded_sizedBox()
           ]),
 
-          SizedBox(
-            height: 10,
-          ), // 간격 맞추기
+          // 간격 맞추기
 
           //시작하기 버튼이 있고, 이 시작하기 버튼은 policy 화면으로 옮겨감
           Row(
