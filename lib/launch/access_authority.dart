@@ -2,9 +2,11 @@
 * write: Jiwon Jung
 * date: 7.26
 * description: 0.3 authority request
+* 8/6: trying to acquire the authority
 * */
 
 import 'package:flutter/material.dart';
+import 'package:permission_handler/permission_handler.dart';
 import '../kat_widget/launch_bottombar.dart';
 import 'phone_certification.dart';
 
@@ -28,9 +30,22 @@ class AccessAuthority extends StatelessWidget {
         bottomNavigationBar:Container(
           width: double.infinity,
           height: 50,
-          child: bottomBar(title: '확인', onPress: (){
-            Navigator.pop(context);
-            Navigator.push(context, MaterialPageRoute(builder: (context)=>(PhoneCRT())));
+          child: bottomBar(title: '확인', onPress: () async {
+            Map<Permission, PermissionStatus> statuses = await [
+            Permission.contacts,
+               Permission.phone,
+                Permission.sms,
+             Permission.phone
+            ].request();
+            if(statuses[Permission.contacts]!.isGranted && statuses[Permission.sms]!.isGranted && statuses[Permission.phone]!.isGranted){
+              Navigator.pop(context);
+              Navigator.push(context,
+                  MaterialPageRoute(builder: (context) => (PhoneCRT())));
+            }
+            else{
+              openAppSettings();
+            }
+
           }),
       ), // button '확인'
         body: Column(
@@ -191,6 +206,7 @@ class AccessAuthority extends StatelessWidget {
 
   }
 }
+
 
 // 사이 간격 조절하는 위젯
 Widget expanded_sizedBox() {
