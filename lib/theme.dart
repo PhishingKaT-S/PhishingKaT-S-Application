@@ -207,6 +207,14 @@ class AppTheme{
     letterSpacing: 0.2,
     color: darkText,
   );
+
+  static const TextStyle title_blue = TextStyle(
+    fontFamily: fontName,
+    fontSize: 17,
+    color: blueText,
+    fontWeight: FontWeight.bold
+  );
+
   static final ButtonStyle buttonStyle_white = ButtonStyle( //LoginPage 시작하기 버튼
     backgroundColor: MaterialStateProperty.all<Color>(Colors.white),
     shape: MaterialStateProperty.all<RoundedRectangleBorder>(RoundedRectangleBorder(
@@ -223,4 +231,5 @@ class AppTheme{
     //shadowColor: MaterialStateProperty.all<Color>(Colors.transparent),
     //elevation: MaterialStateProperty.all<double>(0)
   );
+
 }
