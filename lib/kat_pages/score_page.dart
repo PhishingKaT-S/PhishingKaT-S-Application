@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:phishing_kat_pluss/kat_widget/kat_appbar_back.dart';
 
 import '../theme.dart';
 
@@ -119,15 +120,7 @@ class _ScorePage extends State<ScorePage> {
      * 이것 또한 AppBar를 따로 빼서 구현할 것 인지 정해야함.
      * */
     return Scaffold(
-        appBar: AppBar(
-          leading: IconButton(
-            icon: const Icon(Icons.arrow_back, color: Colors.black),
-            onPressed: () => Navigator.of(context).pop(),
-          ),
-          title: const Text("안심점수", style: TextStyle(color: AppTheme.blueText),),
-          backgroundColor: AppTheme.blueBackground,
-          centerTitle: true,
-        ),
+        appBar: AppBarBack(title: "안심점수"),
 
         body: SingleChildScrollView(
           child: Column(

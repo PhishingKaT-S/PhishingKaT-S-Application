@@ -2,6 +2,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
+import '../kat_widget/kat_appbar_back.dart';
 import '../theme.dart';
 
 class OneClickPage extends StatefulWidget {
@@ -157,14 +158,8 @@ class _OneClickPageState extends State<OneClickPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        leading: IconButton(
-          icon: Icon(Icons.arrow_back, color: Colors.black),
-          onPressed: () => Navigator.of(context).pop(),
-        ),
-        title: const Text("원클릭 신고", style: TextStyle(color: AppTheme.blueText),),
-        backgroundColor: AppTheme.blueBackground,
-        centerTitle: true,
+      appBar: AppBarBack(
+        title: "원클릭 신고"
       ),
       body: SingleChildScrollView(
         child: Container(

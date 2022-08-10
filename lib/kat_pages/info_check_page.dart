@@ -5,6 +5,8 @@
  */
 
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
+import 'package:phishing_kat_pluss/kat_widget/kat_appbar_back.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
 class InfoCheckPage extends StatefulWidget {
@@ -17,12 +19,15 @@ class InfoCheckPage extends StatefulWidget {
 class _InfoCheckPageState extends State<InfoCheckPage> {
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      child: WebView(
-        initialUrl: 'https://kidc.eprivacy.go.kr/search/issueVerify.do',
-        javascriptMode: JavascriptMode.unrestricted,
-        gestureNavigationEnabled: true,
-        userAgent: "random",
+    return const Scaffold(
+      appBar: AppBarBack(title: "털린 정보 확인",),
+      body: SafeArea(
+        child: WebView(
+          initialUrl: 'https://kidc.eprivacy.go.kr/search/issueVerify.do',
+          javascriptMode: JavascriptMode.unrestricted,
+          gestureNavigationEnabled: true,
+          userAgent: "random",
+        ),
       ),
     );
   }

@@ -6,6 +6,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:table_calendar/table_calendar.dart';
 
+import '../kat_widget/kat_appbar_back.dart';
 import '../theme.dart';
 
 class AttendancePage extends StatefulWidget {
@@ -168,15 +169,7 @@ class _AttendancePage extends State<AttendancePage> {
      * 이것 또한 AppBar를 따로 빼서 구현할 것 인지 정해야함.
      * */
     return Scaffold(
-      appBar: AppBar(
-        leading: IconButton(
-          icon: Icon(Icons.arrow_back, color: Colors.black),
-          onPressed: () => Navigator.of(context).pop(),
-        ),
-        title: const Text("출석체크", style: TextStyle(color: AppTheme.blueText),),
-        backgroundColor: AppTheme.blueBackground,
-        centerTitle: true,
-      ),
+      appBar: AppBarBack(title: "출석체크"),
 
       body: SingleChildScrollView(
         child: Column(
