@@ -521,7 +521,7 @@ class _HomePage extends State<HomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: const KaTAppBar(),
-      drawer: KaTDrawer(),
+      // drawer: KaTDrawer(),
       bottomNavigationBar: const KatBottomBar(),
       body: SingleChildScrollView(
         child:Column(
