@@ -40,6 +40,7 @@ class AppTheme{
   static const Color spacer = Color(0xFFF2F2F2);
   static const Color startBackground = Color(0xFF0473E1);
   static const String fontName = 'WorkSans';
+  static const Color appbarBackground = Color(0xffeaf5ff);
 
   static const TextTheme textTheme = TextTheme(
     headline4: display1,
@@ -150,7 +151,7 @@ class AppTheme{
 
   static const TextStyle button_blue = TextStyle( // 로그인 버튼의 파란색 버튼
     fontFamily: fontName,
-    fontWeight: FontWeight.w400,
+    fontWeight: FontWeight.bold,
     fontSize: 19,
     letterSpacing: 0.2,
     color:blueText,
@@ -184,6 +185,15 @@ class AppTheme{
     fontSize: 12,
     letterSpacing: 0.2,
     color: darkText,
+      fontWeight: FontWeight.bold
+  );
+
+  static const TextStyle unseletedURL = TextStyle(
+      fontFamily: fontName,
+      fontSize: 12,
+      letterSpacing: 0.2,
+      color: greyText,
+      fontWeight: FontWeight.bold
   );
 
 
@@ -192,6 +202,7 @@ class AppTheme{
     fontSize: 12,
     letterSpacing: 0.2,
     color: whiteText,
+    fontWeight: FontWeight.bold
   );
   /* 8/3 수정 purpose, law_content 추가 */
   static const TextStyle purpose = TextStyle( //법규에 제1조 약관의 목적
@@ -206,6 +217,7 @@ class AppTheme{
     fontSize: 12,
     letterSpacing: 0.2,
     color: darkText,
+
   );
   static final ButtonStyle buttonStyle_white = ButtonStyle( //LoginPage 시작하기 버튼
     backgroundColor: MaterialStateProperty.all<Color>(Colors.white),
@@ -216,6 +228,28 @@ class AppTheme{
     //elevation: MaterialStateProperty.all<double>(0)
   );
   static final ButtonStyle bottom_button = ButtonStyle( //LoginPage 시작하기 버튼
+    backgroundColor: MaterialStateProperty.all<Color>(startBackground),
+    shape: MaterialStateProperty.all<RoundedRectangleBorder>(RoundedRectangleBorder(
+      borderRadius: BorderRadius.circular(0),
+    )),
+    //shadowColor: MaterialStateProperty.all<Color>(Colors.transparent),
+    //elevation: MaterialStateProperty.all<double>(0)
+  );
+
+  static final TextStyle appbarText = TextStyle( //1.6 털린 정보 확인 appbar style, 8/10 added
+    fontWeight: FontWeight.bold,
+    fontSize:17,
+    color: Colors.blue,
+    letterSpacing: 0.2
+  );
+  static final TextStyle urlInspect = TextStyle( // 문자 내에 위험요소, 1.7 url 검사
+  fontFamily: fontName,
+  fontWeight: FontWeight.w400,
+  fontSize: 18,
+  letterSpacing: 0.2,
+  color: lightText, // was lightText
+  );
+  static final ButtonStyle urlButton = ButtonStyle( //LoginPage 시작하기 버튼
     backgroundColor: MaterialStateProperty.all<Color>(startBackground),
     shape: MaterialStateProperty.all<RoundedRectangleBorder>(RoundedRectangleBorder(
       borderRadius: BorderRadius.circular(0),

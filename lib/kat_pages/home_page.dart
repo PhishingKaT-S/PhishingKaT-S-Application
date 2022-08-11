@@ -365,8 +365,9 @@ class _HomePage extends State<HomePage> {
   }
 
   Widget _additional_fuctions() {
-    List<String> functionList = <String> ['선불폰 확인', '털린 정보 확인', 'URL검사'] ;
+    List<String> functionList = <String> ['원클릭 신고', '털린 정보 확인', 'URL검사'] ;
     List<String> imgList = <String> ['phone_check.png', 'info_check.png', 'url_check.png'] ;
+    List<String> pageList = <String> ['one_click', 'info_check', 'url_check'];
     /**
      * _additional_fuctions
      * 선불폰 확인, 털린 정보 확인, URL 검사 페이지로 이동
@@ -388,7 +389,9 @@ class _HomePage extends State<HomePage> {
                     height: 80,
                     child: OutlinedButton(
                       child: Image.asset('assets/images/' + imgList[index], width: 80,),
-                      onPressed: () {},
+                      onPressed: () {
+                        Navigator.pushNamed(context, '/kat_pages/' + pageList[index]);
+                      },
                     ),
                   ),
                   Padding(
