@@ -28,6 +28,7 @@ class AppTheme{
   static const Color blueText = Color(0xFF0b80F5) ;
   static const Color greyText = Color(0xFF9b9b9b) ;
   static const Color orangeText = Color(0xFFFF971E) ;
+  static const Color pinkText = Color(0xFFF48292) ;
 
   static const Color dismissibleBackground = Color(0xFF364A54);
   static const Color chipBackground = Color(0xFFEEF1F3);
@@ -39,6 +40,7 @@ class AppTheme{
   static const Color blueLineChart = Color(0xFF0473E1);
   static const Color spacer = Color(0xFFF2F2F2);
   static const Color startBackground = Color(0xFF0473E1);
+  static const Color pinkBackground = Color(0xFFF0C9D5) ;
   static const String fontName = 'WorkSans';
 
   static const TextTheme textTheme = TextTheme(
@@ -49,6 +51,20 @@ class AppTheme{
     bodyText2: body2,
     bodyText1: body1,
     caption: caption,
+  );
+
+  static const TextStyle big_title_white = TextStyle(
+      fontFamily: fontName,
+      fontSize: 59,
+      color: white,
+      fontWeight: FontWeight.bold
+  );
+
+  static const TextStyle big_subtitle_sky = TextStyle (
+      fontFamily: fontName,
+      fontSize: 25,
+      color: skyBackground,
+      fontWeight: FontWeight.bold
   );
 
   static const TextStyle display1 = TextStyle( // h4 -> display1
@@ -67,6 +83,15 @@ class AppTheme{
     letterSpacing: 0.4,
     height: 0.9,
     color: blueText,
+  );
+
+  static const TextStyle score_start_pink = TextStyle(
+    fontFamily: fontName,
+    fontWeight: FontWeight.bold,
+    fontSize: 18,
+    letterSpacing: 0.4,
+    height: 0.9,
+    color: pinkText,
   );
 
   static const TextStyle display_orange = TextStyle(
