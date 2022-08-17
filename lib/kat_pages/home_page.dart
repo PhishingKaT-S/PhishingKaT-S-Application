@@ -23,7 +23,7 @@ class _HomePage extends State<HomePage> {
   final GlobalKey<AnimatedCircularChartState> _chartKey = new GlobalKey<AnimatedCircularChartState>();
   double dividingLine = 250 ;
   double SCORE_WIDTH_RANGE = 110;
-  bool smish_detect_flag = false; // provider ?
+  bool smish_detect_flag = true; // provider ?
 
   Widget _get_circular_chart(double score) {
 

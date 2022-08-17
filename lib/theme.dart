@@ -29,6 +29,10 @@ class AppTheme{
   static const Color greyText = Color(0xFF9b9b9b) ;
   static const Color orangeText = Color(0xFFFF971E) ;
   static const Color pinkText = Color(0xFFF48292) ;
+  static const Color redText2 = Color(0xFFFD0000) ;
+  static const Color redOrangeText = Color(0xFFF1712B) ;
+  static const Color orangeText2 = Color(0xFFFFB846) ;
+  static const Color greenText2 = Color(0xFF009944) ;
 
   static const Color dismissibleBackground = Color(0xFF364A54);
   static const Color chipBackground = Color(0xFFEEF1F3);
@@ -41,6 +45,9 @@ class AppTheme{
   static const Color spacer = Color(0xFFF2F2F2);
   static const Color startBackground = Color(0xFF0473E1);
   static const Color pinkBackground = Color(0xFFF0C9D5) ;
+  static const Color greenBackground = Color(0xFFB1D4C1) ;
+  static const Color orangeBackground = Color(0xFFFEE3C6) ;
+  static const Color redBackground = Color(0xFFFAC4C4) ;
   static const String fontName = 'WorkSans';
 
   static const TextTheme textTheme = TextTheme(
@@ -238,6 +245,25 @@ class AppTheme{
     fontSize: 17,
     color: blueText,
     fontWeight: FontWeight.bold
+  );
+
+  static const TextStyle score_rank_white = TextStyle(
+      fontFamily: fontName,
+      fontSize: 14,
+      color: white
+  );
+
+  static const TextStyle num_of_cases_black = TextStyle(
+    fontFamily: fontName,
+    fontWeight: FontWeight.bold,
+    fontSize: 20,
+    color: darkText,
+  );
+
+  static const TextStyle rank_content_black = TextStyle(
+    fontFamily: fontName,
+    fontSize: 8,
+    color: darkText,
   );
 
   static final ButtonStyle buttonStyle_white = ButtonStyle( //LoginPage 시작하기 버튼

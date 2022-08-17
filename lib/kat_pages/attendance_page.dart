@@ -4,6 +4,7 @@
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:rflutter_alert/rflutter_alert.dart';
 import 'package:table_calendar/table_calendar.dart';
 
 import '../kat_widget/kat_appbar_back.dart';
@@ -18,6 +19,25 @@ class AttendancePage extends StatefulWidget {
 
 class _AttendancePage extends State<AttendancePage> {
   var _now = DateTime.now() ;
+
+  var alertStyle = AlertStyle(
+    animationType: AnimationType.fromTop,
+    isCloseButton: false,
+    isOverlayTapDismiss: false,
+    descStyle: TextStyle(fontWeight: FontWeight.bold),
+    descTextAlign: TextAlign.start,
+    animationDuration: Duration(milliseconds: 400),
+    alertBorder: RoundedRectangleBorder(
+      borderRadius: BorderRadius.circular(0.0),
+      side: BorderSide(
+        color: Colors.grey,
+      ),
+    ),
+    titleStyle: TextStyle(
+      color: Colors.red,
+    ),
+    alertAlignment: Alignment.topCenter,
+  );
 
   Widget _oneday_onecheck_notice() {
     const double NOTICE_HEIGHT = 60.0;
@@ -115,12 +135,16 @@ class _AttendancePage extends State<AttendancePage> {
           },
 
           todayBuilder: (context, date, _) {
-            return Container(
-              width: MediaQuery.of(context).size.width * 0.11,
-              padding: const EdgeInsets.only(bottom: 5),
-              child: Image.asset('assets/images/attendance.png',));
+            return InkWell(
+              onTap: () {
+                /// ALERT
+              },
+              child: Container(
+                  width: MediaQuery.of(context).size.width * 0.11,
+                  padding: const EdgeInsets.only(bottom: 5),
+                  child: Image.asset('assets/images/attendance.png',)),
+            );
           },
-
         ),
         selectedDayPredicate: (day) {
           // Use `selectedDayPredicate` to determine which day is currently selected.
