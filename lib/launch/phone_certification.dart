@@ -179,6 +179,7 @@ class _Phone_CRTState extends State<PhoneCRT> {
                             flex: 1,
                             child: IconButton(onPressed: (){
                                 if(_certificationController.text == verification) {
+                                    _timer?.cancel();
                                     flag = true;
                                 }
                                 else {

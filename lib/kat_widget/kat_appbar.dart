@@ -17,7 +17,7 @@ class KaTAppBar extends StatelessWidget implements PreferredSizeWidget {
   @override
   Widget build(BuildContext context) {
     return AppBar(
-      title: const Text("PhishingKaT+S", style: AppTheme.headline,), // title of AppBar
+      title: Image.asset('assets/logo/appbar_title.png', scale: 8,), // title of AppBar
       elevation: 0.0, // appbar 하단의 그림자 제거
       backgroundColor: Colors.white,
       actions: [
