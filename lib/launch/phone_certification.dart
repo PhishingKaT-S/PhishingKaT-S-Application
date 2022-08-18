@@ -78,6 +78,7 @@ class _Phone_CRTState extends State<PhoneCRT> {
   Widget build(BuildContext context) {
     return Scaffold(
         bottomNavigationBar: bottomBar(title: '다음', onPress: (){
+          flag = true; // test 지워야됨
           if(flag) {
             Navigator.push(context,
                 MaterialPageRoute(builder: (context) => (DetailInfo())));
@@ -179,6 +180,7 @@ class _Phone_CRTState extends State<PhoneCRT> {
                             flex: 1,
                             child: IconButton(onPressed: (){
                                 if(_certificationController.text == verification) {
+                                    _timer?.cancel();
                                     flag = true;
                                 }
                                 else {

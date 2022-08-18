@@ -87,8 +87,8 @@ class _tabviewState extends State<Policy> with SingleTickerProviderStateMixin {
                                       Flexible(
                                           flex:6,
                                           child: Container(
-                                            height: 50,
-                                            child: Text('개인정보 처리 방침', style: AppTheme.button_blue), width: double.infinity,)
+                                            height: 40,
+                                            child: Text('개인정보 처리 방침', style: AppTheme.blue_normal), width: double.infinity,)
                                       ),
                                       Flexible(
                                           flex:3,
@@ -131,8 +131,8 @@ class _tabviewState extends State<Policy> with SingleTickerProviderStateMixin {
                                   Flexible(
                                       flex:6,
                                       child: Container(
-                                        height: 50,
-                                        child: Text('서비스 이용 약관', style: AppTheme.button_blue), width: double.infinity,)
+                                        height: 40,
+                                        child: Text('서비스 이용 약관', style: AppTheme.blue_normal), width: double.infinity,)
                                   ),
                                   Flexible(
                                     flex:3,

@@ -20,6 +20,10 @@ import '../kat_widget/launch_bottombar.dart';
 * celebration화면으로 넘어감
 * */
 
+class privateInfo{
+  
+}
+
 
 class DetailInfo extends StatefulWidget {
   const DetailInfo({Key? key}) : super(key: key);
@@ -29,7 +33,9 @@ class DetailInfo extends StatefulWidget {
 }
 
 class _detailed_infoState extends State<DetailInfo> {
+  String year = ' ';
   List<String> itemTypes = ['남', '여'];
+  GlobalKey<FormState> _fkey = GlobalKey<FormState>();
   List<bool> _isSelected = [false, false]; // gender toggle button
 
   List<bool> _categorySelected=[false, false, false, false];
@@ -38,13 +44,10 @@ class _detailed_infoState extends State<DetailInfo> {
   DateTime selectedDate = DateTime.now();
   TextEditingController yController = TextEditingController();
   bool autovalidate = false;
-  late String year;
   TextEditingController nicknameController = TextEditingController();
-
 
   yearPicker() { //year Picker? 함수
     final year = DateTime.now().year;
-    TextEditingController yController = TextEditingController();
     showDialog(
       context: context,
       builder: (context) {
@@ -58,9 +61,9 @@ class _detailed_infoState extends State<DetailInfo> {
             width: MediaQuery.of(context).size.width,
             color: Colors.grey[200],
             child: YearPicker(
-              selectedDate: DateTime(year - 10),
+              selectedDate: DateTime(year),
               firstDate: DateTime(year - 100),
-              lastDate: DateTime(year + 10),
+              lastDate: DateTime(year),
               onChanged: (value) {
                 yController.text = value.toString().substring(0, 4);
                 Navigator.of(context).pop();
@@ -201,7 +204,7 @@ class _detailed_infoState extends State<DetailInfo> {
                           flex: 4,
                           child:
                           GestureDetector(
-                        onTap:  yearPicker,
+                        onTap: yearPicker,
                         child: AbsorbPointer(
                           child:TextFormField(
                             controller: yController,
@@ -212,18 +215,20 @@ class _detailed_infoState extends State<DetailInfo> {
                                   width:2.0
                                 )
                               ), //border 아웃라인
-                              fillColor: Colors.white,
                               labelText: '출생년도',
                               border: OutlineInputBorder(
                                 borderSide: BorderSide(color:Colors.blue, width:0.0),
                               ),
                               filled: true,
+                              fillColor: Colors.white,
                             ),
                             onSaved: (val){
-                              print(yController.text);
                               year = yController.text;
+                              print('123123');
+                              print(yController.text);
                               },
                             validator: (val){
+                              print('123123');
                               if(val == null || val.isEmpty)
                                 {
                                   return 'Year is necessary';
