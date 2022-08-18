@@ -195,13 +195,13 @@ class _ScorePage extends State<ScorePage> {
             ),
 
             _content_in_pie_chart(MediaQuery.of(context).size.width * 0.15, MediaQuery.of(context).size.height * 0.43 * 0.015,
-                MediaQuery.of(context).size.width * 0.43 * 0.3, '5위', '2', '공공기관 사칭'),
+                (MediaQuery.of(context).size.width - MediaQuery.of(context).padding.left - MediaQuery.of(context).padding.right) * 0.13, '5위', '2', '공공기관 사칭'),
             _content_in_pie_chart(MediaQuery.of(context).size.width * 0.2, MediaQuery.of(context).size.height * 0.43 * 0.13,
-                MediaQuery.of(context).size.width * 0.43 * 1.36, '2위', '5', '070번호/해외발신'),
+                (MediaQuery.of(context).size.width - MediaQuery.of(context).padding.left - MediaQuery.of(context).padding.right) * 0.585, '2위', '5', '070번호/해외발신'),
             _content_in_pie_chart(MediaQuery.of(context).size.width * 0.18, MediaQuery.of(context).size.height * 0.43 * 0.55,
                 0, '4위', '4', '[web]발신'),
             _content_in_pie_chart(MediaQuery.of(context).size.width * 0.2, MediaQuery.of(context).size.height * 0.43 * 0.68,
-                MediaQuery.of(context).size.width * 0.43 * 1.17, '3위', '5', '보험/금융상품'),
+                (MediaQuery.of(context).size.width - MediaQuery.of(context).padding.left - MediaQuery.of(context).padding.right) * 0.5, '3위', '5', '보험/금융상품'),
           ],
         ),
       )
