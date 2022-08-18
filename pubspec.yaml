@@ -74,6 +74,32 @@ flutter:
     - assets/logo/
     - assets/images/
     - assets/lotties/
+
+  fonts:
+    - family: applegothicRegular
+      fonts:
+        - asset: fonts/AppleSDGothicNeoR.ttf
+    - family: applegothicLight
+      fonts:
+        - asset: fonts/AppleSDGothicNeoL.ttf
+    - family: applegothicBold
+      fonts:
+        - asset: fonts/AppleSDGothicNeoB.ttf
+    - family: applegothicMedium
+      fonts:
+        - asset: fonts/AppleSDGothicNeoM.ttf
+    - family: dreamGothic2
+      fonts:
+        - asset: fonts/aDreamgothic2.ttf
+    - family: dreamGothic5
+      fonts:
+        - asset: fonts/aDreamgothic5.ttf
+    - family: NotoSansKRBold
+      fonts:
+        - asset: fonts/NotoSansKR_Bold.otf
+    - family: shineforU
+      fonts:
+        - asset: fonts/YShining4U.ttf
   #   - images/a_dot_burr.jpeg
   #   - images/a_dot_ham.jpeg
 

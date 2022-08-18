@@ -49,7 +49,13 @@ class AppTheme{
   static const Color orangeBackground = Color(0xFFFEE3C6) ;
   static const Color redBackground = Color(0xFFFAC4C4) ;
   static const Color messageContent = Color(0xff231815); // 화면 7.1, , 8/17일 추가
+
+  static const Color lightdark = Color(0xFF707070); //8/18 수정
+  static const Color lightdark2 = Color(0xFF777777); //8/18 수정
+  static const Color lightGrey = Color(0xFFb1aeae); //8/18 수정
   static const String fontName = 'WorkSans';
+
+
 
   static const TextTheme textTheme = TextTheme(
     headline4: display1,
@@ -110,7 +116,7 @@ class AppTheme{
   );
 
   static const TextStyle headline = TextStyle( // h5 -> headline
-    fontFamily: fontName,
+    fontFamily: 'applegothicRegular',
     fontWeight: FontWeight.bold,
     fontSize: 24,
     letterSpacing: 0.27,
@@ -118,9 +124,10 @@ class AppTheme{
   );
 
   static const TextStyle title = TextStyle( // h6 -> title
-    fontFamily: fontName,
+    fontFamily: 'applegothicRegular',
     fontWeight: FontWeight.bold,
     fontSize: 20,
+    height:1.5,
     letterSpacing: 0.18,
     color: darkerText,
   );
@@ -150,7 +157,7 @@ class AppTheme{
   );
 
   static const TextStyle body1 = TextStyle( // body2 -> body1
-    fontFamily: fontName,
+    fontFamily: 'applegothicRegular',
     fontWeight: FontWeight.w400,
     fontSize: 16,
     letterSpacing: -0.05,
@@ -182,18 +189,18 @@ class AppTheme{
   );
 
   static const TextStyle button_blue = TextStyle( // 로그인 버튼의 파란색 버튼
-    fontFamily: fontName,
-    fontWeight: FontWeight.w400,
+    fontFamily: 'applegothicRegular',
+    fontWeight: FontWeight.bold,
     fontSize: 19,
     letterSpacing: 0.2,
     color:blueText,
   );
-  static const TextStyle blue_normal = TextStyle( // 법규 화면의 개인정보 처리 방침
-    fontFamily: fontName,
-    fontWeight: FontWeight.bold,
-    fontSize: 15,
+
+  static const TextStyle blue_normal = TextStyle( // 법규 화면의 개인정보 처리 방침 //제 1조 약관의 목적
+    fontFamily: 'applegothicRegular',
+    fontSize: 20,
     letterSpacing: 0.2,
-    color:blueBackground,
+    color:blueText,
 
   );
 
@@ -213,32 +220,35 @@ class AppTheme{
   );
 
   static const TextStyle unseleted = TextStyle(
-    fontFamily: fontName,
-    fontSize: 12,
-    letterSpacing: 0.2,
+    fontFamily: 'applegothicRegular',
+    fontSize: 14,
+    letterSpacing: 0.7,
     color: darkText,
+    fontWeight: FontWeight.w600
   );
 
 
   static const TextStyle selected = TextStyle(
-    fontFamily: fontName,
-    fontSize: 12,
-    letterSpacing: 0.2,
+    fontFamily: 'applegothicRegular',
+    fontSize: 14,
+    letterSpacing: 0.5,
     color: whiteText,
+    fontWeight: FontWeight.w600
   );
   /* 8/3 수정 purpose, law_content 추가 */
   static const TextStyle purpose = TextStyle( //법규에 제1조 약관의 목적
-      fontFamily: fontName,
+      fontFamily: 'applegothicRegular',
       fontSize: 12,
       letterSpacing: 0.2,
-      color: darkText,
+      color: lightdark,
       fontWeight: FontWeight.bold
   );
-  static const TextStyle law_content = TextStyle( //법규에 제1조 약관의 내용
-    fontFamily: fontName,
+  static const TextStyle law_content = TextStyle( //법규에 제1조 약관의 내용 화면 0.2 서비스 이용 약관
+    fontFamily: 'applegothicRegular',
     fontSize: 12,
     letterSpacing: 0.2,
-    color: darkText,
+    height: 1.5,
+    color: lightdark,
   );
 
   static const TextStyle title_blue = TextStyle(
@@ -362,5 +372,61 @@ class AppTheme{
     fontSize: 18,
     letterSpacing: 0.2,
     color: lightText, // was lightText
+  );
+
+  static const TextStyle serviceLimit = TextStyle( // 0.3 권한 요청
+    fontFamily: 'applegothicRegular',
+    fontSize: 14,
+    letterSpacing: 0.2,
+    height: 1.5,
+    color: greyText, // was lightText
+  );
+  static const TextStyle serviceAuth = TextStyle( // h6 -> title
+    fontFamily: 'applegothicRegular',
+    fontWeight: FontWeight.bold,
+    fontSize: 24,
+    height:1.5,
+    letterSpacing: 0.18,
+    color: darkerText,
+  );
+  static const TextStyle nationalNumber = TextStyle( // 0.4 국가번호
+    fontFamily: 'applegothicRegular',
+    fontSize: 15,
+    fontWeight: FontWeight.bold,
+    height:1.5,
+    letterSpacing: 0.15,
+    color: lightdark2,
+  );
+  static const TextStyle timer = TextStyle( // 0.4 timer
+    fontFamily: 'applegothicRegular',
+    fontSize: 15,
+    fontWeight: FontWeight.bold,
+    height:1.5,
+    letterSpacing: 0.15,
+    color: blueText,
+  );
+
+  static const TextStyle certicationResend = TextStyle( // Caption -> caption
+    fontFamily: 'applegothicRegular',
+    fontSize: 14,
+    letterSpacing: 0.2,
+    color: blueText, // was lightText
+    decoration: TextDecoration.underline
+  );
+
+  static const TextStyle unselecttoggleGender = TextStyle( // 0.5 생년성별 텍스트
+      fontFamily: 'applegothicRegular',
+      fontSize: 14,
+      letterSpacing: 0.2,
+      color: lightGrey, // was lightText
+      fontWeight: FontWeight.bold
+  );
+
+  static const TextStyle selecttoggleGender = TextStyle( // 0.5 생년성별 텍스트
+      fontFamily: 'applegothicRegular',
+      fontSize: 14,
+      letterSpacing: 0.2,
+      color: whiteText, // was lightText
+      fontWeight: FontWeight.bold
   );
 }
