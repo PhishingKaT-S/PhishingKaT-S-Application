@@ -68,7 +68,7 @@ class _detailed_infoState extends State<DetailInfo> {
   /* Users data */
   int type = 0;
   bool gender = false;
-
+  
   yearPicker() { //year Picker? 함수
     final year = DateTime.now().year;
     showDialog(

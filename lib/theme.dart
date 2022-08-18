@@ -49,11 +49,10 @@ class AppTheme{
   static const Color orangeBackground = Color(0xFFFEE3C6) ;
   static const Color redBackground = Color(0xFFFAC4C4) ;
   static const Color messageContent = Color(0xff231815); // 화면 7.1, , 8/17일 추가
+
   static const Color lightdark = Color(0xFF707070); //8/18 수정
   static const Color lightdark2 = Color(0xFF777777); //8/18 수정
   static const Color lightGrey = Color(0xFFb1aeae); //8/18 수정
-
-
   static const String fontName = 'WorkSans';
 
 
@@ -430,5 +429,4 @@ class AppTheme{
       color: whiteText, // was lightText
       fontWeight: FontWeight.bold
   );
-
 }
