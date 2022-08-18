@@ -1,6 +1,8 @@
-/// update: 2022-07-21
-/// AttendanceCheckPage
-/// 최종 작성자: 김진일
+/**
+ * update: 2022-08-16
+ * AttendancePage
+ * 최종 작성자: 김진일
+ */
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';

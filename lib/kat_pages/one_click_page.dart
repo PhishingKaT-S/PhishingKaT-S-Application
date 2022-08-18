@@ -1,3 +1,8 @@
+/**
+ * update: 2022-08-18
+ * OneClickPage
+ * 최종 작성자: 김진일
+ */
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -148,7 +153,9 @@ class _OneClickPageState extends State<OneClickPage> {
                 ),
               ],
             ),
-            onTap: () { },
+            onTap: () {
+
+            },
           );
         }),
       ),
