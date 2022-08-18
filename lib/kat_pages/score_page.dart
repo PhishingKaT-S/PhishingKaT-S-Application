@@ -1,3 +1,9 @@
+/**
+ * update: 2022-08-17
+ * ScorePage
+ * 최종 작성자: 김진일
+ */
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:phishing_kat_pluss/kat_widget/kat_appbar_back.dart';
@@ -168,7 +174,7 @@ class _ScorePage extends State<ScorePage> {
     return Container(
       padding: const EdgeInsets.only(top: 20),
       height: MediaQuery.of(context).size.height * 0.43,
-      // width: MediaQuery.of(context).size.width * 0.8,
+      width: MediaQuery.of(context).size.height * 0.43,
       child: Center(
         child: Stack(
           children: [
@@ -176,7 +182,7 @@ class _ScorePage extends State<ScorePage> {
 
             Container(
               width: MediaQuery.of(context).size.width * 0.3,
-              margin: EdgeInsets.only(top: MediaQuery.of(context).size.width * 0.25, left: MediaQuery.of(context).size.width * 0.235),
+              margin: EdgeInsets.only(top: MediaQuery.of(context).size.height * 0.43 * 0.31, left: MediaQuery.of(context).size.height * 0.43 * 0.295),
               child: Column(
                 children: [
                   const Text('1위', style: TextStyle(fontFamily: AppTheme.fontName, fontSize: 20, fontWeight: FontWeight.bold, ), textAlign: TextAlign.center,),
@@ -195,13 +201,13 @@ class _ScorePage extends State<ScorePage> {
             ),
 
             _content_in_pie_chart(MediaQuery.of(context).size.width * 0.15, MediaQuery.of(context).size.height * 0.43 * 0.015,
-                (MediaQuery.of(context).size.width - MediaQuery.of(context).padding.left - MediaQuery.of(context).padding.right) * 0.13, '5위', '2', '공공기관 사칭'),
+                MediaQuery.of(context).size.height * 0.43 * 0.16, '5위', '2', '공공기관 사칭'),
             _content_in_pie_chart(MediaQuery.of(context).size.width * 0.2, MediaQuery.of(context).size.height * 0.43 * 0.13,
-                (MediaQuery.of(context).size.width - MediaQuery.of(context).padding.left - MediaQuery.of(context).padding.right) * 0.585, '2위', '5', '070번호/해외발신'),
+                MediaQuery.of(context).size.height * 0.43 * 0.72, '2위', '5', '070번호/해외발신'),
             _content_in_pie_chart(MediaQuery.of(context).size.width * 0.18, MediaQuery.of(context).size.height * 0.43 * 0.55,
                 0, '4위', '4', '[web]발신'),
             _content_in_pie_chart(MediaQuery.of(context).size.width * 0.2, MediaQuery.of(context).size.height * 0.43 * 0.68,
-                (MediaQuery.of(context).size.width - MediaQuery.of(context).padding.left - MediaQuery.of(context).padding.right) * 0.5, '3위', '5', '보험/금융상품'),
+                MediaQuery.of(context).size.height * 0.43 * 0.62, '3위', '5', '보험/금융상품'),
           ],
         ),
       )

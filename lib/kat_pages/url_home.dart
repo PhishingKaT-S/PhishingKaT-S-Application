@@ -59,7 +59,7 @@ class _InspectFeedbackState extends State<InspectFeedback> with SingleTickerProv
                   ),
 
               ),
-             height: MediaQuery.of(context).size.height!*0.55,
+             height: MediaQuery.of(context).size.height * 0.55,
               width: MediaQuery.of(context).size.width,
                 child: Column(
                   //mainAxisAlignment: MainAxisAlignment.center,
@@ -195,10 +195,10 @@ class _InspectFeedbackState extends State<InspectFeedback> with SingleTickerProv
                             ),
 
                           ),
-                    SizedBox(height: MediaQuery.of(context).size.height!*0.04,),
+                    SizedBox(height: MediaQuery.of(context).size.height * 0.04,),
                     Container(
 
-                      height: MediaQuery.of(context).size.height!*0.08,
+                      height: MediaQuery.of(context).size.height * 0.08,
                       child: ToggleButtons(
                         isSelected: toggleSelected,
                         onPressed: (int index){
@@ -420,7 +420,7 @@ class _InspectFeedbackState extends State<InspectFeedback> with SingleTickerProv
                 style:BorderStyle.solid
             )
         ),
-        height: _changeCategory? MediaQuery.of(context).size.height!*0.55 : 0,
+        height: _changeCategory? MediaQuery.of(context).size.height * 0.55 : 0,
         width: _changeCategory ? MediaQuery.of(context).size.width: 0,
         child: Visibility(
           visible: _changeCategory,
@@ -429,7 +429,7 @@ class _InspectFeedbackState extends State<InspectFeedback> with SingleTickerProv
             children: <Widget>[
               Container(
                   padding: EdgeInsets.all(10),
-                  height: _changeCategory? (MediaQuery.of(context).size.height)!*0.46 : 0,
+                  height: _changeCategory? (MediaQuery.of(context).size.height) * 0.46 : 0,
                   child: Column(children: <Widget>[
                     Container(
                       height: ((MediaQuery.of(context).size.height-20)*0.44)/7,
@@ -540,7 +540,7 @@ class _InspectFeedbackState extends State<InspectFeedback> with SingleTickerProv
               ),
               Container(
 
-                height: MediaQuery.of(context).size.height!*0.08,
+                height: MediaQuery.of(context).size.height * 0.08,
                 child: ToggleButtons(
                   isSelected: toggleSelected,
                   onPressed: (int index){

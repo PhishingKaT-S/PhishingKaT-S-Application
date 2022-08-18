@@ -1,6 +1,6 @@
 /**
- * update: 2022-07-21
- * OneClickPage
+ * update: 2022-08-16
+ * Detect Loading Page
  * 최종 작성자: 김진일
  */
 
