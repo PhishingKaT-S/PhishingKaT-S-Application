@@ -20,6 +20,10 @@ import '../kat_widget/launch_bottombar.dart';
 * celebration화면으로 넘어감
 * */
 
+class privateInfo{
+  
+}
+
 
 class DetailInfo extends StatefulWidget {
   const DetailInfo({Key? key}) : super(key: key);
@@ -29,7 +33,9 @@ class DetailInfo extends StatefulWidget {
 }
 
 class _detailed_infoState extends State<DetailInfo> {
+  String year = ' ';
   List<String> itemTypes = ['남', '여'];
+  GlobalKey<FormState> _fkey = GlobalKey<FormState>();
   List<bool> _isSelected = [false, false]; // gender toggle button
 
   List<bool> _categorySelected=[false, false, false, false];
@@ -39,11 +45,9 @@ class _detailed_infoState extends State<DetailInfo> {
   TextEditingController yController = TextEditingController();
   bool autovalidate = false;
   TextEditingController nicknameController = TextEditingController();
-  String year ='';
 
   yearPicker() { //year Picker? 함수
     final year = DateTime.now().year;
-    TextEditingController yController = TextEditingController();
     showDialog(
       context: context,
       builder: (context) {
@@ -62,7 +66,6 @@ class _detailed_infoState extends State<DetailInfo> {
               lastDate: DateTime(year),
               onChanged: (value) {
                 yController.text = value.toString().substring(0, 4);
-                print(yController.text);
                 Navigator.of(context).pop();
               },
             ),
@@ -217,8 +220,10 @@ class _detailed_infoState extends State<DetailInfo> {
                                 borderSide: BorderSide(color:Colors.blue, width:0.0),
                               ),
                               filled: true,
+                              fillColor: Colors.white,
                             ),
                             onSaved: (val){
+                              year = yController.text;
                               print('123123');
                               print(yController.text);
                               },
