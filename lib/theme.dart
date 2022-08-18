@@ -53,6 +53,9 @@ class AppTheme{
     caption: caption,
   );
 
+
+
+
   static const TextStyle display1 = TextStyle( // h4 -> display1
     fontFamily: fontName,
     fontWeight: FontWeight.bold,
