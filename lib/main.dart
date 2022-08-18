@@ -101,6 +101,6 @@ class Init {
     // 초기 로딩 작성
     // . . .
 
-    return const HomePage(); // 초기 로딩 완료 시 띄울 앱 첫 화면
+    return const settingPage(); // 초기 로딩 완료 시 띄울 앱 첫 화면
   }
 }

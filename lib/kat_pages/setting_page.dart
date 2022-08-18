@@ -15,8 +15,8 @@ class _settingPageState extends State<settingPage> {
 
   Widget _title() {
     return Container(
-      width: MediaQuery.of(context).size.width * 0.8,
-      padding: const EdgeInsets.only(top: 5, bottom: 5),
+      padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width * 0.1, vertical: 5),
+      width: MediaQuery.of(context).size.width ,
       child: const Text('알림 설정', style: AppTheme.subtitle),
       decoration: const BoxDecoration(
         color: AppTheme.whiteGreyBackground,
@@ -26,11 +26,10 @@ class _settingPageState extends State<settingPage> {
 
   Widget _buttons() {
     return Container(
-      padding: EdgeInsets.only(top: 50),
+      padding: EdgeInsets.only(top: 30),
       child: Column(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-
+          /// Toggle Button
         ],
       ),
     );
@@ -41,7 +40,6 @@ class _settingPageState extends State<settingPage> {
     return Scaffold(
       appBar: const AppBarBack(title: '설정'),
       body: Container(
-        padding: EdgeInsets.only(left: MediaQuery.of(context).size.width * 0.1, right: MediaQuery.of(context).size.width * 0.1),
         child: Column(
           children: [
             _title(),
