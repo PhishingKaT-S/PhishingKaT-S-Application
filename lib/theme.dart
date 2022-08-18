@@ -28,6 +28,11 @@ class AppTheme{
   static const Color blueText = Color(0xFF0b80F5) ;
   static const Color greyText = Color(0xFF9b9b9b) ;
   static const Color orangeText = Color(0xFFFF971E) ;
+  static const Color pinkText = Color(0xFFF48292) ;
+  static const Color redText2 = Color(0xFFFD0000) ;
+  static const Color redOrangeText = Color(0xFFF1712B) ;
+  static const Color orangeText2 = Color(0xFFFFB846) ;
+  static const Color greenText2 = Color(0xFF009944) ;
 
   static const Color dismissibleBackground = Color(0xFF364A54);
   static const Color chipBackground = Color(0xFFEEF1F3);
@@ -39,9 +44,11 @@ class AppTheme{
   static const Color blueLineChart = Color(0xFF0473E1);
   static const Color spacer = Color(0xFFF2F2F2);
   static const Color startBackground = Color(0xFF0473E1);
+  static const Color pinkBackground = Color(0xFFF0C9D5) ;
+  static const Color greenBackground = Color(0xFFB1D4C1) ;
+  static const Color orangeBackground = Color(0xFFFEE3C6) ;
+  static const Color redBackground = Color(0xFFFAC4C4) ;
   static const String fontName = 'WorkSans';
-  static const Color appbarBackground = Color(0xffeaf5ff);
-  static const Color messageContent = Color(0xff231815); // 화면 7.1, , 8/17일 추가
 
   static const TextTheme textTheme = TextTheme(
     headline4: display1,
@@ -53,8 +60,19 @@ class AppTheme{
     caption: caption,
   );
 
+  static const TextStyle big_title_white = TextStyle(
+      fontFamily: fontName,
+      fontSize: 59,
+      color: white,
+      fontWeight: FontWeight.bold
+  );
 
-
+  static const TextStyle big_subtitle_sky = TextStyle (
+      fontFamily: fontName,
+      fontSize: 25,
+      color: skyBackground,
+      fontWeight: FontWeight.bold
+  );
 
   static const TextStyle display1 = TextStyle( // h4 -> display1
     fontFamily: fontName,
@@ -72,6 +90,15 @@ class AppTheme{
     letterSpacing: 0.4,
     height: 0.9,
     color: blueText,
+  );
+
+  static const TextStyle score_start_pink = TextStyle(
+    fontFamily: fontName,
+    fontWeight: FontWeight.bold,
+    fontSize: 18,
+    letterSpacing: 0.4,
+    height: 0.9,
+    color: pinkText,
   );
 
   static const TextStyle display_orange = TextStyle(
@@ -95,14 +122,6 @@ class AppTheme{
     fontSize: 20,
     letterSpacing: 0.18,
     color: darkerText,
-  );
-
-  static const TextStyle whitetitle = TextStyle( //8/17일 수정
-    fontFamily: fontName,
-    fontWeight: FontWeight.bold,
-    fontSize: 20,
-    letterSpacing: 0.18,
-    color: whiteText,
   );
 
   static const TextStyle subtitle0 = TextStyle( // subtitle2 -> subtitle
@@ -163,7 +182,7 @@ class AppTheme{
 
   static const TextStyle button_blue = TextStyle( // 로그인 버튼의 파란색 버튼
     fontFamily: fontName,
-    fontWeight: FontWeight.bold,
+    fontWeight: FontWeight.w400,
     fontSize: 19,
     letterSpacing: 0.2,
     color:blueText,
@@ -193,28 +212,18 @@ class AppTheme{
   );
 
   static const TextStyle unseleted = TextStyle(
-      fontFamily: fontName,
-      fontSize: 12,
-      letterSpacing: 0.2,
-      color: darkText,
-      fontWeight: FontWeight.bold
-  );
-
-  static const TextStyle unseletedURL = TextStyle(
-      fontFamily: fontName,
-      fontSize: 12,
-      letterSpacing: 0.2,
-      color: greyText,
-      fontWeight: FontWeight.bold
+    fontFamily: fontName,
+    fontSize: 12,
+    letterSpacing: 0.2,
+    color: darkText,
   );
 
 
   static const TextStyle selected = TextStyle(
-      fontFamily: fontName,
-      fontSize: 12,
-      letterSpacing: 0.2,
-      color: whiteText,
-      fontWeight: FontWeight.bold
+    fontFamily: fontName,
+    fontSize: 12,
+    letterSpacing: 0.2,
+    color: whiteText,
   );
   /* 8/3 수정 purpose, law_content 추가 */
   static const TextStyle purpose = TextStyle( //법규에 제1조 약관의 목적
@@ -238,6 +247,25 @@ class AppTheme{
       fontWeight: FontWeight.bold
   );
 
+  static const TextStyle score_rank_white = TextStyle(
+      fontFamily: fontName,
+      fontSize: 14,
+      color: white
+  );
+
+  static const TextStyle num_of_cases_black = TextStyle(
+    fontFamily: fontName,
+    fontWeight: FontWeight.bold,
+    fontSize: 20,
+    color: darkText,
+  );
+
+  static const TextStyle rank_content_black = TextStyle(
+    fontFamily: fontName,
+    fontSize: 8,
+    color: darkText,
+  );
+
   static final ButtonStyle buttonStyle_white = ButtonStyle( //LoginPage 시작하기 버튼
     backgroundColor: MaterialStateProperty.all<Color>(Colors.white),
     shape: MaterialStateProperty.all<RoundedRectangleBorder>(RoundedRectangleBorder(
@@ -246,17 +274,6 @@ class AppTheme{
     //shadowColor: MaterialStateProperty.all<Color>(Colors.transparent),
     //elevation: MaterialStateProperty.all<double>(0)
   );
-
-  static final ButtonStyle buttonStyle_whitewithbolder = ButtonStyle( //LoginPage 시작하기 버튼
-    backgroundColor: MaterialStateProperty.all<Color>(Colors.white),
-    shape: MaterialStateProperty.all<RoundedRectangleBorder>(RoundedRectangleBorder(
-      side: BorderSide(color: Colors.grey, width:2),
-      borderRadius: BorderRadius.circular(17.5),
-    )),
-    //shadowColor: MaterialStateProperty.all<Color>(Colors.transparent),
-    //elevation: MaterialStateProperty.all<double>(0)
-  );
-
   static final ButtonStyle bottom_button = ButtonStyle( //LoginPage 시작하기 버튼
     backgroundColor: MaterialStateProperty.all<Color>(startBackground),
     shape: MaterialStateProperty.all<RoundedRectangleBorder>(RoundedRectangleBorder(
@@ -264,77 +281,6 @@ class AppTheme{
     )),
     //shadowColor: MaterialStateProperty.all<Color>(Colors.transparent),
     //elevation: MaterialStateProperty.all<double>(0)
-  );
-
-  static final TextStyle appbarText = TextStyle( //1.6 털린 정보 확인 appbar style, 8/10 added
-      fontWeight: FontWeight.bold,
-      fontSize:17,
-      color: Colors.blue,
-      letterSpacing: 0.2
-  );
-  static final TextStyle urlInspect = TextStyle( // 문자 내에 위험요소, 1.7 url 검사
-    fontFamily: fontName,
-    fontWeight: FontWeight.w400,
-    fontSize: 18,
-    letterSpacing: 0.2,
-    color: lightText, // was lightText
-  );
-  static final ButtonStyle urlButton = ButtonStyle( //LoginPage 시작하기 버튼
-    backgroundColor: MaterialStateProperty.all<Color>(startBackground),
-    shape: MaterialStateProperty.all<RoundedRectangleBorder>(RoundedRectangleBorder(
-      borderRadius: BorderRadius.circular(0),
-    )),
-    //shadowColor: MaterialStateProperty.all<Color>(Colors.transparent),
-    //elevation: MaterialStateProperty.all<double>(0)
-  );
-
-  /* 8/17일 URL 검사결과() 1.7.1 ~ 1.8.1 텍스트 스타일*
-   */
-  static final TextStyle uncheck_messageManage = TextStyle( // 문자 내에 위험요소, 1.7 url 검사
-    fontFamily: fontName,
-    fontSize: 18,
-    letterSpacing: 0.2,
-    color: greyText, // was lightText
-  );
-  static final TextStyle check_messageManage = TextStyle( // 문자 내에 위험요소, 1.7 url 검사
-    fontFamily: fontName,
-    fontSize: 18,
-    letterSpacing: 0.2,
-    color: blueText, // was lightText
-  );
-  static const TextStyle smsPhone= TextStyle( //번호
-      fontFamily: fontName,
-      fontWeight: FontWeight.bold,
-      fontSize: 16,
-      letterSpacing: -0.04,
-      color: whiteText,
-  );
-
-  static const TextStyle checksmsContent = TextStyle( //문자 메세지 내용
-    fontFamily: fontName,
-    fontSize: 12,
-    letterSpacing: 0.2,
-    color: whiteText,
-  );
-
-  static const TextStyle unchecksmsContent = TextStyle( //문자 메세지 내용
-    fontFamily: fontName,
-    fontSize: 12,
-    letterSpacing: 0.2,
-    color: messageContent,
-  );
-
-  static const TextStyle unseletDate = TextStyle( //날짜
-      fontFamily: fontName,
-      fontSize: 12,
-      letterSpacing: 0.2,
-      color: greyText,
-  );
-  static const TextStyle selectDate = TextStyle( //날짜
-    fontFamily: fontName,
-    fontSize: 12,
-    letterSpacing: 0.2,
-    color: whiteText,
   );
 
 }
