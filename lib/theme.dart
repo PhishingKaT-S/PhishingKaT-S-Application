@@ -49,11 +49,10 @@ class AppTheme{
   static const Color orangeBackground = Color(0xFFFEE3C6) ;
   static const Color redBackground = Color(0xFFFAC4C4) ;
   static const Color messageContent = Color(0xff231815); // 화면 7.1, , 8/17일 추가
+
   static const Color lightdark = Color(0xFF707070); //8/18 수정
   static const Color lightdark2 = Color(0xFF777777); //8/18 수정
   static const Color lightGrey = Color(0xFFb1aeae); //8/18 수정
-
-
   static const String fontName = 'WorkSans';
 
 
@@ -221,20 +220,20 @@ class AppTheme{
   );
 
   static const TextStyle unseleted = TextStyle(
-    fontFamily: 'applegothicRegular',
-    fontSize: 14,
-    letterSpacing: 0.7,
-    color: darkText,
-    fontWeight: FontWeight.w600
+      fontFamily: 'applegothicRegular',
+      fontSize: 14,
+      letterSpacing: 0.7,
+      color: darkText,
+      fontWeight: FontWeight.w600
   );
 
 
   static const TextStyle selected = TextStyle(
-    fontFamily: 'applegothicRegular',
-    fontSize: 14,
-    letterSpacing: 0.5,
-    color: whiteText,
-    fontWeight: FontWeight.w600
+      fontFamily: 'applegothicRegular',
+      fontSize: 14,
+      letterSpacing: 0.5,
+      color: whiteText,
+      fontWeight: FontWeight.w600
   );
   /* 8/3 수정 purpose, law_content 추가 */
   static const TextStyle purpose = TextStyle( //법규에 제1조 약관의 목적
@@ -333,11 +332,11 @@ class AppTheme{
     color: messageContent,
   );
   static const TextStyle whitetitle = TextStyle( //8/17일 수정
-  fontFamily: fontName,
-  fontWeight: FontWeight.bold,
-  fontSize: 20,
-  letterSpacing: 0.18,
-  color: whiteText,
+    fontFamily: fontName,
+    fontWeight: FontWeight.bold,
+    fontSize: 20,
+    letterSpacing: 0.18,
+    color: whiteText,
   );
   static const TextStyle unseletDate = TextStyle( //날짜
     fontFamily: fontName,
@@ -408,11 +407,11 @@ class AppTheme{
   );
 
   static const TextStyle certicationResend = TextStyle( // Caption -> caption
-    fontFamily: 'applegothicRegular',
-    fontSize: 14,
-    letterSpacing: 0.2,
-    color: blueText, // was lightText
-    decoration: TextDecoration.underline
+      fontFamily: 'applegothicRegular',
+      fontSize: 14,
+      letterSpacing: 0.2,
+      color: blueText, // was lightText
+      decoration: TextDecoration.underline
   );
 
   static const TextStyle unselecttoggleGender = TextStyle( // 0.5 생년성별 텍스트
@@ -430,5 +429,4 @@ class AppTheme{
       color: whiteText, // was lightText
       fontWeight: FontWeight.bold
   );
-
 }

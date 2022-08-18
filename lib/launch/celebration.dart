@@ -23,7 +23,7 @@ class CeleBration extends StatelessWidget {
     final _height = (MediaQuery.of(context).size.height~/5);
     return Scaffold(
       bottomNavigationBar: Container(child:
-          Image.asset('assets/images/launch_end.png', fit: BoxFit.fill),
+          Image.asset('assets/images/launch_end.png', fit: BoxFit.cover),
           width: double.infinity,
           height: 3*_height.toDouble(),
       ),//이미지 불러오기
