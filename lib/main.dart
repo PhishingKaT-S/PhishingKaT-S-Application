@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:phishing_kat_pluss/kat_pages/attendance_page.dart';
+import 'package:phishing_kat_pluss/kat_pages/detect_load_page.dart';
 import 'package:phishing_kat_pluss/kat_pages/home_page.dart';
 import 'package:phishing_kat_pluss/kat_pages/score_page.dart';
 import 'package:phishing_kat_pluss/providers/testProvider.dart';
@@ -9,6 +10,7 @@ import 'package:provider/provider.dart';
 import 'kat_pages/info_check_page.dart';
 import 'kat_pages/one_click_page.dart';
 import 'kat_pages/url_check_page.dart';
+import 'kat_pages/detect_load_page.dart';
 import 'launch/login_page.dart';
 import 'splash/test.dart';
 
@@ -73,6 +75,7 @@ class MyApp extends StatelessWidget {
                 '/kat_pages/one_click' : (BuildContext context) => const OneClickPage(),
                 '/kat_pages/info_check' : (BuildContext context) => const InfoCheckPage(),
                 '/kat_pages/url_check' : (BuildContext context) => const UrlCheckPage(),
+                '/kat_pages/detect_load' : (BuildContext context) => const DetectLoadPage(),
                 '/launch/login' : (BuildContext context) => const LoginPage(),
                 '/splash/test' : (BuildContext context) => const TestPage(),
               },
