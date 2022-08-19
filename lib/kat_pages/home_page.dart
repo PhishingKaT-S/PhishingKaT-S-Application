@@ -22,27 +22,45 @@ class HomePage extends StatefulWidget {
 class _HomePage extends State<HomePage> {
   final GlobalKey<AnimatedCircularChartState> _chartKey = new GlobalKey<AnimatedCircularChartState>();
   double dividingLine = 250 ;
-  double SCORE_RANGE = 110;
+  double SCORE_WIDTH_RANGE = 110;
+  bool smish_detect_flag = true; // provider ?
 
   Widget _get_circular_chart(double score) {
 
     return AnimatedCircularChart(
       key: _chartKey,
-      size: Size(SCORE_RANGE + 30, SCORE_RANGE + 30),
+      size: Size(SCORE_WIDTH_RANGE + 30, SCORE_WIDTH_RANGE + 30),
       initialChartData: <CircularStackEntry>[
         CircularStackEntry(
-          <CircularSegmentEntry>[
-            CircularSegmentEntry(
-              score,
-              AppTheme.blueText,
-              rankKey: 'completed',
-            ),
-            CircularSegmentEntry(
-              100 - score,
-              Colors.blueGrey[600],
-              rankKey: 'remaining',
-            ),
-          ],
+          (smish_detect_flag) ? (
+              <CircularSegmentEntry> [
+                CircularSegmentEntry(
+                  score,
+                  AppTheme.blueText,
+                  rankKey: 'completed',
+                ),
+                CircularSegmentEntry(
+                  100 - score,
+                  Colors.blueGrey[600],
+                  rankKey: 'remaining',
+                ),
+              ]
+          )
+              :
+          (
+              <CircularSegmentEntry> [
+                const CircularSegmentEntry(
+                  0,
+                  AppTheme.blueText,
+                  rankKey: 'completed',
+                ),
+                const CircularSegmentEntry(
+                  100,
+                  AppTheme.pinkBackground,
+                  rankKey: 'remaining',
+                ),
+              ]
+          ),
           rankKey: 'progress',
         ),
       ],
@@ -54,6 +72,7 @@ class _HomePage extends State<HomePage> {
 
   Widget _main_score_view() {
     double score = 69 ;
+
     /**
      * _mainScoreView
      * 피싱 캣 로고와 안심 점수 및 최근 업데이트 날짜 표시
@@ -78,7 +97,11 @@ class _HomePage extends State<HomePage> {
                   children: [
                     Container(
                       width: MediaQuery.of(context).size.width * 0.3,
-                      child: SvgPicture.asset('assets/logo/kat_bad.svg', width:100, height: 100, fit: BoxFit.contain),
+                      child: (!smish_detect_flag) ? Image.asset('assets/logo/score_default.png', width: MediaQuery.of(context).size.width * 0.2, fit: BoxFit.contain)
+                          : (score >= 80) ? Image.asset('assets/logo/score_80_100.png', width: MediaQuery.of(context).size.width * 0.2, fit: BoxFit.contain) :
+                            (score >= 70) ? Image.asset('assets/logo/score_70_80.png', width: MediaQuery.of(context).size.width * 0.2, fit: BoxFit.contain) :
+                            (score >= 60) ? Image.asset('assets/logo/score_60_69.png', width: MediaQuery.of(context).size.width * 0.2, fit: BoxFit.contain) :
+                                            Image.asset('assets/logo/score_0_59.png', width: MediaQuery.of(context).size.width * 0.2, fit: BoxFit.contain)
                     ),
 
                     Container(
@@ -90,12 +113,12 @@ class _HomePage extends State<HomePage> {
                           Center(
                             child: InkWell(
                               onTap: () {
-                                Navigator.pushNamed(context, '/kat_pages/score');
+                                (smish_detect_flag) ? Navigator.pushNamed(context, '/kat_pages/score') : Navigator.pushNamed(context, '/kat_pages/detect_load') ;
                               },
                               child: Container(
                                 margin: const EdgeInsets.all(2),
-                                width: SCORE_RANGE,
-                                height: SCORE_RANGE,
+                                width: SCORE_WIDTH_RANGE,
+                                height: SCORE_WIDTH_RANGE,
                                 decoration: const BoxDecoration(
                                   shape: BoxShape.circle,
                                   color: AppTheme.whiteGrey,
@@ -108,10 +131,15 @@ class _HomePage extends State<HomePage> {
                                             child: Row(
                                               crossAxisAlignment: CrossAxisAlignment.center,
                                               mainAxisAlignment: MainAxisAlignment.center,
-                                              children: [
-                                                Text(score.toInt().toString(), style: AppTheme.display1_blue, textAlign: TextAlign.center),
-                                                const Text('점', style: AppTheme.subtitle, textAlign: TextAlign.center)
-                                              ],
+                                              children: (smish_detect_flag) ?
+                                                [
+                                                  Text(score.toInt().toString(), style: AppTheme.display1_blue, textAlign: TextAlign.center),
+                                                  const Text('점', style: AppTheme.subtitle, textAlign: TextAlign.center)
+                                                ]
+                                                  :
+                                                [
+                                                  Text('분석 시작', style: AppTheme.score_start_pink, textAlign: TextAlign.center),
+                                                ],
                                             )
                                         )
                                     ),
@@ -129,24 +157,37 @@ class _HomePage extends State<HomePage> {
                             ),
                           ),
 
-                          Container(
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: const [
-                                Text('최근 검사', style: AppTheme.caption),
-                                Text('2022-07-05', style: AppTheme.caption),
+                          (smish_detect_flag) ?
+                          (
+                            Column(
+                              children: [
+                                Container(
+                                    child: Row(
+                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                      children: const [
+                                        Text('최근 검사', style: AppTheme.caption),
+                                        Text('2022-07-05', style: AppTheme.caption),
+                                      ],
+                                    )
+                                ),
+                                Container(
+                                    child: Row(
+                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                      children: const [
+                                        Text('최근 업데이트', style: AppTheme.caption),
+                                        Text('2022-07-05', style: AppTheme.caption),
+                                      ],
+                                    )
+                                ),
                               ],
                             )
-                          ),
-                          Container(
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: const [
-                                Text('최근 업데이트', style: AppTheme.caption),
-                                Text('2022-07-05', style: AppTheme.caption),
-                              ],
+                          )
+                              :
+                          (
+                            const Center(
+                              child: Text('분석 시작 버튼을 눌러주세요!', style: AppTheme.caption2_black),
                             )
-                          ),
+                          )
                         ],
                       ),
                     ),
@@ -180,7 +221,9 @@ class _HomePage extends State<HomePage> {
           padding: EdgeInsets.only(left: 0, top: 15, right:0, bottom: 15),
           child: Text("오늘의 스미싱분석", style: AppTheme.button),
         ),
-        onPressed: () {},
+        onPressed: () {
+          Navigator.pushNamed(context, '/kat_pages/detect_load');
+        },
         style: ButtonStyle(
             shape: MaterialStateProperty.all<RoundedRectangleBorder>(
                 RoundedRectangleBorder(
@@ -216,9 +259,14 @@ class _HomePage extends State<HomePage> {
                 width: MediaQuery.of(context).size.width * 0.3,
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.end,
-                  children: [
+                  children: (smish_detect_flag) ? [
                     Text(num, style: TextStyle(color: color)),
                     const Text(' 건'),
+                  ]
+                      :
+                  [
+                    const Icon(Icons.arrow_right, color: AppTheme.greyText),
+                    const Text('피싱 분석 필요', style: TextStyle(color: AppTheme.greyText)),
                   ],
                 )
             )
@@ -365,8 +413,9 @@ class _HomePage extends State<HomePage> {
   }
 
   Widget _additional_fuctions() {
-    List<String> functionList = <String> ['선불폰 확인', '털린 정보 확인', 'URL검사'] ;
+    List<String> functionList = <String> ['원클릭 신고', '털린 정보 확인', 'URL검사'] ;
     List<String> imgList = <String> ['phone_check.png', 'info_check.png', 'url_check.png'] ;
+    List<String> pageList = <String> ['one_click', 'info_check', 'url_check'];
     /**
      * _additional_fuctions
      * 선불폰 확인, 털린 정보 확인, URL 검사 페이지로 이동
@@ -388,7 +437,9 @@ class _HomePage extends State<HomePage> {
                     height: 80,
                     child: OutlinedButton(
                       child: Image.asset('assets/images/' + imgList[index], width: 80,),
-                      onPressed: () {},
+                      onPressed: () {
+                        Navigator.pushNamed(context, '/kat_pages/' + pageList[index]);
+                      },
                     ),
                   ),
                   Padding(
@@ -518,7 +569,7 @@ class _HomePage extends State<HomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: const KaTAppBar(),
-      drawer: KaTDrawer(),
+      // drawer: KaTDrawer(),
       bottomNavigationBar: const KatBottomBar(),
       body: SingleChildScrollView(
         child:Column(

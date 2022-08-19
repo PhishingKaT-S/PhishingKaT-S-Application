@@ -1,11 +1,15 @@
-/// update: 2022-07-21
-/// AttendanceCheckPage
-/// 최종 작성자: 김진일
+/**
+ * update: 2022-08-16
+ * AttendancePage
+ * 최종 작성자: 김진일
+ */
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:rflutter_alert/rflutter_alert.dart';
 import 'package:table_calendar/table_calendar.dart';
 
+import '../kat_widget/kat_appbar_back.dart';
 import '../theme.dart';
 
 class AttendancePage extends StatefulWidget {
@@ -16,6 +20,26 @@ class AttendancePage extends StatefulWidget {
 }
 
 class _AttendancePage extends State<AttendancePage> {
+  var _now = DateTime.now() ;
+
+  var alertStyle = AlertStyle(
+    animationType: AnimationType.fromTop,
+    isCloseButton: false,
+    isOverlayTapDismiss: false,
+    descStyle: TextStyle(fontWeight: FontWeight.bold),
+    descTextAlign: TextAlign.start,
+    animationDuration: Duration(milliseconds: 400),
+    alertBorder: RoundedRectangleBorder(
+      borderRadius: BorderRadius.circular(0.0),
+      side: BorderSide(
+        color: Colors.grey,
+      ),
+    ),
+    titleStyle: TextStyle(
+      color: Colors.red,
+    ),
+    alertAlignment: Alignment.topCenter,
+  );
 
   Widget _oneday_onecheck_notice() {
     const double NOTICE_HEIGHT = 60.0;
@@ -42,6 +66,7 @@ class _AttendancePage extends State<AttendancePage> {
 
   Widget _calendar_title() {
     const double TITLE_HEIGHT = 90.0;
+
     /**
      * _calendar_title
      * 캘린더 제목
@@ -59,9 +84,9 @@ class _AttendancePage extends State<AttendancePage> {
             width: MediaQuery.of(context).size.width * 0.3,
             padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width * 0.08),
             child: Row(
-              children: const [
-                Text('7', style: AppTheme.display1),
-                Text('월', style: AppTheme.title),
+              children: [
+                Text(_now.month.toString(), style: AppTheme.display1),
+                const Text('월', style: AppTheme.title),
               ],
             )
           ),
@@ -86,10 +111,8 @@ class _AttendancePage extends State<AttendancePage> {
 
   Widget _calendar_content() {
     CalendarFormat _calendarFormat = CalendarFormat.month;
-    DateTime _focusedDay = DateTime.now();
     DateTime? _selectedDay;
     List<String> days = ['_', '월', '화', '수', '목', '금', '토', '일'];
-    const double CALENDAR_HEIGHT = 400.0;
 
     /**
      * _calendar_content
@@ -98,19 +121,31 @@ class _AttendancePage extends State<AttendancePage> {
      * 1. Database에서 사용자의 출석 현황 값을 들고와 표시
      */
     return Container(
-      height: CALENDAR_HEIGHT,
+      height: MediaQuery.of(context).size.height * 0.45,
       color: AppTheme.blueBackground,
       padding: EdgeInsets.symmetric(vertical: 10),
       child: TableCalendar(
-        firstDay: DateTime(2022, 7, 1),
-        lastDay: DateTime(2022, 7, 31),
-        focusedDay: _focusedDay,
+        firstDay: DateTime(_now.year, _now.month, 1),
+        lastDay: DateTime(_now.year, _now.month + 1, 0),
+        focusedDay: _now,
         calendarFormat: _calendarFormat,
         daysOfWeekHeight: 30,
         headerVisible: false,
         calendarBuilders: CalendarBuilders(
           dowBuilder: (context, day) {
             return Center(child: Text(days[day.weekday])) ;
+          },
+
+          todayBuilder: (context, date, _) {
+            return InkWell(
+              onTap: () {
+                /// ALERT
+              },
+              child: Container(
+                  width: MediaQuery.of(context).size.width * 0.11,
+                  padding: const EdgeInsets.only(bottom: 5),
+                  child: Image.asset('assets/images/attendance.png',)),
+            );
           },
         ),
         selectedDayPredicate: (day) {
@@ -126,7 +161,7 @@ class _AttendancePage extends State<AttendancePage> {
             // Call `setState()` when updating the selected day
             setState(() {
               _selectedDay = selectedDay;
-              _focusedDay = focusedDay;
+              _now = focusedDay;
             });
           }
         },
@@ -140,7 +175,7 @@ class _AttendancePage extends State<AttendancePage> {
         },
         onPageChanged: (focusedDay) {
           // No need to call `setState()` here
-          _focusedDay = focusedDay;
+          _now = focusedDay;
         },
       ),
     );
@@ -168,15 +203,7 @@ class _AttendancePage extends State<AttendancePage> {
      * 이것 또한 AppBar를 따로 빼서 구현할 것 인지 정해야함.
      * */
     return Scaffold(
-      appBar: AppBar(
-        leading: IconButton(
-          icon: Icon(Icons.arrow_back, color: Colors.black),
-          onPressed: () => Navigator.of(context).pop(),
-        ),
-        title: const Text("출석체크", style: TextStyle(color: AppTheme.blueText),),
-        backgroundColor: AppTheme.blueBackground,
-        centerTitle: true,
-      ),
+      appBar: AppBarBack(title: "출석체크"),
 
       body: SingleChildScrollView(
         child: Column(

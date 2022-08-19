@@ -1,14 +1,19 @@
 /*
 * write:Jiwon Jung
-* date: 7/26
+* date: 7/29
 * content: 0.4, phone number certication
+* 7/29: style change
+* 8/6: time flow, certification number, flag
 * */
+
+import 'dart:async';
 
 import 'package:flutter/material.dart';
 
 import '../Theme.dart';
 import '../kat_widget/launch_appbar.dart';
 import '../kat_widget/launch_bottombar.dart';
+import 'controller/PhoneVericationController.dart';
 import 'detailed_info.dart';
 
 class PhoneCRT extends StatefulWidget {
@@ -29,113 +34,207 @@ class PhoneCRT extends StatefulWidget {
  */
 
 class _Phone_CRTState extends State<PhoneCRT> {
+  //
+  String tokenbanner = "접속한 지 오래되어 휴대폰 재인증이 필요해요";
   String banner = "피싱 피해를 막기 위해\n휴대폰 본인 인증이 필요해요";
+  int original = 300;
+
+  //시간
+  bool flag = false; // flag of certification.
+  bool timeover = false; // end of the 5 minute.
+  //int time = 5; //300 seconds
+  Timer? _timer;
+  int time = 300;
   final TextEditingController _textEditingController = TextEditingController();
+  final TextEditingController _certificationController =
+      TextEditingController();
+
+  //verification
+  var verification;
+  String _phoneNumber = '';
+  void _start() {
+    _timer = Timer.periodic(Duration(seconds: 1), (timer) {
+      setState(() {
+        time--;
+        if (time == 0) {
+          _timer?.cancel();
+          timeover = true;
+        }
+      });
+    });
+  }
+
+  void _clickPlayButton() {
+    _timer?.cancel();
+    _start();
+  }
+
+  void _clickResend() {
+    _timer?.cancel();
+    _start();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        bottomNavigationBar: bottomBar(title: '다음', onPress: (){
-          Navigator.push(context, MaterialPageRoute(builder: (context)=>(DetailInfo())));
-        }),
+        bottomNavigationBar: bottomBar(
+            title: '다음',
+            onPress: () {
+              if (flag) {
+                Navigator.push(context,
+                    MaterialPageRoute(builder: (context) => (DetailInfo(phoneNumber: _phoneNumber))));
+              }
+            }),
         // button '확인'
         appBar: certification_appbar(Colors.blue, Colors.grey), // 위쪽 점 두개 구현
         body: SingleChildScrollView(
           child: Container(
-              padding: EdgeInsets.fromLTRB(20, 10, 20, 0), //padding(20, 10, 20, 0)
+              padding: const EdgeInsets.fromLTRB(30, 30, 20, 0),
+              //padding(20, 10, 20, 0)
               child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
+                  _banner(), //피싱 피해를 막기 위해 ~
 
-                  Text(
-                      banner,   //위의 안내글을 입력받아서 state를 변화시킴
-                      style: AppTheme.title,  //스타일
-                    ), //피싱 피해를 막기 위해 ~
-
-                  SizedBox(height: 50,),  //크기 조절
+                  SizedBox(
+                    height: 30,
+                  ), //크기 조절
 
                   //휴대폰 번호 입력하는 container
                   /*
                   * 해야할 일 아이콘 버튼
                   * */
-                  Container(                  //입력창을 담는 컨테이너 height 70임
-                    decoration: BoxDecoration(  //박스 데코:블루, width:3 circular10
-                      border:Border.all(
-                        color:Colors.blue,
-                        width:3
-                      ),
+                  Container(
+                    //입력창을 담는 컨테이너 height 70임
+                    decoration: BoxDecoration(
+                      //박스 데코:블루, width:3 circular10
+                      border: Border.all(color: Colors.blue, width: 3),
                       borderRadius: BorderRadius.circular(10),
                     ),
                     width: double.infinity,
                     height: 70,
                     child: Row(
                       children: <Widget>[
-                        Flexible(flex: 1,
-                        child:Text('+082 ')),
-
-
-                        Flexible(
-                          flex: 8,
-                            child: TextField(
-                          controller:_textEditingController,
-                          keyboardType: TextInputType.number,
-                          decoration: InputDecoration(
+                        Container(
+                            padding: EdgeInsets.only(left:10),
+                            width: 60,
+                            child: Center(
+                                child: Text('+082 ', style: AppTheme.nationalNumber))),
+                        Expanded(
+                          child: TextField(
+                            controller: _textEditingController,
+                            keyboardType: TextInputType.number,
+                            decoration: InputDecoration(
+                              border: InputBorder.none,
                               labelText: '휴대폰 번호 입력',
                               labelStyle: AppTheme.caption,
-                              ),
+                            ),
                           ),
                         ),
-                        Flexible(
-                          flex: 1,
-                            child: IconButton(onPressed: (){}, icon:Icon( Icons.check), color: Colors.green,))
+                        InkWell(
+                              onTap: () async {
+                                _phoneNumber = _textEditingController.text;
+                                verification =
+                                    await PhoneVerificationController()
+                                        .sendSMS(_textEditingController.text);
+                                time = original;
+                                _timer?.cancel();
+                                _clickPlayButton();
+                              },
+                          child: Container(
+                            width: 50,
+                            height: 60,
+                            decoration: BoxDecoration(
+                                image: DecorationImage(
+                                    scale: 8,
+                                    image:AssetImage('assets/images/joinFeedback2.png')
+                                )
+                            ),
+                          ),
+
+                            )
                       ],
                     ), //국가 번호, 휴대폰번호, 아이콘이 flexible 1, 8, 1 비율로 있음
                   ), //border
 
-                  SizedBox(height: 20,),
+                  SizedBox(
+                    height: 30,
+                  ),
 
                   Container(
                     decoration: BoxDecoration(
-                      border:Border.all(
-                          color:Colors.blue,
-                          width:3
-                      ),
+                      border: Border.all(color: Colors.blue, width: 3),
                       borderRadius: BorderRadius.circular(10),
                     ),
                     width: double.infinity,
                     height: 70,
                     child: Row(
                       children: <Widget>[
-                        Flexible(
-                          flex:1,
-                            child: Text('4:46', style: AppTheme.body1)),
-                        Flexible(
-                          flex: 9,
+                        Container(
+                            padding: EdgeInsets.only(left:10),
+                            width: 60,
+                            child: Center(
+                                child: Text("${time ~/ 60} : ${time % 60}",
+                                    style: AppTheme.timer))),
+                        Expanded(
                           child: TextField(
-                            controller:_textEditingController,
+                            controller: _certificationController,
                             keyboardType: TextInputType.number,
                             decoration: InputDecoration(
+                              border: InputBorder.none,
                               labelText: '인증번호 입력',
                               labelStyle: AppTheme.caption,
                             ),
                           ),
                         ),
-                        Flexible(
-                            flex: 1,
-                            child: IconButton(onPressed: (){}, icon:Icon( Icons.question_mark, color: Colors.red,), color: Colors.green,))
+                        InkWell(
+                              onTap: () {
+                                if (_certificationController.text ==
+                                    verification) {
+                                  _timer?.cancel();
+                                  flag = true;
+                                } else {
+                                  flag = false;
+                                }
+                              },
+                              child: Container(
+                                width: 50,
+                                height: 60,
+                                decoration: BoxDecoration(
+                                  image: DecorationImage(
+                                    scale: 8,
+                                    image:AssetImage('assets/images/joinFeedback1.png')
+                                  )
+                                ),
+                              ),
+                            )
                       ],
                     ),
-                  ),//남은 시간, 인증번호 아이콘이 flexible 1, 9, 1비율로 있음
+                  ), //남은 시간, 인증번호 아이콘이 flexible 1, 9, 1비율로 있음
 
-                  Align(  //인증번호 다시 받기
+                  Align(
+                    //인증번호 다시 받기
                     alignment: Alignment.bottomRight,
                     child: TextButton(
-                      child: Text('인증번호 다시받기', style: AppTheme.caption),
-                      onPressed: (){},
+                      child: Text('인증번호 다시받기', style: AppTheme.certicationResend),
+                      onPressed: () async {
+                        verification = await PhoneVerificationController()
+                            .sendSMS(_textEditingController.text);
+                        _timer?.cancel();
+                        time = original;
+                        _clickResend();
+                      },
                     ),
-                  )//인증번호 받기 받기
-
+                  ) //인증번호 받기 받기
                 ],
               )),
         ));
   }
 
+  Text _banner() {
+    return Text(
+                  banner, //위의 안내글을 입력받아서 state를 변화시킴
+                  style: AppTheme.serviceAuth, //스타일
+                );
+  }
 }

@@ -2,6 +2,7 @@ import  'package:flutter/material.dart';
 
 AppBar certification_appbar(Color c1, Color c2) {
   return AppBar(
+    leading: Container(color: Colors.white),
     backgroundColor: Colors.white,
     elevation: 0,
     actions: [
