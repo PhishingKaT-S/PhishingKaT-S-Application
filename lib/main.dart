@@ -7,6 +7,7 @@ import 'package:phishing_kat_pluss/kat_pages/phishing_notice_page.dart';
 import 'package:phishing_kat_pluss/kat_pages/score_page.dart';
 import 'package:phishing_kat_pluss/kat_pages/setting_page.dart';
 import 'package:phishing_kat_pluss/kat_pages/url_home.dart';
+import 'package:phishing_kat_pluss/menu/menu_home.dart';
 import 'package:phishing_kat_pluss/providers/testProvider.dart';
 import 'package:phishing_kat_pluss/splash/splash_screen.dart';
 import 'package:provider/provider.dart';
@@ -83,6 +84,7 @@ class MyApp extends StatelessWidget {
                 '/launch/login' : (BuildContext context) => const LoginPage(),
                 '/splash/test' : (BuildContext context) => const TestPage(),
                 '/kat_pages/url_home': (BuildContext context) => const InspectFeedback(),
+                '/menu/menu_home':(BuildContext context) => const MenuHome()
               },
             );
           }
