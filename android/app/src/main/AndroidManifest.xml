@@ -9,10 +9,12 @@
     <uses-permission android:name="android.permission.READ_SMS"/>
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
     <uses-permission android:name="android.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS"/>
+    <uses-permission android:name="android.permission.INTERNET" />
 
     <application
         android:label="phishing_kat_pluss"
         android:name="${applicationName}"
+        android:name=".GlobalApplication"
         android:icon="@mipmap/ic_launcher">
         <activity
             android:name=".MainActivity"
@@ -40,5 +42,8 @@
         <meta-data
             android:name="flutterEmbedding"
             android:value="2" />
+        <meta-data
+            android:name="com.kakao.sdk.AppKey"
+            android:value="2c174d14857608bc5b5be9a32c0b2a31" />
     </application>
 </manifest>
