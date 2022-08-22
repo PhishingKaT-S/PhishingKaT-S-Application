@@ -8,11 +8,20 @@ import 'dart:convert';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart' as rootBundle;
+import 'package:flutter/services.dart' ;
 
 import '../kat_widget/kat_appbar_back.dart';
 import '../kat_widget/kat_webview.dart';
 import '../theme.dart';
+
+
+class Banks {
+  String name = "";
+  List<String> phoneLists = [];
+
+  Banks(this.name, this.phoneLists) ;
+  Banks.fromJson(Map<String, dynamic> json) : name = json['name'], phoneLists = json['ph'] ;
+}
 
 class OneClickPage extends StatefulWidget {
   const OneClickPage({Key? key}) : super(key: key);
@@ -24,11 +33,21 @@ class OneClickPage extends StatefulWidget {
 
 class _OneClickPageState extends State<OneClickPage> {
   TextEditingController search_controller = TextEditingController();
+  List<Banks> banks = [] ;
+
+  Future ReadJsonData() async {
+    final String loadJson = await rootBundle.loadString('assets/json/bank.json');
+    final res = json.decode(loadJson);
+    print(res);
+    banks = Banks.fromJson(res) as List<Banks> ;
+    print(banks) ;
+  }
 
   @override
   void initState() {
     super.initState();
     search_controller.addListener(() { });
+    ReadJsonData();
   }
 
   @override
@@ -60,7 +79,7 @@ class _OneClickPageState extends State<OneClickPage> {
           ),
           Container(
             width: MediaQuery.of(context).size.width * 0.08,
-            child: IconButton(icon: Icon(Icons.close), color: AppTheme.grey, onPressed: () { search_controller.clear(); },),
+            child: IconButton(icon: Icon(Icons.cancel), color: AppTheme.grey, onPressed: () { search_controller.clear(); },),
           ),
           Container(
             width: MediaQuery.of(context).size.width * 0.08,
@@ -70,9 +89,6 @@ class _OneClickPageState extends State<OneClickPage> {
       )
     );
   }
-
-
-  /*
 
   Widget _search_list() {
     return SingleChildScrollView(
@@ -90,17 +106,17 @@ class _OneClickPageState extends State<OneClickPage> {
                 itemBuilder: (context, index) {
                   return Container(
                     child: Text(items[index].name),
-                  )
+                  );
                 }
               );
             }
+
+            return Container() ;
           }
         ),
       ),
     );
   }
-
-  */
 
   Widget _bank_search() {
     const double PADDING_TOP = 30.0;
@@ -114,7 +130,7 @@ class _OneClickPageState extends State<OneClickPage> {
           const Text('해당 은행 고객센터로 연결됩니다.', style: AppTheme.caption),
           Padding(padding: EdgeInsets.only(top: 20),),
           _search_widget(),
-          // _search_list(),
+          _search_list(),
         ],
       ),
     );

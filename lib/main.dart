@@ -91,8 +91,8 @@ class MyApp extends StatelessWidget {
                 '/menu/menu_home':(BuildContext context) => const MenuHome(),
                 '/menu/service_center':(BuildContext context) => const ServiceCenter(),
                 '/menu/alarm': (BuildContext context) => const PhishingAlarmPage(),
-                '/menu/setting': (BuildContext context) => const SettingPage(),
                 '/menu/notice': (BuildContext context) => const NoticePage(),
+                '/menu/alarm/setting': (BuildContext context) => const SettingPage(),
               },
             );
           }
@@ -111,6 +111,6 @@ class Init {
     // 초기 로딩 작성
     // . . .
 
-    return const LoginPage(); // 초기 로딩 완료 시 띄울 앱 첫 화면
+    return const HomePage(); // 초기 로딩 완료 시 띄울 앱 첫 화면
   }
 }

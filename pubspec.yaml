@@ -80,6 +80,7 @@ flutter:
     - assets/logo/
     - assets/images/
     - assets/lotties/
+    - assets/json/
 
   fonts:
     - family: applegothicRegular
