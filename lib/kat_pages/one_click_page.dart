@@ -15,13 +15,20 @@ import '../kat_widget/kat_webview.dart';
 import '../theme.dart';
 
 
-class Banks {
-  String name = "";
-  List<String> phoneLists = [];
+class Bank {
+  final String name ;
+  final List<String> phones ;
 
-  Banks(this.name, this.phoneLists) ;
-  Banks.fromJson(Map<String, dynamic> json) : name = json['name'], phoneLists = json['ph'] ;
+  Bank({required this.name, required this.phones}) ;
+
+  factory Bank.fromJson(Map<String, dynamic> json) {
+    return Bank(
+      name : json['name'],
+      phones : List<String>.from(json['ph']),
+    );
+  }
 }
+
 
 class OneClickPage extends StatefulWidget {
   const OneClickPage({Key? key}) : super(key: key);
@@ -33,14 +40,16 @@ class OneClickPage extends StatefulWidget {
 
 class _OneClickPageState extends State<OneClickPage> {
   TextEditingController search_controller = TextEditingController();
-  List<Banks> banks = [] ;
+  List<Bank> _banks = [] ;
+  late Bank _selected_bank_name ;
 
   Future ReadJsonData() async {
     final String loadJson = await rootBundle.loadString('assets/json/bank.json');
     final res = json.decode(loadJson);
-    print(res);
-    banks = Banks.fromJson(res) as List<Banks> ;
-    print(banks) ;
+
+    for (var bank in res['banks']) {
+      _banks.add(Bank.fromJson(bank)) ;
+    }
   }
 
   @override
@@ -74,7 +83,13 @@ class _OneClickPageState extends State<OneClickPage> {
                 hintText: '은행명 입력',
                 border: InputBorder.none,
               ),
-              onChanged: (text) {},
+              onChanged: (text) {
+                for (var bank in _banks) {
+                  if (bank.name.contains(text)) {
+                    _selected_bank_name = bank ;
+                  }
+                }
+              },
             ),
           ),
           Container(
@@ -92,29 +107,55 @@ class _OneClickPageState extends State<OneClickPage> {
 
   Widget _search_list() {
     return SingleChildScrollView(
-      child: Container(
-        height: 40,
-        child: FutureBuilder(
-          future: ReadJsonData(),
-          builder: (context, data) {
-            if ( data.hasError ) {
-              return Center(child: Text("${data.error}"),) ;
-            } else if ( data.hasData ) {
-              var items = data.data as List<Banks> ;
-              return ListView.builder(
-                itemCount: items == null ? 0 : items.length,
-                itemBuilder: (context, index) {
-                  return Container(
-                    child: Text(items[index].name),
-                  );
-                }
-              );
-            }
-
-            return Container() ;
-          }
+      child: _banks.isNotEmpty ? Container(
+        height: 150,
+        child: Column(
+          children: [
+            Expanded(
+                child: ListView.builder(
+                  itemCount: _banks.length,
+                  itemBuilder: (context, index) {
+                    return Container(
+                      padding: EdgeInsets.only(top: 5),
+                      height: 50,
+                      decoration: const BoxDecoration(
+                        border: Border(
+                          bottom: BorderSide(
+                            color: AppTheme.grey,
+                          )
+                        )
+                      ),
+                      child: Align(
+                        alignment: Alignment.centerLeft,
+                        child: Text(_banks[index].name, style: AppTheme.body1,),
+                      )
+                    );
+                  },
+                )
+            )
+          ],
         ),
-      ),
+        // child: FutureBuilder(
+        //   future: ReadJsonData(),
+        //   builder: (context, data) {
+        //     if ( data.hasError ) {
+        //       return Center(child: Text("${data.error}"),) ;
+        //     } else if ( data.hasData ) {
+        //       var items = data.data as List<Bank> ;
+        //       return ListView.builder(
+        //         itemCount: items == null ? 0 : items.length,
+        //         itemBuilder: (context, index) {
+        //           return Container(
+        //             child: Text(items[index].name),
+        //           );
+        //         }
+        //       );
+        //     }
+        //
+        //     return Container() ;
+        //   }
+        // ),
+      ) : Container() ,
     );
   }
 
@@ -130,6 +171,7 @@ class _OneClickPageState extends State<OneClickPage> {
           const Text('해당 은행 고객센터로 연결됩니다.', style: AppTheme.caption),
           Padding(padding: EdgeInsets.only(top: 20),),
           _search_widget(),
+          Padding(padding: EdgeInsets.only(top: 10),),
           _search_list(),
         ],
       ),
@@ -141,7 +183,7 @@ class _OneClickPageState extends State<OneClickPage> {
     return Container(
       child: Column(
         children: [
-          Padding(padding: EdgeInsets.only(top: 40)),
+          Padding(padding: EdgeInsets.only(top: 10)),
           Container(
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.start,

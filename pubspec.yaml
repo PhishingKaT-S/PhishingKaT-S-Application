@@ -82,6 +82,7 @@ flutter:
     - assets/images/
     - assets/lotties/
     - assets/json/
+    - assets/bank_logo/
 
   fonts:
     - family: applegothicRegular
