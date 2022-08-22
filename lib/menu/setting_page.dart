@@ -5,14 +5,14 @@ import 'package:flutter_switch/flutter_switch.dart';
 import '../Theme.dart';
 import '../kat_widget/kat_appbar_back.dart';
 
-class settingPage extends StatefulWidget {
-  const settingPage({Key? key}) : super(key: key);
+class SettingPage extends StatefulWidget {
+  const SettingPage({Key? key}) : super(key: key);
 
   @override
-  _settingPageState createState() => _settingPageState();
+  _SettingPageState createState() => _SettingPageState();
 }
 
-class _settingPageState extends State<settingPage> {
+class _SettingPageState extends State<SettingPage> {
   List<bool> status = [false, true, false, true] ;
   List<String> setting_names = ['피싱관련 뉴스 알림', '이벤트 알림', '알림 미리보기', '푸시알림'] ;
 
