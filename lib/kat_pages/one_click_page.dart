@@ -2,6 +2,12 @@
  * update: 2022-08-18
  * OneClickPage
  * 최종 작성자: 김진일
+ *
+ * 해야할 작업:
+ *  1. 예금/대출/신용카드 조회 페이지 URL 수정 (해당 홈페이지 접근 방식 변형)
+ *  2. Search 되는지 확인
+ *  3. 명의 도용 페이지 연결
+ *  4. 전화로 연동 (Done)
  */
 
 import 'dart:convert';
@@ -9,22 +15,29 @@ import 'dart:convert';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' ;
+import 'package:url_launcher/url_launcher.dart';
 
 import '../kat_widget/kat_appbar_back.dart';
 import '../kat_widget/kat_webview.dart';
 import '../theme.dart';
+import 'one_click_bank_page.dart';
 
-
+/**
+ * Bank Class
+ * assets/json/bank.json
+ * 데이터 구조
+ */
 class Bank {
   final String name ;
   final List<String> phones ;
-
-  Bank({required this.name, required this.phones}) ;
+  final String image ;
+  Bank({required this.name, required this.phones, required this.image}) ;
 
   factory Bank.fromJson(Map<String, dynamic> json) {
     return Bank(
       name : json['name'],
       phones : List<String>.from(json['ph']),
+      image: json['image'],
     );
   }
 }
@@ -63,6 +76,15 @@ class _OneClickPageState extends State<OneClickPage> {
   void dispose() {
     search_controller.dispose();
     super.dispose() ;
+  }
+
+  _launchCaller(String phone_number) async {
+    var url = Uri(scheme: 'tel', path: phone_number);
+    if (await canLaunchUrl(url)) {
+      await launchUrl(url);
+    } else {
+      throw 'Could not launch $url';
+    }
   }
 
   Widget _search_widget() {
@@ -115,19 +137,27 @@ class _OneClickPageState extends State<OneClickPage> {
                 child: ListView.builder(
                   itemCount: _banks.length,
                   itemBuilder: (context, index) {
-                    return Container(
-                      padding: EdgeInsets.only(top: 5),
-                      height: 50,
-                      decoration: const BoxDecoration(
-                        border: Border(
-                          bottom: BorderSide(
-                            color: AppTheme.grey,
+                    return InkWell(
+                      onTap: () {
+                        Navigator.push(context, MaterialPageRoute(
+                            builder: (context) => OneClickBank(bank_name: _banks[index].name,
+                                                               phone_list: _banks[index].phones,
+                                                               image: _banks[index].image,)));
+                      },
+                      child: Container(
+                        padding: EdgeInsets.only(top: 5),
+                        height: 50,
+                        decoration: const BoxDecoration(
+                          border: Border(
+                            bottom: BorderSide(
+                              color: AppTheme.grey,
+                            )
                           )
+                        ),
+                        child: Align(
+                          alignment: Alignment.centerLeft,
+                          child: Text(_banks[index].name, style: AppTheme.body1,),
                         )
-                      ),
-                      child: Align(
-                        alignment: Alignment.centerLeft,
-                        child: Text(_banks[index].name, style: AppTheme.body1,),
                       )
                     );
                   },
@@ -135,26 +165,6 @@ class _OneClickPageState extends State<OneClickPage> {
             )
           ],
         ),
-        // child: FutureBuilder(
-        //   future: ReadJsonData(),
-        //   builder: (context, data) {
-        //     if ( data.hasError ) {
-        //       return Center(child: Text("${data.error}"),) ;
-        //     } else if ( data.hasData ) {
-        //       var items = data.data as List<Bank> ;
-        //       return ListView.builder(
-        //         itemCount: items == null ? 0 : items.length,
-        //         itemBuilder: (context, index) {
-        //           return Container(
-        //             child: Text(items[index].name),
-        //           );
-        //         }
-        //       );
-        //     }
-        //
-        //     return Container() ;
-        //   }
-        // ),
       ) : Container() ,
     );
   }
@@ -194,7 +204,9 @@ class _OneClickPageState extends State<OneClickPage> {
                     width: MediaQuery.of(context).size.width * 0.35,
                     child: Image.asset('assets/images/6045.png'),
                   ),
-                  onTap: () {},
+                  onTap: () {
+                    _launchCaller('1332');
+                  },
                 ),
 
                 InkWell(
@@ -202,7 +214,9 @@ class _OneClickPageState extends State<OneClickPage> {
                     width: MediaQuery.of(context).size.width * 0.35,
                     child: Image.asset('assets/images/6046.png'),
                   ),
-                  onTap: () {},
+                  onTap: () {
+                    _launchCaller('112');
+                  },
                 ),
               ],
             ),
