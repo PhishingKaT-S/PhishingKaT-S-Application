@@ -23,7 +23,9 @@ import 'launch/login_page.dart';
 import 'splash/test.dart';
 
 void main() {
+
   // KakaoSdk.init(nativeAppKey: '	2c174d14857608bc5b5be9a32c0b2a31');
+
   runApp(
     /**
      * Provider initialization
@@ -91,8 +93,8 @@ class MyApp extends StatelessWidget {
                 '/menu/menu_home':(BuildContext context) => const MenuHome(),
                 '/menu/service_center':(BuildContext context) => const ServiceCenter(),
                 '/menu/alarm': (BuildContext context) => const PhishingAlarmPage(),
-                '/menu/setting': (BuildContext context) => const SettingPage(),
                 '/menu/notice': (BuildContext context) => const NoticePage(),
+                '/menu/alarm/setting': (BuildContext context) => const SettingPage(),
               },
             );
           }

@@ -104,7 +104,23 @@ class _PhishingAlarmPageState extends State<PhishingAlarmPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: const AppBarBack(title: '피싱알림'),
+      appBar: AppBar(
+        leading: IconButton(
+        icon: Icon(Icons.arrow_back_ios_new, color: Colors.grey),
+        onPressed: () => Navigator.of(context).pop(),
+        ),
+        title: Text('피싱알림', style: TextStyle(fontWeight: FontWeight.bold, color: AppTheme.blueText),),
+        backgroundColor: AppTheme.blueBackground,
+        centerTitle: true,
+        actions: [
+          IconButton(
+            icon: Image.asset('assets/images/setting.png', width: 25,),
+            onPressed: () {
+              Navigator.pushNamed(context, '/menu/alarm/setting');
+            },
+          )
+        ],
+      ),
       body: SingleChildScrollView(
         /// dateList.length != 0
         child: (dateList.isNotEmpty) ? (
