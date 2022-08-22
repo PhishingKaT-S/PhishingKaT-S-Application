@@ -114,9 +114,16 @@ class _MenuHomeState extends State<MenuHome> {
                            */
                       Stack(
                         children: [
-                          Image.asset(
-                            'assets/images/alert.png',
-                            width: 20,
+                          InkWell(
+                            child: Container(
+                              child: Image.asset(
+                                'assets/images/alert.png',
+                                width: 20,
+                              )
+                            ),
+                            onTap: () {
+                              Navigator.pushNamed(context, '/menu/alarm');
+                            }
                           )
                         ],
                       )
@@ -332,9 +339,9 @@ class _MenuHomeState extends State<MenuHome> {
                       ),
                     )
                   : Container(),
-              menu_list_tile_nevigation('공지사항', Icons.push_pin_rounded, '/menu/service_center'),
+              menu_list_tile_nevigation('공지사항', Icons.push_pin_rounded, '/menu/notice'),
               menu_divider(),
-              menu_list_tile_nevigation('설정', Icons.settings_outlined, '/menu/service_center'),
+              menu_list_tile_nevigation('설정', Icons.settings_outlined, '/menu/setting'),
               menu_divider(),
               ListTile(
                 title: const Text(
