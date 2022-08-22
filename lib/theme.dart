@@ -491,4 +491,20 @@ class AppTheme {
       color: Color(0xFF9b9b9b),
       fontWeight: FontWeight.w600
   );
+
+  static const TextStyle service_center = TextStyle(
+      fontFamily: 'applegothicMedium',
+      fontSize: 15,
+      letterSpacing: 0.2,
+      color: Color(0xFF010101),
+      fontWeight: FontWeight.w500
+  );
+
+  static const TextStyle service_center_blue = TextStyle(
+      fontFamily: 'applegothicMedium',
+      fontSize: 12,
+      letterSpacing: 0.2,
+      color: Color(0xFF0b80f5),
+      fontWeight: FontWeight.w500
+  );
 }

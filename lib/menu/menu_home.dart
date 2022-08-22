@@ -7,6 +7,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:phishing_kat_pluss/theme.dart';
+import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 
 class MenuHome extends StatefulWidget {
   const MenuHome({Key? key}) : super(key: key);
@@ -19,7 +20,7 @@ class _MenuHomeState extends State<MenuHome> {
   bool sns_tap = false;
   bool app_tap = false;
 
-  ListTile menu_list_tile_nevigation(String tileTitle, IconData leadingIcon) {
+  ListTile menu_list_tile_nevigation(String tileTitle, IconData leadingIcon, String page) {
     return ListTile(
       title: Text(
         tileTitle,
@@ -29,7 +30,7 @@ class _MenuHomeState extends State<MenuHome> {
         leadingIcon,
         color: Colors.grey,
       ),
-      onLongPress: () {},
+      onTap: ()=>Navigator.pushNamed(context, page),
       dense: true,
     );
   }
@@ -43,12 +44,39 @@ class _MenuHomeState extends State<MenuHome> {
     );
   }
 
-  Column family_app(String image, String app_name){
+  Column family_app(String image, String app_name) {
     return Column(
       children: [
-        Image.asset(image),
-        Text(app_name, style: AppTheme.menu_news2,)
+        Image.asset(
+          image,
+          width: MediaQuery.of(context).size.width * 0.1,
+        ),
+        Text(
+          app_name,
+          style: AppTheme.menu_news2,
+        )
       ],
+    );
+  }
+
+  Container share_app(String image, String app_name) {
+    return Container(
+      width: MediaQuery.of(context).size.width * 0.20,
+      child: Column(
+        children: [
+          Image.asset(
+            image,
+            width: MediaQuery.of(context).size.width * 0.13,
+          ),
+          SizedBox(
+            height: MediaQuery.of(context).size.height * 0.01,
+          ),
+          Text(
+            app_name,
+            style: AppTheme.menu_news2,
+          )
+        ],
+      ),
     );
   }
 
@@ -197,18 +225,21 @@ class _MenuHomeState extends State<MenuHome> {
             padding: EdgeInsets.zero,
             children: [
               ListTile(
-                title: Text(
+                title: const Text(
                   "지인에게 추천하기",
                   style: AppTheme.menu_list,
                 ),
-                leading: Icon(
+                leading: const Icon(
                   Icons.thumb_up_off_alt_outlined,
                   color: Colors.grey,
                 ),
                 dense: true,
+                onTap: () {
+                  buildShowMaterialModalBottomSheet(context);
+                },
               ),
               menu_divider(),
-              menu_list_tile_nevigation('고객센터', Icons.support_agent_outlined),
+              menu_list_tile_nevigation('고객센터', Icons.support_agent_outlined, '/menu/service_center'),
               menu_divider(),
               ListTile(
                 title: Text(
@@ -277,32 +308,33 @@ class _MenuHomeState extends State<MenuHome> {
                     : const Icon(Icons.keyboard_arrow_up_outlined,
                         color: Colors.grey),
                 dense: true,
-                onTap: (){setState(() {
-                  app_tap = !app_tap;
-                });},
+                onTap: () {
+                  setState(() {
+                    app_tap = !app_tap;
+                  });
+                },
               ),
               menu_divider(),
-              app_tap?Container(
-                width: MediaQuery.of(context).size.width,
-                color: Color(0xFFf6f6f6),
-                padding: EdgeInsets.only(top: 15.0, bottom: 15.0, left: 70),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: [
-                    Column(
-                      children: [
-                        Image.asset('assets/images/instagram.png',)
-                      ],
+              app_tap
+                  ? Container(
+                      width: MediaQuery.of(context).size.width,
+                      color: Color(0xFFf6f6f6),
+                      padding: EdgeInsets.only(
+                          top: 15.0, bottom: 15.0, left: 70, right: 70),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          family_app('assets/images/line.png', '피싱캣'),
+                          family_app('assets/images/line.png', '모의훈련\n출시예정'),
+                          family_app('assets/images/line.png', '시티즌코난'),
+                        ],
+                      ),
                     )
-                    // family_app('assets/images/line.png', '피싱캣'),
-                    // family_app('assets/images/line.png', '모의훈련\n출시예정'),
-                    // family_app('assets/images/line.png', '시티즌코난'),
-                  ],
-                ),
-              ):Container(),
-              menu_list_tile_nevigation('공지사항', Icons.push_pin_rounded),
+                  : Container(),
+              menu_list_tile_nevigation('공지사항', Icons.push_pin_rounded, '/menu/service_center'),
               menu_divider(),
-              menu_list_tile_nevigation('설정', Icons.settings_outlined),
+              menu_list_tile_nevigation('설정', Icons.settings_outlined, '/menu/service_center'),
               menu_divider(),
               ListTile(
                 title: const Text(
@@ -325,5 +357,69 @@ class _MenuHomeState extends State<MenuHome> {
         )
       ],
     ));
+  }
+
+  Future<dynamic> buildShowMaterialModalBottomSheet(BuildContext context) {
+    return showMaterialModalBottomSheet(
+                  context: context,
+                  duration: const Duration(milliseconds: 400),
+                  builder: (context) => Container(
+                    height: MediaQuery.of(context).size.height * 0.45,
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        const Padding(
+                          padding: EdgeInsets.all(10.0),
+                          child: Text(
+                            "공유하기",
+                            style: TextStyle(
+                                fontFamily: 'dreamGothic5',
+                                fontSize: 18,
+                                fontWeight: FontWeight.w500),
+                          ),
+                        ),
+                        const Divider(
+                          thickness: 3,
+                          height: 0,
+                        ),
+                        SizedBox(
+                          height: MediaQuery.of(context).size.height * 0.02,
+                        ),
+                        Row(
+                          mainAxisSize: MainAxisSize.max,
+                          mainAxisAlignment: MainAxisAlignment.spaceAround,
+                          children: [
+                            share_app('assets/images/facebook.png', '페이스북'),
+                            share_app('assets/images/twitter.png', '트위터'),
+                            share_app('assets/images/instagram.png', '인스타그램'),
+                          ],
+                        ),
+                        SizedBox(
+                          height: MediaQuery.of(context).size.height * 0.02,
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceAround,
+                          children: [
+                            share_app('assets/images/kakaokalk.png', '카카오툭'),
+                            share_app('assets/images/line.png', '라인'),
+                            share_app('assets/images/band.png', '밴드'),
+                          ],
+                        ),
+                        SizedBox(
+                          height: MediaQuery.of(context).size.height * 0.02,
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceAround,
+                          children: [
+                            share_app('assets/images/email.png', '이메일'),
+                            share_app('assets/images/message.png', '메시지'),
+                            share_app('assets/images/copy_url.png', 'URL복사'),
+                          ],
+                        )
+                      ],
+                    ),
+                  ),
+                );
   }
 }

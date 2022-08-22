@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:kakao_flutter_sdk/kakao_flutter_sdk.dart';
 import 'package:phishing_kat_pluss/kat_pages/attendance_page.dart';
 import 'package:phishing_kat_pluss/kat_pages/detect_load_page.dart';
 import 'package:phishing_kat_pluss/kat_pages/home_page.dart';
@@ -8,6 +9,7 @@ import 'package:phishing_kat_pluss/kat_pages/score_page.dart';
 import 'package:phishing_kat_pluss/kat_pages/setting_page.dart';
 import 'package:phishing_kat_pluss/kat_pages/url_home.dart';
 import 'package:phishing_kat_pluss/menu/menu_home.dart';
+import 'package:phishing_kat_pluss/menu/service_center.dart';
 import 'package:phishing_kat_pluss/providers/testProvider.dart';
 import 'package:phishing_kat_pluss/splash/splash_screen.dart';
 import 'package:provider/provider.dart';
@@ -20,6 +22,7 @@ import 'launch/login_page.dart';
 import 'splash/test.dart';
 
 void main() {
+  KakaoSdk.init(nativeAppKey: '	2c174d14857608bc5b5be9a32c0b2a31');
   runApp(
     /**
      * Provider initialization
@@ -84,7 +87,8 @@ class MyApp extends StatelessWidget {
                 '/launch/login' : (BuildContext context) => const LoginPage(),
                 '/splash/test' : (BuildContext context) => const TestPage(),
                 '/kat_pages/url_home': (BuildContext context) => const InspectFeedback(),
-                '/menu/menu_home':(BuildContext context) => const MenuHome()
+                '/menu/menu_home':(BuildContext context) => const MenuHome(),
+                '/menu/service_center':(BuildContext context) => const ServiceCenter()
               },
             );
           }
