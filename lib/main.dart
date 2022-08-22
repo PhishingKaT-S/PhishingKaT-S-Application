@@ -3,6 +3,7 @@ import 'package:phishing_kat_pluss/kat_pages/attendance_page.dart';
 import 'package:phishing_kat_pluss/kat_pages/detect_load_page.dart';
 import 'package:phishing_kat_pluss/kat_pages/home_page.dart';
 import 'package:phishing_kat_pluss/kat_pages/notice_page.dart';
+import 'package:phishing_kat_pluss/kat_pages/one_click_bank_page.dart';
 import 'package:phishing_kat_pluss/kat_pages/phishing_notice_page.dart';
 import 'package:phishing_kat_pluss/kat_pages/score_page.dart';
 import 'package:phishing_kat_pluss/kat_pages/setting_page.dart';
