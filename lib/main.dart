@@ -23,7 +23,9 @@ import 'launch/login_page.dart';
 import 'splash/test.dart';
 
 void main() {
+
   // KakaoSdk.init(nativeAppKey: '	2c174d14857608bc5b5be9a32c0b2a31');
+
   runApp(
     /**
      * Provider initialization
