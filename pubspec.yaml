@@ -51,6 +51,7 @@ dependencies:
   kakao_flutter_sdk: ^1.2.1
   url_launcher: ^6.1.5
   mysql1: ^0.20.0
+  flutter_sms_inbox: ^1.0.1
   unique_identifier: ^0.2.2
 
 dev_dependencies:
@@ -80,6 +81,8 @@ flutter:
     - assets/logo/
     - assets/images/
     - assets/lotties/
+    - assets/json/
+    - assets/bank_logo/
 
   fonts:
     - family: applegothicRegular

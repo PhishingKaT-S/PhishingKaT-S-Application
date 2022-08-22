@@ -16,7 +16,7 @@ class AppBarBack extends StatelessWidget implements PreferredSizeWidget{
         icon: Icon(Icons.arrow_back_ios_new, color: Colors.grey),
         onPressed: () => Navigator.of(context).pop(),
       ),
-      title: Text(title, style: TextStyle(color: AppTheme.blueText),),
+      title: Text(title, style: TextStyle(fontWeight: FontWeight.bold, color: AppTheme.blueText),),
       backgroundColor: AppTheme.blueBackground,
       centerTitle: true,
     );
