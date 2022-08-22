@@ -7,6 +7,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:unique_identifier/unique_identifier.dart';
 import '../kat_widget/launch_appbar.dart';
 import 'celebration.dart';
 
@@ -22,19 +23,21 @@ import '../kat_widget/launch_bottombar.dart';
 * */
 
 class Users{
+  late String? IMEI="";
   late String nickname='';
   late int type;
   late bool gender;
   late String year;
   late String phone;
 
-  Users(String name, int type, bool gender, String year, String phone)
+  Users(String name, int type, bool gender, String year, String phone, String? IMEI)
   {
     nickname = name;
     this.type = type;
     this.gender = gender;
     this.year= year;
     this.phone = phone;
+    this.IMEI = IMEI;
   }
 }
 
@@ -69,6 +72,29 @@ class _detailed_infoState extends State<DetailInfo> {
   int type = 0;
   bool gender = false;
 
+  String? _identifier = 'Unknown'; // IMEI
+
+  @override
+  void initState() {
+    super.initState();
+    initUniqueIdentifierState();
+  }
+
+  Future<void> initUniqueIdentifierState() async {
+    String? identifier ;
+    try {
+      identifier = await UniqueIdentifier.serial;
+    } on PlatformException {
+      identifier = 'Failed to get Unique Identifier';
+    }
+
+    if (!mounted) return;
+    setState(() {
+      _identifier = identifier;
+    });
+  }
+
+
   yearPicker() { //year Picker? 함수
     final year = DateTime.now().year;
     showDialog(
@@ -97,9 +123,6 @@ class _detailed_infoState extends State<DetailInfo> {
       },
     );
   }
-
-  @override
-
 
   Widget _category_button() {
     return Container(
@@ -269,13 +292,15 @@ class _detailed_infoState extends State<DetailInfo> {
               );
   }
 
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
 
       //할일 onPress에 DB로 저장할 수 있게 해야됨
         bottomNavigationBar: bottomBar(title:'확인', onPress: (){
           if((yController.text != '') && (nicknameController.text!='')) {
-            users = Users(nicknameController.text, type, gender, yController.text,_phone); // String name, int type, bool gender, String year, String phone
+            print(_identifier); //IMEI
+            users = Users(nicknameController.text, type, gender, yController.text,_phone, _identifier); // String name, int type, bool gender, String year, String phone
               print(users.nickname + " " +   users.gender.toString() + " " + users.phone + " " + users.type.toString() + " " + users.year);
                 Navigator.pop(context);
                 Navigator.pop(context);
