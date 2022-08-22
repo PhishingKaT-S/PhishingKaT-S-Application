@@ -25,7 +25,7 @@ class _KatBottomBar extends State<KatBottomBar> {
       } else if ( _selectedIndex == 1 ) {
         Navigator.pushNamed(context, '/splash/test') ;
       } else if ( _selectedIndex == 2 ) {
-        Navigator.pushNamed(context, '/launch/login') ;
+        Navigator.pushNamed(context, '/menu/menu_home') ;
       }
     });
   }
