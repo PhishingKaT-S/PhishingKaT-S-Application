@@ -7,7 +7,9 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:mysql1/mysql1.dart';
 import 'package:unique_identifier/unique_identifier.dart';
+import '../db_conn.dart';
 import '../kat_widget/launch_appbar.dart';
 import 'celebration.dart';
 
@@ -292,16 +294,33 @@ class _detailed_infoState extends State<DetailInfo> {
               );
   }
 
+  //DB
+  Future main(Users user) async{
+    final conn = await MySqlConnection.connect(Database.getConnection());
+
+    var register = await conn.query(
+        'insert into users (phone_number, IMEI, nickname, year, gender, profession) select ?, ?, ?,?, ?, ? where not exists (select * from users where phone_number like (?))', [user.phone, user.IMEI, user.nickname, user.year, user.gender, user.type, user.phone]);
+
+    conn.close();
+
+    if(register.isNotEmpty){
+      print('회원 추가 완료');
+      return register.first[0];
+    }
+    else return 0;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
 
       //할일 onPress에 DB로 저장할 수 있게 해야됨
-        bottomNavigationBar: bottomBar(title:'확인', onPress: (){
+        bottomNavigationBar: bottomBar(title:'확인', onPress: () async {
           if((yController.text != '') && (nicknameController.text!='')) {
-            print(_identifier); //IMEI
             users = Users(nicknameController.text, type, gender, yController.text,_phone, _identifier); // String name, int type, bool gender, String year, String phone
               print(users.nickname + " " +   users.gender.toString() + " " + users.phone + " " + users.type.toString() + " " + users.year);
+                var ret = await main(users);
+                print(ret);
                 Navigator.pop(context);
                 Navigator.pop(context);
                 Navigator.push(context,
