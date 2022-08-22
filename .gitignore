@@ -1,4 +1,5 @@
 # Miscellaneous
+db_conn.dart
 *.class
 *.log
 *.pyc

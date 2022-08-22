@@ -3,10 +3,11 @@ import 'package:kakao_flutter_sdk/kakao_flutter_sdk.dart';
 import 'package:phishing_kat_pluss/kat_pages/attendance_page.dart';
 import 'package:phishing_kat_pluss/kat_pages/detect_load_page.dart';
 import 'package:phishing_kat_pluss/kat_pages/home_page.dart';
-import 'package:phishing_kat_pluss/kat_pages/notice_page.dart';
-import 'package:phishing_kat_pluss/kat_pages/phishing_notice_page.dart';
+import 'package:phishing_kat_pluss/menu/notice_page.dart';
+import 'package:phishing_kat_pluss/kat_pages/one_click_bank_page.dart';
+import 'package:phishing_kat_pluss/menu/phishing_alarm_page.dart';
 import 'package:phishing_kat_pluss/kat_pages/score_page.dart';
-import 'package:phishing_kat_pluss/kat_pages/setting_page.dart';
+import 'package:phishing_kat_pluss/menu/setting_page.dart';
 import 'package:phishing_kat_pluss/kat_pages/url_home.dart';
 import 'package:phishing_kat_pluss/menu/menu_home.dart';
 import 'package:phishing_kat_pluss/menu/service_center.dart';
@@ -22,7 +23,9 @@ import 'launch/login_page.dart';
 import 'splash/test.dart';
 
 void main() {
-  KakaoSdk.init(nativeAppKey: '	2c174d14857608bc5b5be9a32c0b2a31');
+
+  // KakaoSdk.init(nativeAppKey: '	2c174d14857608bc5b5be9a32c0b2a31');
+
   runApp(
     /**
      * Provider initialization
@@ -88,7 +91,10 @@ class MyApp extends StatelessWidget {
                 '/splash/test' : (BuildContext context) => const TestPage(),
                 '/kat_pages/url_home': (BuildContext context) => const InspectFeedback(),
                 '/menu/menu_home':(BuildContext context) => const MenuHome(),
-                '/menu/service_center':(BuildContext context) => const ServiceCenter()
+                '/menu/service_center':(BuildContext context) => const ServiceCenter(),
+                '/menu/alarm': (BuildContext context) => const PhishingAlarmPage(),
+                '/menu/notice': (BuildContext context) => const NoticePage(),
+                '/menu/alarm/setting': (BuildContext context) => const SettingPage(),
               },
             );
           }

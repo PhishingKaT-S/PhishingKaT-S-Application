@@ -50,7 +50,9 @@ dependencies:
   modal_bottom_sheet: ^2.0.1
   kakao_flutter_sdk: ^1.2.1
   url_launcher: ^6.1.5
+  mysql1: ^0.20.0
   flutter_sms_inbox: ^1.0.1
+  unique_identifier: ^0.2.2
 
 dev_dependencies:
   flutter_test:
@@ -79,6 +81,7 @@ flutter:
     - assets/logo/
     - assets/images/
     - assets/lotties/
+    - assets/json/
 
   fonts:
     - family: applegothicRegular

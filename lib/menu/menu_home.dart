@@ -19,6 +19,7 @@ class MenuHome extends StatefulWidget {
 class _MenuHomeState extends State<MenuHome> {
   bool sns_tap = false;
   bool app_tap = false;
+  bool setting_tap = false;
 
   ListTile menu_list_tile_nevigation(String tileTitle, IconData leadingIcon, String page) {
     return ListTile(
@@ -114,9 +115,16 @@ class _MenuHomeState extends State<MenuHome> {
                            */
                       Stack(
                         children: [
-                          Image.asset(
-                            'assets/images/alert.png',
-                            width: 20,
+                          InkWell(
+                            child: Container(
+                              child: Image.asset(
+                                'assets/images/alert.png',
+                                width: 20,
+                              )
+                            ),
+                            onTap: () {
+                              Navigator.pushNamed(context, '/menu/alarm');
+                            }
                           )
                         ],
                       )
@@ -332,9 +340,31 @@ class _MenuHomeState extends State<MenuHome> {
                       ),
                     )
                   : Container(),
-              menu_list_tile_nevigation('공지사항', Icons.push_pin_rounded, '/menu/service_center'),
+              menu_list_tile_nevigation('공지사항', Icons.push_pin_rounded, '/menu/notice'),
               menu_divider(),
-              menu_list_tile_nevigation('설정', Icons.settings_outlined, '/menu/service_center'),
+              // menu_list_tile_nevigation('설정', Icons.settings_outlined, '/menu/setting'),
+              ListTile(
+                title: const Text(
+                  '설정',
+                  style: AppTheme.menu_list,
+                ),
+                leading: const Icon(
+                  Icons.settings_outlined,
+                  color: Colors.grey,
+                ),
+                trailing: setting_tap
+                    ? const Icon(
+                  Icons.keyboard_arrow_down_outlined,
+                  color: Colors.grey,
+                    )
+                    : const Icon(Icons.keyboard_arrow_up_outlined,
+                    color: Colors.grey),
+
+                onTap: () {
+                  setting_tap = !setting_tap ;
+                },
+                dense: true,
+              ),
               menu_divider(),
               ListTile(
                 title: const Text(

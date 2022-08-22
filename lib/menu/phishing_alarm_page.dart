@@ -12,14 +12,14 @@ import 'package:flutter/material.dart';
 import '../Theme.dart';
 import '../kat_widget/kat_appbar_back.dart';
 
-class phishingNoticePage extends StatefulWidget {
-  const phishingNoticePage({Key? key}) : super(key: key);
+class PhishingAlarmPage extends StatefulWidget {
+  const PhishingAlarmPage({Key? key}) : super(key: key);
 
   @override
-  _phishingNoticePageState createState() => _phishingNoticePageState();
+  _PhishingAlarmPageState createState() => _PhishingAlarmPageState();
 }
 
-class _phishingNoticePageState extends State<phishingNoticePage> {
+class _PhishingAlarmPageState extends State<PhishingAlarmPage> {
 
   List<String> dateList = ['03월 03일', '03월 03일', '03월 03일'] ;
   List<String> contents = ['보이스피싱이었다면 말할 것도 없고...', '보이스피싱이었다면 말할 것도 없고...', '보이스피싱이었다면 말할 것도 없고...'] ;
@@ -104,7 +104,23 @@ class _phishingNoticePageState extends State<phishingNoticePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: const AppBarBack(title: '피싱알림'),
+      appBar: AppBar(
+        leading: IconButton(
+        icon: Icon(Icons.arrow_back_ios_new, color: Colors.grey),
+        onPressed: () => Navigator.of(context).pop(),
+        ),
+        title: Text('피싱알림', style: TextStyle(fontWeight: FontWeight.bold, color: AppTheme.blueText),),
+        backgroundColor: AppTheme.blueBackground,
+        centerTitle: true,
+        actions: [
+          IconButton(
+            icon: Image.asset('assets/images/setting.png', width: 25,),
+            onPressed: () {
+              Navigator.pushNamed(context, '/menu/alarm/setting');
+            },
+          )
+        ],
+      ),
       body: SingleChildScrollView(
         /// dateList.length != 0
         child: (dateList.isNotEmpty) ? (

@@ -442,7 +442,7 @@ class AppTheme {
   );
 
   static const TextStyle certicationResend = TextStyle(
-      // Caption -> caption
+    // Caption -> caption
       fontFamily: 'applegothicRegular',
       fontSize: 14,
       letterSpacing: 0.2,
@@ -451,7 +451,7 @@ class AppTheme {
       decoration: TextDecoration.underline);
 
   static const TextStyle unselecttoggleGender = TextStyle(
-      // 0.5 생년성별 텍스트
+    // 0.5 생년성별 텍스트
       fontFamily: 'applegothicRegular',
       fontSize: 14,
       letterSpacing: 0.2,
@@ -460,7 +460,7 @@ class AppTheme {
       fontWeight: FontWeight.bold);
 
   static const TextStyle selecttoggleGender = TextStyle(
-      // 0.5 생년성별 텍스트
+    // 0.5 생년성별 텍스트
       fontFamily: 'applegothicRegular',
       fontSize: 14,
       letterSpacing: 0.2,
