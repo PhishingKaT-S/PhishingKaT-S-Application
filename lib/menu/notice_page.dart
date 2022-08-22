@@ -28,7 +28,9 @@ class _NoticePageState extends State<NoticePage> {
       trailing: notice_tap
         ? Icon(Icons.keyboard_arrow_down_outlined)
         : Icon(Icons.keyboard_arrow_up_outlined),
-
+      onExpansionChanged: (val) {
+        notice_tap = !notice_tap ;
+      },
       title: Text(title[index]),
       subtitle: Text(written_date[index]),
       children: <Widget>[
