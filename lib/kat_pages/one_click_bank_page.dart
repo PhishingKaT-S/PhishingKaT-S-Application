@@ -99,13 +99,10 @@ class OneClickBank extends StatelessWidget {
   }
 
   Widget _logo(BuildContext context) {
-    return Flexible(
-        fit: FlexFit.loose,
-        child: Container (
-            padding: EdgeInsets.only(top: 20),
-            width: MediaQuery.of(context).size.width,
-            child: Image.asset('assets/images/launch_end.png', width: MediaQuery.of(context).size.width, fit: BoxFit.fitWidth)
-        )
+    return Container (
+      padding: EdgeInsets.only(top: 20),
+      width: MediaQuery.of(context).size.width,
+      child: Image.asset('assets/images/launch_end.png', width: MediaQuery.of(context).size.width, fit: BoxFit.fitWidth)
     );
   }
 
@@ -114,17 +111,19 @@ class OneClickBank extends StatelessWidget {
     return Scaffold(
 
       appBar: const AppBarBack(title: '원클릭 신고'),
-      body: Container(
-        width: MediaQuery.of(context).size.width,
-        padding: EdgeInsets.only(top: MediaQuery.of(context).size.height * 0.06),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: [
-            _one_click_call(context),
-            _phone_numbers(context),
-            _logo(context),
-          ],
-        )
+      body: SingleChildScrollView(
+        child: Container(
+            width: MediaQuery.of(context).size.width,
+            padding: EdgeInsets.only(top: MediaQuery.of(context).size.height * 0.06),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                _one_click_call(context),
+                _phone_numbers(context),
+                _logo(context),
+              ],
+            )
+        ),
       ),
     );
   }

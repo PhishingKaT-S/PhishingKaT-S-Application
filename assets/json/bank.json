@@ -29,11 +29,11 @@
       "image": "woori_bank.png"
     },
     {
-      "name": "스탠다드차타드은행",
+      "name": "SC제일은행",
       "ph": [
         "1588-1599 > 1"
       ],
-      "image": ""
+      "image": "SC_first_bank.png"
     },
     {
       "name": "하나은행",
@@ -95,7 +95,7 @@
         "1588-3388",
         "1600-4000"
       ],
-      "image": ""
+      "image": "gwangju_bank.png"
     },
     {
       "name": "제주은행",
@@ -124,7 +124,7 @@
       "ph": [
         "1522-1000 > 8 > 1"
       ],
-      "image": ""
+      "image": "k_bank.png"
     },
     {
       "name": "카카오뱅크",

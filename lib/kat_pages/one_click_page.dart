@@ -15,6 +15,8 @@ import 'dart:convert';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' ;
+import 'package:phishing_kat_pluss/kat_pages/one_click_bank_questions_page.dart';
+import 'package:phishing_kat_pluss/kat_pages/prepaid_phone_page.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../kat_widget/kat_appbar_back.dart';
@@ -100,16 +102,29 @@ class _OneClickPageState extends State<OneClickPage> {
           Container(
             width: MediaQuery.of(context).size.width * 0.57,
             child: TextField(
+              textInputAction: TextInputAction.search,
               controller: search_controller,
               decoration: const InputDecoration(
                 hintText: '은행명 입력',
                 border: InputBorder.none,
               ),
-              onChanged: (text) {
+              onSubmitted: (text) {
+                bool isSearched = false;
                 for (var bank in _banks) {
-                  if (bank.name.contains(text)) {
-                    _selected_bank_name = bank ;
+                  if ( bank.name.contains(text)) {
+                    isSearched = true;
+                    Navigator.push(context, MaterialPageRoute(
+                                  builder: (context) => OneClickBank(bank_name: bank.name,
+                                    phone_list: bank.phones,
+                                    image: bank.image,)));
                   }
+                }
+
+                /// 입력한 은행을 찾지 못하였을 경우
+                if ( !isSearched ) {
+                  Navigator.push(context, MaterialPageRoute(
+                      builder: (context) => const BankQuestionsCenter()
+                  ));
                 }
               },
             ),
@@ -181,8 +196,8 @@ class _OneClickPageState extends State<OneClickPage> {
           const Text('해당 은행 고객센터로 연결됩니다.', style: AppTheme.caption),
           Padding(padding: EdgeInsets.only(top: 20),),
           _search_widget(),
-          Padding(padding: EdgeInsets.only(top: 10),),
-          _search_list(),
+          Padding(padding: EdgeInsets.only(top: 40),),
+          // _search_list(),
         ],
       ),
     );
@@ -231,7 +246,7 @@ class _OneClickPageState extends State<OneClickPage> {
     const double LABEL_HEIGHT = 40;
     List<String> imgList = ['deposit_loan_credit_card_lookup', 'general_certificate_revocation',
                             'check_my_phone_number', 'check_the_authenticity_of_official_documents'];
-    const List<String> urlList = ['https://www.payinfo.or.kr/payinfo.html', 'https://login.kt.com/wamui/NewKTFindIdPhoneCertifiedFront.do', '', 'https://www.gov.kr/mw/EgovPageLink.do?link=confirm/AA040_confirm_id'] ;
+    const List<String> urlList = ['https://www.payinfo.or.kr/extl/qryExtlFxamtIns.do?menu=1', 'https://login.kt.com/wamui/NewKTFindIdPhoneCertifiedFront.do', '', 'https://www.gov.kr/mw/EgovPageLink.do?link=confirm/AA040_confirm_id'] ;
     const List<String> titleList = ['예금/대출/신용카드 조회', '내 명의 핸드폰 찾기', '', '공문서 진위 확인'] ;
 
     return Container(
@@ -270,7 +285,7 @@ class _OneClickPageState extends State<OneClickPage> {
               if (index != 2) {
                 Navigator.push(context, MaterialPageRoute(builder: (context) => KaTWebView(title: titleList[index], url: urlList[index],))) ;
               } else {
-                // Navigator.push(context, MaterialPageRoute(builder: (context) => const )) ;
+                Navigator.push(context, MaterialPageRoute(builder: (context) => const PrepaidPhonePage())) ;
               }
             },
           );

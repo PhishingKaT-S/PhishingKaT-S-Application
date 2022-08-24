@@ -2,15 +2,28 @@
  * update: 2022-08-16
  * AttendancePage
  * 최종 작성자: 김진일
+ *
+ * 해야할 일:
+ *  1. user_id (객체에서 꼽아주기)
  */
+
+
+import 'dart:collection';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:mysql1/mysql1.dart';
+import 'package:phishing_kat_pluss/db_conn.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
 import 'package:table_calendar/table_calendar.dart';
 
 import '../kat_widget/kat_appbar_back.dart';
 import '../theme.dart';
+
+class Event {
+  final DateTime date ;
+  Event({required this.date});
+}
 
 class AttendancePage extends StatefulWidget {
   const AttendancePage({Key? key}) : super(key: key);
@@ -21,25 +34,38 @@ class AttendancePage extends StatefulWidget {
 
 class _AttendancePage extends State<AttendancePage> {
   var _now = DateTime.now() ;
+  var user_id = 2 ;
 
-  var alertStyle = AlertStyle(
-    animationType: AnimationType.fromTop,
-    isCloseButton: false,
-    isOverlayTapDismiss: false,
-    descStyle: TextStyle(fontWeight: FontWeight.bold),
-    descTextAlign: TextAlign.start,
-    animationDuration: Duration(milliseconds: 400),
-    alertBorder: RoundedRectangleBorder(
-      borderRadius: BorderRadius.circular(0.0),
-      side: BorderSide(
-        color: Colors.grey,
-      ),
-    ),
-    titleStyle: TextStyle(
-      color: Colors.red,
-    ),
-    alertAlignment: Alignment.topCenter,
-  );
+  final _events = LinkedHashMap(
+    equals: isSameDay,
+  ) ;
+
+  Future _getDateInfo() async {
+    DateTime _date ;
+    Map<DateTime, dynamic> dates = {} ;
+    await MySqlConnection.connect(Database.getConnection())
+        .then((conn) async => {
+          await conn.query("SELECT * FROM attendance WHERE user_id = ?", [user_id])
+          .then((results) => {
+            if ( results.isNotEmpty ) {
+              for (var res in results )  {
+                _date = res['attendance'] as DateTime,
+                dates[_date] = _date,
+              },
+              _events.addAll(dates),
+            } else {
+
+            },
+          }).onError((error, stackTrace) => {
+
+          }),
+          conn.close(),
+        }).onError((error, stackTrace) => {
+
+        });
+    print(_events) ;
+    return _events ;
+  }
 
   Widget _oneday_onecheck_notice() {
     const double NOTICE_HEIGHT = 60.0;
@@ -97,10 +123,10 @@ class _AttendancePage extends State<AttendancePage> {
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.end,
               mainAxisAlignment: MainAxisAlignment.end,
-              children: const [
-                Text('이번달 출석일수 '),
-                Text('1', style: TextStyle(color: AppTheme.blueText)),
-                Text('일'),
+              children: [
+                const Text('이번달 출석일수 '),
+                Text(_events.length.toString(), style: TextStyle(color: AppTheme.blueText)),
+                const Text('일'),
               ],
             )
           ),
@@ -124,60 +150,74 @@ class _AttendancePage extends State<AttendancePage> {
       height: MediaQuery.of(context).size.height * 0.45,
       color: AppTheme.blueBackground,
       padding: EdgeInsets.symmetric(vertical: 10),
-      child: TableCalendar(
-        firstDay: DateTime(_now.year, _now.month, 1),
-        lastDay: DateTime(_now.year, _now.month + 1, 0),
-        focusedDay: _now,
-        calendarFormat: _calendarFormat,
-        daysOfWeekHeight: 30,
-        headerVisible: false,
-        calendarBuilders: CalendarBuilders(
-          dowBuilder: (context, day) {
-            return Center(child: Text(days[day.weekday])) ;
-          },
+      child: FutureBuilder(
+        future: _getDateInfo(),
+        builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
+          print(snapshot) ;
+          if ( snapshot.hasError ) {
+            return Text('${snapshot.error}') ;
+          } else if ( snapshot.hasData ) {
+            return TableCalendar(
+              firstDay: DateTime(_now.year, _now.month, 1),
+              lastDay: DateTime(_now.year, _now.month + 1, 0),
+              focusedDay: _now,
+              calendarFormat: _calendarFormat,
+              daysOfWeekHeight: 30,
+              headerVisible: false,
+              calendarStyle: const CalendarStyle(
+                  selectedDecoration: BoxDecoration(
+                    color: Colors.blue,
+                    shape: BoxShape.circle,
+                  )
+              ),
+              selectedDayPredicate: (day) {
+                // Use `selectedDayPredicate` to determine which day is currently selected.
+                // If this returns true, then `day` will be marked as selected.
 
-          todayBuilder: (context, date, _) {
-            return InkWell(
-              onTap: () {
-                /// ALERT
+                // Using `isSameDay` is recommended to disregard
+                // the time-part of compared DateTime objects.
+                return isSameDay(_selectedDay, day);
               },
-              child: Container(
-                  width: MediaQuery.of(context).size.width * 0.11,
-                  padding: const EdgeInsets.only(bottom: 5),
-                  child: Image.asset('assets/images/attendance.png',)),
+              onDaySelected: (selectedDay, focusedDay) {
+                if (!isSameDay(_selectedDay, selectedDay)) {
+                  // Call `setState()` when updating the selected day
+                  setState(() {
+                    _selectedDay = selectedDay;
+                    _now = focusedDay;
+                  });
+                }
+              },
+              onFormatChanged: (format) {
+                if (_calendarFormat != format) {
+                  // Call `setState()` when updating calendar format
+                  setState(() {
+                    _calendarFormat = format;
+                  });
+                }
+              },
+              onPageChanged: (focusedDay) {
+                // No need to call `setState()` here
+                _now = focusedDay;
+              },
+              calendarBuilders: CalendarBuilders(
+                dowBuilder: (context, day) {
+                  return Center(child: Text(days[day.weekday])) ;
+                },
+                markerBuilder: (context, date, events) {
+                  if ( isSameDay(date, _events[date] )) {
+                    return Container(
+                        width: MediaQuery.of(context).size.width * 0.11,
+                        padding: const EdgeInsets.only(bottom: 5),
+                        child: Image.asset('assets/images/attendance.png',));
+                  }
+                },
+              ),
             );
-          },
-        ),
-        selectedDayPredicate: (day) {
-          // Use `selectedDayPredicate` to determine which day is currently selected.
-          // If this returns true, then `day` will be marked as selected.
-
-          // Using `isSameDay` is recommended to disregard
-          // the time-part of compared DateTime objects.
-          return isSameDay(_selectedDay, day);
-        },
-        onDaySelected: (selectedDay, focusedDay) {
-          if (!isSameDay(_selectedDay, selectedDay)) {
-            // Call `setState()` when updating the selected day
-            setState(() {
-              _selectedDay = selectedDay;
-              _now = focusedDay;
-            });
+          } else {
+            return const Text('캘린더를 불러 올 수 없습니다.') ;
           }
         },
-        onFormatChanged: (format) {
-          if (_calendarFormat != format) {
-            // Call `setState()` when updating calendar format
-            setState(() {
-              _calendarFormat = format;
-            });
-          }
-        },
-        onPageChanged: (focusedDay) {
-          // No need to call `setState()` here
-          _now = focusedDay;
-        },
-      ),
+      )
     );
   }
 
