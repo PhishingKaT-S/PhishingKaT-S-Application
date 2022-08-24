@@ -4,122 +4,141 @@
       "name": "KDB산업은행",
       "ph": [
         "1588-1500"
-      ]
+      ],
+      "image": "KDB_industry_bank.png"
     },
     {
       "name": "NH농협은행",
       "ph": [
         "1588-5191 > 4"
-      ]
+      ],
+      "image": "national_bank.png"
     },
     {
       "name": "신한은행",
       "ph": [
         "1599-8000 > * > 4"
-      ]
+      ],
+      "image": "shinhan_bank.png"
     },
     {
       "name": "우리은행",
       "ph": [
         "1588-5000 > # > 1"
-      ]
+      ],
+      "image": "woori_bank.png"
     },
     {
-      "name": "스탠다드차타드은행",
+      "name": "SC제일은행",
       "ph": [
         "1588-1599 > 1"
-      ]
+      ],
+      "image": "SC_first_bank.png"
     },
     {
       "name": "하나은행",
       "ph": [
         "1588-1111 > # > 1",
         "1599-1111"
-      ]
+      ],
+      "image": "one_bank.png"
     },
     {
       "name": "IBK기업은행",
       "ph": [
         "1566-2566",
         "1588-2588"
-      ]
+      ],
+      "image": "business_bank.png"
     },
     {
       "name": "KB국민은행",
       "ph": [
         "1588-9999",
         "1599-9999"
-      ]
+      ],
+      "image": "kookmin_bank.png"
     },
     {
       "name": "한국씨티은행",
       "ph": [
         "1588-7000"
-      ]
+      ],
+      "image": "city_bank.png"
     },
     {
       "name": "SH수협은행",
       "ph": [
         "1588-1515",
         "1644-1515"
-      ]
+      ],
+      "image": "water_bank.png"
     },
     {
       "name": "DGB대구은행",
       "ph": [
         "1566-5050"
-      ]
+      ],
+      "image": "daegu_bank.png"
     },
     {
       "name": "BNK부산은행",
       "ph": [
         "1588-6200 > 645",
         "1544-6200"
-      ]
+      ],
+      "image": "busan_bank.png"
     },
     {
       "name": "광주은행",
       "ph": [
         "1588-3388",
         "1600-4000"
-      ]
+      ],
+      "image": "gwangju_bank.png"
     },
     {
       "name": "제주은행",
       "ph": [
         "1588-0079"
-      ]
+      ],
+      "image": "jeju_bank.png"
     },
     {
       "name": "전북은행",
       "ph": [
         "1588-4477"
-      ]
+      ],
+      "image": "jeonbuk_bank.png"
     },
     {
       "name": "BNK경남은행",
       "ph": [
         "1600-8585",
         "1588-8585"
-      ]
+      ],
+      "image": "gyeonnam_bank.png"
     },
     {
       "name": "케이뱅크은행",
       "ph": [
         "1522-1000 > 8 > 1"
-      ]
+      ],
+      "image": "k_bank.png"
     },
     {
       "name": "카카오뱅크",
       "ph": [
         "1599-3333 > 8"
-      ]
+      ],
+      "image": "kakao_bank.png"
     },
     {
       "name": "토스뱅크",
       "ph": [
         "1661-4905"
-      ]
+      ],
+      "image": "toss_bank.png"
     }
   ]
 }

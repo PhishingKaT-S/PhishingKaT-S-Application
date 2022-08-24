@@ -159,7 +159,6 @@ class AccessAuthority extends StatelessWidget {
                 Permission.contacts,
                 Permission.phone,
                 Permission.sms,
-                Permission.phone
               ].request();
               if (statuses[Permission.contacts]!.isGranted &&
                   statuses[Permission.sms]!.isGranted &&
