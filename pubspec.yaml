@@ -53,6 +53,9 @@ dependencies:
   mysql1: ^0.20.0
   flutter_sms_inbox: ^1.0.1
   unique_identifier: ^0.2.2
+  device_information: ^0.0.4
+  contacts_service: ^0.6.3
+  mobile_number: ^1.0.4
 
 dev_dependencies:
   flutter_test:
