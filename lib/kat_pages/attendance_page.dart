@@ -5,6 +5,7 @@
  *
  * 해야할 일:
  *  1. user_id (객체에서 꼽아주기)
+ *  2. 네트워크 에러 페이지로 넘기기 (연동)
  */
 
 
@@ -30,6 +31,10 @@ class AttendancePage extends StatefulWidget {
 
   @override
   State<StatefulWidget> createState() => new _AttendancePage() ;
+}
+
+bool _test() {
+  return false;
 }
 
 class _AttendancePage extends State<AttendancePage> {
@@ -61,7 +66,7 @@ class _AttendancePage extends State<AttendancePage> {
           }),
           conn.close(),
         }).onError((error, stackTrace) => {
-
+          /// 네트워크 에러 처리
         });
     print(_events) ;
     return _events ;
