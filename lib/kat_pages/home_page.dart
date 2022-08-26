@@ -7,60 +7,59 @@ import 'package:line_chart/charts/line-chart.widget.dart';
 import 'package:line_chart/model/line-chart.model.dart';
 import 'package:phishing_kat_pluss/kat_widget/kat_appbar.dart';
 import 'package:phishing_kat_pluss/kat_widget/kat_bottombar.dart';
+import 'package:phishing_kat_pluss/providers/launch_provider.dart';
 import 'package:phishing_kat_pluss/theme.dart';
+import 'package:provider/provider.dart';
 import '../kat_widget/kat_drawer.dart';
 import 'package:flutter_circular_chart_two/flutter_circular_chart_two.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
 class HomePage extends StatefulWidget {
-  const HomePage({Key? key}) : super(key: key);
+  const HomePage({Key? key, signUp}) : super(key: key);
 
   @override
-  State<StatefulWidget> createState() => new _HomePage() ;
+  State<StatefulWidget> createState() => new _HomePage();
 }
 
 class _HomePage extends State<HomePage> {
-  final GlobalKey<AnimatedCircularChartState> _chartKey = new GlobalKey<AnimatedCircularChartState>();
-  double dividingLine = 250 ;
+  final GlobalKey<AnimatedCircularChartState> _chartKey =
+      new GlobalKey<AnimatedCircularChartState>();
+  double dividingLine = 250;
+
   double SCORE_WIDTH_RANGE = 110;
   bool smish_detect_flag = true; // provider ?
 
   Widget _get_circular_chart(double score) {
-
     return AnimatedCircularChart(
       key: _chartKey,
       size: Size(SCORE_WIDTH_RANGE + 30, SCORE_WIDTH_RANGE + 30),
       initialChartData: <CircularStackEntry>[
         CircularStackEntry(
-          (smish_detect_flag) ? (
-              <CircularSegmentEntry> [
-                CircularSegmentEntry(
-                  score,
-                  AppTheme.blueText,
-                  rankKey: 'completed',
-                ),
-                CircularSegmentEntry(
-                  100 - score,
-                  Colors.blueGrey[600],
-                  rankKey: 'remaining',
-                ),
-              ]
-          )
-              :
-          (
-              <CircularSegmentEntry> [
-                const CircularSegmentEntry(
-                  0,
-                  AppTheme.blueText,
-                  rankKey: 'completed',
-                ),
-                const CircularSegmentEntry(
-                  100,
-                  AppTheme.pinkBackground,
-                  rankKey: 'remaining',
-                ),
-              ]
-          ),
+          (smish_detect_flag)
+              ? (<CircularSegmentEntry>[
+                  CircularSegmentEntry(
+                    score,
+                    AppTheme.blueText,
+                    rankKey: 'completed',
+                  ),
+                  CircularSegmentEntry(
+                    100 - score,
+                    Colors.blueGrey[600],
+                    rankKey: 'remaining',
+                  ),
+                ])
+              : (<CircularSegmentEntry>[
+                  const CircularSegmentEntry(
+                    0,
+                    AppTheme.blueText,
+                    rankKey: 'completed',
+                  ),
+                  const CircularSegmentEntry(
+                    100,
+                    AppTheme.pinkBackground,
+                    rankKey: 'remaining',
+                  ),
+                ]),
           rankKey: 'progress',
         ),
       ],
@@ -71,7 +70,7 @@ class _HomePage extends State<HomePage> {
   }
 
   Widget _main_score_view() {
-    double score = 69 ;
+    double score = 69;
 
     /**
      * _mainScoreView
@@ -88,7 +87,8 @@ class _HomePage extends State<HomePage> {
           children: <Widget>[
             Container(
                 width: MediaQuery.of(context).size.width,
-                padding: EdgeInsets.only(left: MediaQuery.of(context).size.width * 0.1,
+                padding: EdgeInsets.only(
+                    left: MediaQuery.of(context).size.width * 0.1,
                     right: MediaQuery.of(context).size.width * 0.1),
                 height: dividingLine,
                 color: AppTheme.blueBackground,
@@ -96,14 +96,37 @@ class _HomePage extends State<HomePage> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Container(
-                      width: MediaQuery.of(context).size.width * 0.3,
-                      child: (!smish_detect_flag) ? Image.asset('assets/logo/score_default.png', width: MediaQuery.of(context).size.width * 0.2, fit: BoxFit.contain)
-                          : (score >= 80) ? Image.asset('assets/logo/score_80_100.png', width: MediaQuery.of(context).size.width * 0.2, fit: BoxFit.contain) :
-                            (score >= 70) ? Image.asset('assets/logo/score_70_80.png', width: MediaQuery.of(context).size.width * 0.2, fit: BoxFit.contain) :
-                            (score >= 60) ? Image.asset('assets/logo/score_60_69.png', width: MediaQuery.of(context).size.width * 0.2, fit: BoxFit.contain) :
-                                            Image.asset('assets/logo/score_0_59.png', width: MediaQuery.of(context).size.width * 0.2, fit: BoxFit.contain)
-                    ),
-
+                        width: MediaQuery.of(context).size.width * 0.3,
+                        child: (!smish_detect_flag)
+                            ? Image.asset('assets/logo/score_default.png',
+                                width: MediaQuery.of(context).size.width * 0.2,
+                                fit: BoxFit.contain)
+                            : (score >= 80)
+                                ? Image.asset('assets/logo/score_80_100.png',
+                                    width:
+                                        MediaQuery.of(context).size.width * 0.2,
+                                    fit: BoxFit.contain)
+                                : (score >= 70)
+                                    ? Image.asset('assets/logo/score_70_80.png',
+                                        width:
+                                            MediaQuery.of(context).size.width *
+                                                0.2,
+                                        fit: BoxFit.contain)
+                                    : (score >= 60)
+                                        ? Image.asset(
+                                            'assets/logo/score_60_69.png',
+                                            width: MediaQuery.of(context)
+                                                    .size
+                                                    .width *
+                                                0.2,
+                                            fit: BoxFit.contain)
+                                        : Image.asset(
+                                            'assets/logo/score_0_59.png',
+                                            width: MediaQuery.of(context)
+                                                    .size
+                                                    .width *
+                                                0.2,
+                                            fit: BoxFit.contain)),
                     Container(
                       width: MediaQuery.of(context).size.width * 0.4,
                       margin: const EdgeInsets.only(top: 20),
@@ -111,89 +134,105 @@ class _HomePage extends State<HomePage> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Center(
-                            child: InkWell(
-                              onTap: () {
-                                (smish_detect_flag) ? Navigator.pushNamed(context, '/kat_pages/score') : Navigator.pushNamed(context, '/kat_pages/detect_load') ;
-                              },
-                              child: Container(
-                                margin: const EdgeInsets.all(2),
-                                width: SCORE_WIDTH_RANGE,
-                                height: SCORE_WIDTH_RANGE,
-                                decoration: const BoxDecoration(
-                                  shape: BoxShape.circle,
-                                  color: AppTheme.whiteGrey,
-                                ),
-                                child: Stack(
-                                  children: [
-                                    Center(
-                                        child: Container(
-                                            padding: const EdgeInsets.only(top: 5),
-                                            child: Row(
-                                              crossAxisAlignment: CrossAxisAlignment.center,
-                                              mainAxisAlignment: MainAxisAlignment.center,
-                                              children: (smish_detect_flag) ?
-                                                [
-                                                  Text(score.toInt().toString(), style: AppTheme.display1_blue, textAlign: TextAlign.center),
-                                                  const Text('점', style: AppTheme.subtitle, textAlign: TextAlign.center)
-                                                ]
-                                                  :
-                                                [
-                                                  Text('분석 시작', style: AppTheme.score_start_pink, textAlign: TextAlign.center),
-                                                ],
-                                            )
-                                        )
-                                    ),
-                                    _get_circular_chart(score),
-                                  ],
-                                ),
+                              child: InkWell(
+                            onTap: () {
+                              (smish_detect_flag)
+                                  ? Navigator.pushNamed(
+                                      context, '/kat_pages/score')
+                                  : Navigator.pushNamed(
+                                      context, '/kat_pages/detect_load');
+                            },
+                            child: Container(
+                              margin: const EdgeInsets.all(2),
+                              width: SCORE_WIDTH_RANGE,
+                              height: SCORE_WIDTH_RANGE,
+                              decoration: const BoxDecoration(
+                                shape: BoxShape.circle,
+                                color: AppTheme.whiteGrey,
                               ),
-                            )
-                          ),
-
+                              child: Stack(
+                                children: [
+                                  Center(
+                                      child: Container(
+                                          padding:
+                                              const EdgeInsets.only(top: 5),
+                                          child: Row(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.center,
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.center,
+                                            children: (smish_detect_flag)
+                                                ? [
+                                                    Text(
+                                                        score
+                                                            .toInt()
+                                                            .toString(),
+                                                        style: AppTheme
+                                                            .display1_blue,
+                                                        textAlign:
+                                                            TextAlign.center),
+                                                    const Text('점',
+                                                        style:
+                                                            AppTheme.subtitle,
+                                                        textAlign:
+                                                            TextAlign.center)
+                                                  ]
+                                                : [
+                                                    Text('분석 시작',
+                                                        style: AppTheme
+                                                            .score_start_pink,
+                                                        textAlign:
+                                                            TextAlign.center),
+                                                  ],
+                                          ))),
+                                  _get_circular_chart(score),
+                                ],
+                              ),
+                            ),
+                          )),
                           const Center(
                             child: Padding(
                               padding: EdgeInsets.symmetric(vertical: 5),
-                              child: Text('안심 점수', style: AppTheme.title, textAlign: TextAlign.center),
+                              child: Text('안심 점수',
+                                  style: AppTheme.title,
+                                  textAlign: TextAlign.center),
                             ),
                           ),
-
-                          (smish_detect_flag) ?
-                          (
-                            Column(
-                              children: [
-                                Container(
-                                    child: Row(
-                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          (smish_detect_flag)
+                              ? (Column(
+                                  children: [
+                                    Container(
+                                        child: Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
                                       children: const [
                                         Text('최근 검사', style: AppTheme.caption),
-                                        Text('2022-07-05', style: AppTheme.caption),
+                                        Text('2022-07-05',
+                                            style: AppTheme.caption),
                                       ],
-                                    )
-                                ),
-                                Container(
-                                    child: Row(
-                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                    )),
+                                    Container(
+                                        child: Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
                                       children: const [
-                                        Text('최근 업데이트', style: AppTheme.caption),
-                                        Text('2022-07-05', style: AppTheme.caption),
+                                        Text('최근 업데이트',
+                                            style: AppTheme.caption),
+                                        Text('2022-07-05',
+                                            style: AppTheme.caption),
                                       ],
-                                    )
-                                ),
-                              ],
-                            )
-                          )
-                              :
-                          (
-                            const Center(
-                              child: Text('분석 시작 버튼을 눌러주세요!', style: AppTheme.caption2_black),
-                            )
-                          )
+                                    )),
+                                  ],
+                                ))
+                              : (const Center(
+                                  child: Text('분석 시작 버튼을 눌러주세요!',
+                                      style: AppTheme.caption2_black),
+                                ))
                         ],
                       ),
                     ),
                   ],
-                )
-            ),
+                )),
             Container(
               width: MediaQuery.of(context).size.width,
               height: 50,
@@ -207,7 +246,6 @@ class _HomePage extends State<HomePage> {
   }
 
   Widget _smishing_analysis_button() {
-
     /**
      * _smishingAnalysisButton
      * 오늘의 스미싱 분석 버튼
@@ -218,7 +256,7 @@ class _HomePage extends State<HomePage> {
       right: MediaQuery.of(context).size.width * 0.25,
       child: ElevatedButton(
         child: const Padding(
-          padding: EdgeInsets.only(left: 0, top: 15, right:0, bottom: 15),
+          padding: EdgeInsets.only(left: 0, top: 15, right: 0, bottom: 15),
           child: Text("오늘의 스미싱분석", style: AppTheme.button),
         ),
         onPressed: () {
@@ -227,79 +265,81 @@ class _HomePage extends State<HomePage> {
         style: ButtonStyle(
             shape: MaterialStateProperty.all<RoundedRectangleBorder>(
                 RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(25.0),
-                )
-            )
-        ),
+          borderRadius: BorderRadius.circular(25.0),
+        ))),
       ),
     );
   }
 
   Widget _smishing_data(String bullet, String name, String num, Color color) {
-
     /**
      * _smishingData
      * _smishingDataAnalysisView 에서 사용하고 있음
      * */
     return Container(
         child: Row(
-          children: [
-            Container(
-              width: MediaQuery.of(context).size.width * 0.5,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: [
-                  Text(bullet, style: TextStyle(color: color)),
-                  Text(name),
-                ],
-              ),
-            ),
-
-            Container(
-                width: MediaQuery.of(context).size.width * 0.3,
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: (smish_detect_flag) ? [
-                    Text(num, style: TextStyle(color: color)),
-                    const Text(' 건'),
-                  ]
-                      :
-                  [
-                    const Icon(Icons.arrow_right, color: AppTheme.greyText),
-                    const Text('피싱 분석 필요', style: TextStyle(color: AppTheme.greyText)),
-                  ],
-                )
-            )
-
-          ],
-        )
-    );
+      children: [
+        Container(
+          width: MediaQuery.of(context).size.width * 0.5,
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              Text(bullet, style: TextStyle(color: color)),
+              Text(name),
+            ],
+          ),
+        ),
+        Container(
+            width: MediaQuery.of(context).size.width * 0.3,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: (smish_detect_flag)
+                  ? [
+                      Text(num, style: TextStyle(color: color)),
+                      const Text(' 건'),
+                    ]
+                  : [
+                      const Icon(Icons.arrow_right, color: AppTheme.greyText),
+                      const Text('피싱 분석 필요',
+                          style: TextStyle(color: AppTheme.greyText)),
+                    ],
+            ))
+      ],
+    ));
   }
 
   Widget _data_analysis_day_button() {
-    const double BUTTON_WIDTH = 50 ;
-    const double BUTTON_HEIGHT = 30 ;
-    const double PADDING_SIZE = 10 ;
+    const double BUTTON_WIDTH = 50;
+    const double BUTTON_HEIGHT = 30;
+    const double PADDING_SIZE = 10;
 
-    final isSelected = [false, false, false] ;
-    List<String> dayList = ['1개월', '3개월', '전체'] ;
+    final isSelected = [false, false, false];
+    List<String> dayList = ['1개월', '3개월', '전체'];
 
     return Row(
-      mainAxisAlignment: MainAxisAlignment.end,
-      crossAxisAlignment: CrossAxisAlignment.end,
-      children: List.generate(dayList.length, (index) {
-        return Container(
-          padding: EdgeInsets.only(left: PADDING_SIZE),
-          width: BUTTON_WIDTH, height: BUTTON_HEIGHT,
-          child: TextButton(onPressed: () {}, child: Text(dayList[index], style: AppTheme.caption,), style: TextButton.styleFrom(padding: EdgeInsets.zero,backgroundColor: AppTheme.whiteGreyBackground)),
-        );
-      })
-    );
+        mainAxisAlignment: MainAxisAlignment.end,
+        crossAxisAlignment: CrossAxisAlignment.end,
+        children: List.generate(dayList.length, (index) {
+          return Container(
+            padding: EdgeInsets.only(left: PADDING_SIZE),
+            width: BUTTON_WIDTH,
+            height: BUTTON_HEIGHT,
+            child: TextButton(
+                onPressed: () {},
+                child: Text(
+                  dayList[index],
+                  style: AppTheme.caption,
+                ),
+                style: TextButton.styleFrom(
+                    padding: EdgeInsets.zero,
+                    backgroundColor: AppTheme.whiteGreyBackground)),
+          );
+        }));
   }
 
   Widget _smishing_data_analysis_view() {
     const DATA_ANALYSIS_VIEW_HEIGHT = 120.0;
-    const bullet = "\u2022" ;
+    const bullet = "\u2022";
 
     /**
      * _smishingDataAnalysisView
@@ -310,12 +350,13 @@ class _HomePage extends State<HomePage> {
      * */
     return Container(
       height: DATA_ANALYSIS_VIEW_HEIGHT,
-      padding: EdgeInsets.only(left: MediaQuery.of(context).size.width * 0.1,
+      padding: EdgeInsets.only(
+          left: MediaQuery.of(context).size.width * 0.1,
           right: MediaQuery.of(context).size.width * 0.1),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisAlignment: MainAxisAlignment.start,
-        children: <Widget> [
+        children: <Widget>[
           Container(
             padding: EdgeInsets.only(bottom: 10),
             child: Row(
@@ -337,11 +378,18 @@ class _HomePage extends State<HomePage> {
       ),
     );
   }
-  
 
   Widget _attendance_check() {
-    List<String> dayList = <String> ['월', '화', '수', '목', '금', '토', '일'] ;
-    List<bool> dayCheckList = <bool> [false, false, false, true, false, false, true] ;
+    List<String> dayList = <String>['월', '화', '수', '목', '금', '토', '일'];
+    List<bool> dayCheckList = <bool>[
+      false,
+      false,
+      false,
+      true,
+      false,
+      false,
+      true
+    ];
 
     /**
      * _attendanceCheck
@@ -355,27 +403,39 @@ class _HomePage extends State<HomePage> {
         Navigator.pushNamed(context, '/kat_pages/attendance');
       },
       child: Container(
-        padding: EdgeInsets.only(left: MediaQuery.of(context).size.width * 0.1,
+        padding: EdgeInsets.only(
+            left: MediaQuery.of(context).size.width * 0.1,
             right: MediaQuery.of(context).size.width * 0.1),
         child: Column(
           children: [
-            Container(height: 2, width: MediaQuery.of(context).size.width * 0.8, color: AppTheme.whiteGrey),
-            const Padding(padding: EdgeInsets.symmetric(vertical: 5),),
-
+            Container(
+                height: 2,
+                width: MediaQuery.of(context).size.width * 0.8,
+                color: AppTheme.whiteGrey),
+            const Padding(
+              padding: EdgeInsets.symmetric(vertical: 5),
+            ),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Container(child: const Text('출석 체크', style: AppTheme.subtitle,)) ,
-
+                Container(
+                    child: const Text(
+                  '출석 체크',
+                  style: AppTheme.subtitle,
+                )),
                 Row(
                     children: List.generate(dayList.length, (index) {
-                      return _day(dayList[index], dayCheckList[index]);
-                    })
-                )
+                  return _day(dayList[index], dayCheckList[index]);
+                }))
               ],
             ),
-            const Padding(padding: EdgeInsets.symmetric(vertical: 5),),
-            Container(height: 2, width: MediaQuery.of(context).size.width * 0.8, color: AppTheme.whiteGrey) ,
+            const Padding(
+              padding: EdgeInsets.symmetric(vertical: 5),
+            ),
+            Container(
+                height: 2,
+                width: MediaQuery.of(context).size.width * 0.8,
+                color: AppTheme.whiteGrey),
           ],
         ),
       ),
@@ -387,35 +447,38 @@ class _HomePage extends State<HomePage> {
      * _day
      * _attendance_check 에서 true 일 경우, 요일로 표시, false 일 경우, 체크로 표시
      */
-    return (check) ?
-    Container(
-      margin: EdgeInsets.all(2),
-      width: MediaQuery.of(context).size.width * 0.07,
-      height: MediaQuery.of(context).size.width * 0.07,
-      child: const CircleAvatar(
-        backgroundColor: AppTheme.blueBackground,
-        radius: 30,
-        child: Icon(Icons.check),
-      ),
-    ) :
-    Container(
-        margin: EdgeInsets.all(2),
-        width: MediaQuery.of(context).size.width * 0.07,
-        height: MediaQuery.of(context).size.width * 0.07,
-        decoration: const BoxDecoration(
-          shape: BoxShape.circle,
-          color: AppTheme.whiteGrey,
-        ),
-        child: Center(
-          child: Text(day),
-        )
-    ) ;
+    return (check)
+        ? Container(
+            margin: EdgeInsets.all(2),
+            width: MediaQuery.of(context).size.width * 0.07,
+            height: MediaQuery.of(context).size.width * 0.07,
+            child: const CircleAvatar(
+              backgroundColor: AppTheme.blueBackground,
+              radius: 30,
+              child: Icon(Icons.check),
+            ),
+          )
+        : Container(
+            margin: EdgeInsets.all(2),
+            width: MediaQuery.of(context).size.width * 0.07,
+            height: MediaQuery.of(context).size.width * 0.07,
+            decoration: const BoxDecoration(
+              shape: BoxShape.circle,
+              color: AppTheme.whiteGrey,
+            ),
+            child: Center(
+              child: Text(day),
+            ));
   }
 
   Widget _additional_fuctions() {
-    List<String> functionList = <String> ['원클릭 신고', '털린 정보 확인', 'URL검사'] ;
-    List<String> imgList = <String> ['phone_check.png', 'info_check.png', 'url_check.png'] ;
-    List<String> pageList = <String> ['one_click', 'info_check', 'url_check'];
+    List<String> functionList = <String>['원클릭 신고', '털린 정보 확인', 'URL검사'];
+    List<String> imgList = <String>[
+      'phone_check.png',
+      'info_check.png',
+      'url_check.png'
+    ];
+    List<String> pageList = <String>['one_click', 'info_check', 'url_check'];
     /**
      * _additional_fuctions
      * 선불폰 확인, 털린 정보 확인, URL 검사 페이지로 이동
@@ -424,7 +487,8 @@ class _HomePage extends State<HomePage> {
      * 1. Navigation 지정
      */
     return Container(
-        padding: EdgeInsets.only(left: MediaQuery.of(context).size.width * 0.1,
+        padding: EdgeInsets.only(
+            left: MediaQuery.of(context).size.width * 0.1,
             right: MediaQuery.of(context).size.width * 0.1,
             top: 10),
         child: Row(
@@ -436,25 +500,25 @@ class _HomePage extends State<HomePage> {
                     width: 80,
                     height: 80,
                     child: OutlinedButton(
-                      child: Image.asset('assets/images/' + imgList[index], width: 80,),
+                      child: Image.asset(
+                        'assets/images/' + imgList[index],
+                        width: 80,
+                      ),
                       onPressed: () {
-                        Navigator.pushNamed(context, '/kat_pages/' + pageList[index]);
+                        Navigator.pushNamed(
+                            context, '/kat_pages/' + pageList[index]);
                       },
                     ),
                   ),
                   Padding(
                       padding: EdgeInsets.symmetric(vertical: 5),
-                      child: Text(functionList[index])
-                  ),
+                      child: Text(functionList[index])),
                 ],
-              ) ;
-            }
-          )
-        )
-    ) ;
+              );
+            })));
   }
 
-  Widget _vertical_divider (){
+  Widget _vertical_divider() {
     return const VerticalDivider(
       thickness: 1,
       color: Color(0xFFF6F4F4),
@@ -480,47 +544,49 @@ class _HomePage extends State<HomePage> {
     Paint insideCirclePaint = Paint()..color = Colors.white;
 
     return Container(
-      padding: EdgeInsets.only(left: MediaQuery.of(context).size.width * 0.1, right: MediaQuery.of(context).size.width * 0.1,
-                               top: 20, bottom: 10),
-      height: 200,
-      child: Stack(
-        children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              _vertical_divider(),
-              _vertical_divider(),
-              _vertical_divider(),
-              _vertical_divider(),
-              _vertical_divider(),
-              _vertical_divider(),
-            ],
-          ),
-          LineChart(
-            width: MediaQuery.of(context).size.width * 0.91,
-            height: 100,
-            data: data,
-            linePaint: linePaint,
-            circlePaint: circlePaint,
-            showPointer: true,
-            showCircles: true,
-            customDraw: (Canvas canvas, Size size) {},
-            insideCirclePaint: insideCirclePaint,
-            onValuePointer: (LineChartModelCallback value) {
-              print('${value.chart} ${value.percentage}');
-            },
-            onDropPointer: () {
-              print('onDropPointer');
-            },
-            insidePadding: 15,
-          ),
-        ],
-      )
-    );
+        padding: EdgeInsets.only(
+            left: MediaQuery.of(context).size.width * 0.1,
+            right: MediaQuery.of(context).size.width * 0.1,
+            top: 20,
+            bottom: 10),
+        height: 200,
+        child: Stack(
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                _vertical_divider(),
+                _vertical_divider(),
+                _vertical_divider(),
+                _vertical_divider(),
+                _vertical_divider(),
+                _vertical_divider(),
+              ],
+            ),
+            LineChart(
+              width: MediaQuery.of(context).size.width * 0.91,
+              height: 100,
+              data: data,
+              linePaint: linePaint,
+              circlePaint: circlePaint,
+              showPointer: true,
+              showCircles: true,
+              customDraw: (Canvas canvas, Size size) {},
+              insideCirclePaint: insideCirclePaint,
+              onValuePointer: (LineChartModelCallback value) {
+                print('${value.chart} ${value.percentage}');
+              },
+              onDropPointer: () {
+                print('onDropPointer');
+              },
+              insidePadding: 15,
+            ),
+          ],
+        ));
   }
 
   Widget _daily_report() {
-    List<String> dayList = ['1/24', '1/25', '2/20', '2/27', '2/28', '3/30'] ;
+    List<String> dayList = ['1/24', '1/25', '2/20', '2/27', '2/28', '3/30'];
     /**
      * _daily_report
      * 업데이트한 날짜를 데이터로 차트 표시
@@ -532,7 +598,6 @@ class _HomePage extends State<HomePage> {
     return Container(
       margin: const EdgeInsets.only(top: 10),
       width: MediaQuery.of(context).size.width,
-
       child: Column(
         mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -540,7 +605,8 @@ class _HomePage extends State<HomePage> {
           Container(
             alignment: Alignment.centerLeft,
             width: MediaQuery.of(context).size.width,
-            padding: EdgeInsets.only(left: MediaQuery.of(context).size.width * 0.1,
+            padding: EdgeInsets.only(
+                left: MediaQuery.of(context).size.width * 0.1,
                 right: MediaQuery.of(context).size.width * 0.1),
             height: 45,
             color: AppTheme.whiteGrey,
@@ -551,15 +617,13 @@ class _HomePage extends State<HomePage> {
           _daily_chart(),
 
           Container(
-            padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width * 0.1),
-            child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: List.generate(dayList.length, (index) {
-                  return Text(dayList[index]) ;
-                })
-            )
-          ),
-
+              padding: EdgeInsets.symmetric(
+                  horizontal: MediaQuery.of(context).size.width * 0.1),
+              child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: List.generate(dayList.length, (index) {
+                    return Text(dayList[index]);
+                  }))),
         ],
       ),
     );
@@ -567,12 +631,14 @@ class _HomePage extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
+    LaunchProvider _userProvider = Provider.of<LaunchProvider>(context);
+    print(_userProvider.getSignUp());
     return Scaffold(
       appBar: const KaTAppBar(),
       // drawer: KaTDrawer(),
       bottomNavigationBar: const KatBottomBar(),
       body: SingleChildScrollView(
-        child:Column(
+        child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
@@ -587,4 +653,3 @@ class _HomePage extends State<HomePage> {
     );
   }
 }
-

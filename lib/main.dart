@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:kakao_flutter_sdk/kakao_flutter_sdk.dart';
 import 'package:phishing_kat_pluss/kat_pages/attendance_page.dart';
@@ -54,7 +55,7 @@ class MyApp extends StatelessWidget {
      */
     return FutureBuilder(
       ///future: 앱의 초기 설정및 데이터를 불러오는 곳
-        future: Init.instance.initialize(context),
+        future: LaunchProvider().Init(),
         /// future의 상태에 따라 보여주는 화면이 다르다.
         /// future를 기다리는 중이면 Splash화면을 보여준다.
         builder: (context, AsyncSnapshot snapshot) {
@@ -66,7 +67,7 @@ class MyApp extends StatelessWidget {
           //   return MaterialApp(home: ErrorScreen()); // 초기 로딩 에러 시 Error Screen
           // }
           ///future에서 데이터를 불러온 다음 home page로 이동
-          else {
+          else if(snapshot.connectionState == ConnectionState.done){
             return MaterialApp(
               title: 'PhishingKaT+s', // 앱 이름
               ///전체앱의 theme 설정
@@ -79,10 +80,13 @@ class MyApp extends StatelessWidget {
                 primaryColor: Colors.blueGrey,
                 scaffoldBackgroundColor: Colors.white,
               ),
-              home: snapshot.data,
+              home: snapshot.data? const HomePage() : const LoginPage(),
+
+              // initialRoute: snapshot.data? '/homepage' : '/launch/login',
               ///앱에서 이동할 페이지의 이름 설정
               routes: {
                 //'/login': (BuildContext context) => const LoginPage(),
+                '/homepage' : (BuildContext context) => const HomePage(),
                 '/splash_screen': (BuildContext context) => const SplashScreen(),
                 '/kat_pages/attendance' : (BuildContext context) => const AttendancePage(),
                 '/kat_pages/score': (BuildContext context) => const ScorePage(),
@@ -100,6 +104,9 @@ class MyApp extends StatelessWidget {
                 '/menu/alarm/setting': (BuildContext context) => const SettingPage(),
               },
             );
+          }
+          else{
+            return Container();
           }
         });
   }
