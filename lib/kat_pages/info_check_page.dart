@@ -22,50 +22,37 @@ class InfoCheckPage extends StatefulWidget {
 class _InfoCheckPageState extends State<InfoCheckPage> {
   @override
   Widget build(BuildContext context) {
-    Future<ConnectivityResult> checkConnectionStatus() async {
-      var result = await (Connectivity().checkConnectivity());
-      print(result);
-      if (result == ConnectivityResult.none) {
-        throw new SocketException("인터넷 연결 상태를 확인해 주세요.");
-      }
-
-      return result;  // wifi, mobile
-    }
-
-    Future http_status() async {
-      var url = Uri.parse(
-        'https://kidc.eprivacy.go.kr/search/issueVerify.do',
-      );
-      final response = await http.get(url);
-      print(response.headers);
-      print('Response status: ${response.statusCode}');
-      return response;
-    }
+    // Future<ConnectivityResult> checkConnectionStatus() async {
+    //   var result = await (Connectivity().checkConnectivity());
+    //   print(result);
+    //   if (result == ConnectivityResult.none) {
+    //     throw new SocketException("인터넷 연결 상태를 확인해 주세요.");
+    //   }
+    //
+    //   return result; // wifi, mobile
+    // }
+    //
+    // Future http_status() async {
+    //   var url = Uri.parse(
+    //     'https://kidc.eprivacy.go.kr/search/issueVerify.do',
+    //   );
+    //   final response = await http.get(url);
+    //   print(response.headers);
+    //   print('Response status: ${response.statusCode}');
+    //   return response;
+    // }
 
     return Scaffold(
         appBar: AppBarBack(
-        title: "털린 정보 확인",
-      ),
-      body: FutureBuilder(
-        future: checkConnectionStatus(),
-        builder: ((BuildContext context, AsyncSnapshot snapshot) {
-          print(snapshot);
-          if(true){
-            return Container();
-          }
-          else{
-            return SafeArea(
-              child: WebView(
-                initialUrl: 'https://kidc.eprivacy.go.kr/search/issueVerify.do',
-                javascriptMode: JavascriptMode.unrestricted,
-                gestureNavigationEnabled: true,
-                userAgent: "random",
-              ),
-            );
-          }
-
-        }),
-      ),
-    );
+          title: "털린 정보 확인",
+        ),
+        body: SafeArea(
+          child: WebView(
+            initialUrl: 'https://kidc.eprivacy.go.kr/search/issueVerify.do',
+            javascriptMode: JavascriptMode.unrestricted,
+            gestureNavigationEnabled: true,
+            userAgent: "random",
+          ),
+        ));
   }
 }
