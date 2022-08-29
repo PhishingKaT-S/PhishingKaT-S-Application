@@ -8,9 +8,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:mysql1/mysql1.dart';
+import 'package:provider/provider.dart';
 import 'package:unique_identifier/unique_identifier.dart';
 import '../db_conn.dart';
 import '../kat_widget/launch_appbar.dart';
+import '../providers/launch_provider.dart';
 import 'celebration.dart';
 
 import '../Theme.dart';
@@ -305,6 +307,7 @@ class _detailed_infoState extends State<DetailInfo> {
 
     if(register.isNotEmpty){
       print('회원 추가 완료');
+      context.watch<LaunchProvider>().set_userinfo(user.nickname, user.year, user.gender, user.type);
       return register.first[0];
     }
     else return 0;

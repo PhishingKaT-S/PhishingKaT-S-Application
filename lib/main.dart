@@ -17,7 +17,6 @@ import 'package:phishing_kat_pluss/providers/testProvider.dart';
 import 'package:phishing_kat_pluss/splash/splash_screen.dart';
 import 'package:provider/provider.dart';
 
-
 import 'kat_pages/info_check_page.dart';
 import 'kat_pages/one_click_page.dart';
 import 'kat_pages/url_check_page.dart';
@@ -26,21 +25,24 @@ import 'launch/login_page.dart';
 import 'splash/test.dart';
 
 void main() {
-
   // KakaoSdk.init(nativeAppKey: '	2c174d14857608bc5b5be9a32c0b2a31');
 
   runApp(
-    /**
+      /**
      * Provider initialization
      * TestProvider: Test를 위한 Provider
      */
-      MultiProvider(providers: [
-        ChangeNotifierProvider(create: (BuildContext context) => TestProvider(),),
-        ChangeNotifierProvider(create: (BuildContext context) => LaunchProvider(),),
-      ],
-        child: const MyApp(),
-      )
-  );
+      MultiProvider(
+    providers: [
+      ChangeNotifierProvider(
+        create: (BuildContext context) => TestProvider(),
+      ),
+      ChangeNotifierProvider(
+        create: (BuildContext context) => LaunchProvider(),
+      ),
+    ],
+    child: const MyApp(),
+  ));
 }
 
 class MyApp extends StatelessWidget {
@@ -54,20 +56,19 @@ class MyApp extends StatelessWidget {
      * 앱의 초기 데이터를 불러오는 시간을 벌기위한 Splash Screen 화면은 FutureBuilder로 구현.
      */
     return FutureBuilder(
-      ///future: 앱의 초기 설정및 데이터를 불러오는 곳
+
+        ///future: 앱의 초기 설정및 데이터를 불러오는 곳
         future: LaunchProvider().Init(),
+
         /// future의 상태에 따라 보여주는 화면이 다르다.
         /// future를 기다리는 중이면 Splash화면을 보여준다.
         builder: (context, AsyncSnapshot snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return const MaterialApp(home: SplashScreen()); // 초기 로딩 시 Splash Screen
-          }
           ///future에서 데이터를 불러오는 중에 에러가 발생하면 에러 메시지를 띄워준다.
           // else if (snapshot.hasError) {
           //   return MaterialApp(home: ErrorScreen()); // 초기 로딩 에러 시 Error Screen
           // }
           ///future에서 데이터를 불러온 다음 home page로 이동
-          else if(snapshot.connectionState == ConnectionState.done){
+          if (snapshot.connectionState == ConnectionState.done) {
             return MaterialApp(
               title: 'PhishingKaT+s', // 앱 이름
               ///전체앱의 theme 설정
@@ -80,33 +81,44 @@ class MyApp extends StatelessWidget {
                 primaryColor: Colors.blueGrey,
                 scaffoldBackgroundColor: Colors.white,
               ),
-              home: snapshot.data? const HomePage() : const LoginPage(),
+              home: snapshot.data ? const HomePage() : const LoginPage(),
 
               // initialRoute: snapshot.data? '/homepage' : '/launch/login',
               ///앱에서 이동할 페이지의 이름 설정
               routes: {
                 //'/login': (BuildContext context) => const LoginPage(),
-                '/homepage' : (BuildContext context) => const HomePage(),
-                '/splash_screen': (BuildContext context) => const SplashScreen(),
-                '/kat_pages/attendance' : (BuildContext context) => const AttendancePage(),
+                '/homepage': (BuildContext context) => const HomePage(),
+                '/splash_screen': (BuildContext context) =>
+                    const SplashScreen(),
+                '/kat_pages/attendance': (BuildContext context) =>
+                    const AttendancePage(),
                 '/kat_pages/score': (BuildContext context) => const ScorePage(),
-                '/kat_pages/one_click' : (BuildContext context) => const OneClickPage(),
-                '/kat_pages/info_check' : (BuildContext context) => const InfoCheckPage(),
-                '/kat_pages/url_check' : (BuildContext context) => const UrlCheckPage(),
-                '/kat_pages/detect_load' : (BuildContext context) => const DetectLoadPage(),
-                '/launch/login' : (BuildContext context) => const LoginPage(),
-                '/splash/test' : (BuildContext context) => const TestPage(),
-                '/kat_pages/url_home': (BuildContext context) => const InspectFeedback(),
-                '/menu/menu_home':(BuildContext context) => const MenuHome(),
-                '/menu/service_center':(BuildContext context) => const ServiceCenter(),
-                '/menu/alarm': (BuildContext context) => const PhishingAlarmPage(),
+                '/kat_pages/one_click': (BuildContext context) =>
+                    const OneClickPage(),
+                '/kat_pages/info_check': (BuildContext context) =>
+                    const InfoCheckPage(),
+                '/kat_pages/url_check': (BuildContext context) =>
+                    const UrlCheckPage(),
+                '/kat_pages/detect_load': (BuildContext context) =>
+                    const DetectLoadPage(),
+                '/launch/login': (BuildContext context) => const LoginPage(),
+                '/splash/test': (BuildContext context) => const TestPage(),
+                '/kat_pages/url_home': (BuildContext context) =>
+                    const InspectFeedback(),
+                '/menu/menu_home': (BuildContext context) => const MenuHome(),
+                '/menu/service_center': (BuildContext context) =>
+                    const ServiceCenter(),
+                '/menu/alarm': (BuildContext context) =>
+                    const PhishingAlarmPage(),
                 '/menu/notice': (BuildContext context) => const NoticePage(),
-                '/menu/alarm/setting': (BuildContext context) => const SettingPage(),
+                '/menu/alarm/setting': (BuildContext context) =>
+                    const SettingPage(),
               },
             );
-          }
-          else{
-            return Container();
+          } else //(snapshot.connectionState == ConnectionState.waiting) {
+          {
+            return const MaterialApp(
+                home: SplashScreen()); // 초기 로딩 시 Splash Screen
           }
         });
   }
@@ -114,6 +126,7 @@ class MyApp extends StatelessWidget {
 
 class Init {
   Init._();
+
   static final instance = Init._();
 
   Future<Widget?> initialize(BuildContext context) async {
