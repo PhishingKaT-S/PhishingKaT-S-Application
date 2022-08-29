@@ -6,6 +6,7 @@
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_switch/flutter_switch.dart';
 import 'package:phishing_kat_pluss/theme.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:provider/provider.dart';
@@ -23,6 +24,8 @@ class _MenuHomeState extends State<MenuHome> {
   bool sns_tap = false;
   bool app_tap = false;
   bool setting_tap = false;
+  DateTime? _setting_contact_sync = null;
+  bool auto_update = false ;
 
   ListTile menu_list_tile_nevigation(String tileTitle, IconData leadingIcon, String page) {
     return ListTile(
@@ -358,19 +361,73 @@ class _MenuHomeState extends State<MenuHome> {
                   Icons.settings_outlined,
                   color: Colors.grey,
                 ),
-                trailing: setting_tap
-                    ? const Icon(
-                  Icons.keyboard_arrow_down_outlined,
-                  color: Colors.grey,
-                    )
-                    : const Icon(Icons.keyboard_arrow_up_outlined,
-                    color: Colors.grey),
-
+                trailing: setting_tap ?
+                  const Icon(
+                    Icons.keyboard_arrow_down_outlined,
+                    color: Colors.grey,
+                  ) :
+                  const Icon(
+                    Icons.keyboard_arrow_up_outlined,
+                    color: Colors.grey
+                  ),
                 onTap: () {
-                  setting_tap = !setting_tap ;
+                  setState(() {
+                    setting_tap = !setting_tap ;
+                  });
                 },
                 dense: true,
               ),
+              setting_tap
+                  ? Container(
+                color: Color(0xFFf6f6f6),
+                padding: EdgeInsets.only(top: 15.0, bottom: 15.0, left: 70, right: 20),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Column(
+                          children: [
+                            Text('- 연락처 동기화', style: AppTheme.menu_news2,),
+                            Text((_setting_contact_sync != null) ?
+                            ('${_setting_contact_sync?.year}년 ${_setting_contact_sync?.month}월 ${_setting_contact_sync?.day}일') :
+                            ('No date'), style: AppTheme.caption) ,
+                          ],
+                        ),
+
+                        GestureDetector(
+                          onTap: () {},
+                          child: const Icon(Icons.sync_rounded),
+                        )
+                      ],
+                    ),
+                    const SizedBox(
+                      height: 10,
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text('- DB 자동 업데이트', style: AppTheme.menu_news2,),
+                        FlutterSwitch(
+                          height: 25,
+                          showOnOff: true,
+                          activeTextColor: AppTheme.white,
+                          inactiveTextColor: AppTheme.white,
+                          value: auto_update,
+                          onToggle: (val) {
+                            setState(() {
+                              auto_update = val;
+                            });
+                          },
+                        )
+                      ]
+                    )
+                  ],
+                ),
+              )
+                  : Container(),
               menu_divider(),
               ListTile(
                 title: const Text(

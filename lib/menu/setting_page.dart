@@ -47,25 +47,32 @@ class _SettingPageState extends State<SettingPage> {
               value: status[index],
               onToggle: (val) {
                 setState(() {
+                  print(index);
                   status[index] = val;
                 });
               },
             )
-          ) :
+          )
+              :
           (
-            InkWell(
-              onTap: () {} ,
-              child: Center(
-                child: Container(
+            GestureDetector(
+              onTap: () {
+                setState(() {
+                  status[3] = !status[3] ;
+                });
+              } ,
+              child: Container(
                   padding: EdgeInsets.only(top: 3, bottom: 3),
                   width: 90,
                   height: 30,
                   decoration: BoxDecoration(
-                    color: AppTheme.blueLineChart,
+                    color: (status[3]) ? AppTheme.blueLineChart : AppTheme.white,
                     borderRadius: BorderRadius.all(Radius.circular(15)),
                   ),
-                  child: Text('소리+진동', style: TextStyle(color: AppTheme.white), textAlign: TextAlign.center,)
-                )
+                  child: Align(
+                    alignment: Alignment.center,
+                    child: Text('소리+진동', style: TextStyle(color: (status[3]) ? AppTheme.white : AppTheme.blueLineChart), textAlign: TextAlign.center,),
+                  )
               )
             )
           )

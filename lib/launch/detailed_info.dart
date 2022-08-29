@@ -153,7 +153,7 @@ class _detailed_infoState extends State<DetailInfo> {
                 child: Padding(
                   padding: const EdgeInsets.only(left: 5, right: 5, top: 5),
                   child: Container(
-                      padding: EdgeInsets.only(left: MediaQuery.of(context).size.width*0.06, right:MediaQuery.of(context).size.width*0.06),
+                      padding: EdgeInsets.only(left: MediaQuery.of(context).size.width*0.055, right:MediaQuery.of(context).size.width*0.055),
                       height: double.infinity,
                       decoration: BoxDecoration(
                           color: _categorySelected[index] ? Colors.blue: Colors.grey[200],
