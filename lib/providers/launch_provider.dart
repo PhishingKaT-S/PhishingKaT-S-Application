@@ -13,56 +13,67 @@ import 'package:unique_identifier/unique_identifier.dart';
 import '../db_conn.dart';
 
 class LaunchProvider extends ChangeNotifier {
+  bool _signUp = false;
+  LaunchProvider(){
+    Init();
+  }
   Future<bool> Init() async {
-    bool signUp = true;
+    _signUp = false;
     await request_permission();
     //getMessage();
     //getContacts();
     userInfo = UserInfo(
         imei: await getIMEI() as String,
         phoneNumber: await getPhoneNumber() as String);
-    await MySqlConnection.connect(Database.getConnection())
-        .then((conn) async => {
-              await conn
-                  .query(
-                      "SELECT nickname FROM users WHERE IMEI = ? AND phone_number = ?",
-                      [userInfo.imei, userInfo.phoneNumber])
-                  .then((results) => {
-                        if (results.isNotEmpty)
-                          {
-                            if (results.length > 1)
-                              {
-                                //  동일한 IMEI와 핸드폰 번호가 있으면 2개 이상이 나오는데 그 때는 우짜나?
-                              }
-                            else
-                              {
-                                userInfo.uerId = results.first["id"],
-                                userInfo.analysisDate =
-                                    results.first["analysis_date"],
-                                userInfo.gender = results.first["gender"],
-                                userInfo.profession =
-                                    results.first["profession"],
-                                userInfo.year = results.first["year"],
-                                userInfo.nickname = results.first["nickname"],
-                                userInfo.updateDate =
-                                    results.first["update_date"]
-                              }
-                          }
-                        else if (results.isEmpty)
-                          {signUp = false}
-                      })
-                  .onError((error, stackTrace) => {}
-                  ),
-              conn.close(),
-            })
-        .onError((error, stackTrace) => {
+    await MySqlConnection.connect(Database.getConnection()).then((conn) async {
+      await conn.query(
+          "SELECT nickname FROM users WHERE IMEI = ? AND phone_number = ?",
+          [userInfo!.imei, userInfo!.phoneNumber]).then((results) {
+        if (results.isNotEmpty) {
+          if (results.length > 1) {
+            //  동일한 IMEI와 핸드폰 번호가 있으면 2개 이상이 나오는데 그 때는 우짜나?
+            _signUp = false;
+          } else {
+            userInfo!.uerId = results.first["id"];
+            userInfo!.analysisDate = results.first["analysis_date"];
+            userInfo!.gender = results.first["gender"];
+            userInfo!.profession = results.first["profession"];
+            userInfo!.year = results.first["year"];
+            userInfo!.nickname = results.first["nickname"];
+            userInfo!.updateDate = results.first["update_date"];
+            _signUp = true;
+            print("get data");
+            // notifyListeners();
+          }
+        } else if (results.isEmpty) {
+          _signUp = false;
+          notifyListeners();
+        }
+      }).onError((error, stackTrace) {
+        print("error: $error");
+      });
+      conn.close();
+    }).onError((error, stackTrace) {
+      print("error2: $error");
     });
-    //print("imei: " + userInfo.imei + "\nnumber: " + userInfo.number);
-
-    return signUp;
+    notifyListeners();
+    return _signUp;
   }
 
-  late UserInfo userInfo;
+  UserInfo? userInfo;
+  UserInfo getuserinfo(){
+    return userInfo!;
+  }
+
+  bool getSignUp() {
+    return _signUp;
+  }
+
+  void setSignUp(bool signUp) {
+
+    _signUp = signUp;
+    // notifyListeners();
+  }
 
   Future getMessage() async {
     var sms_permission = await Permission.sms.status;
@@ -145,7 +156,7 @@ class LaunchProvider extends ChangeNotifier {
     var conn = await MySqlConnection.connect(Database.getConnection());
     var results = await conn.query(
         'SELECT * FROM users WHERE IMEI == ? AND phone_number = ?',
-        [userInfo.imei, userInfo.phoneNumber]);
+        [userInfo?.imei, userInfo?.phoneNumber]);
     conn.close();
     return results;
   }
@@ -167,13 +178,20 @@ class LaunchProvider extends ChangeNotifier {
         .then((conn) async => {
               await conn
                   .query("SELECT * FROM attendance WHERE user_id = ?",
-                      [userInfo.uerId])
+                      [userInfo?.uerId])
                   .then((results) =>
                       {if (results.isNotEmpty) {} else if (results.isEmpty) {}})
                   .onError((error, stackTrace) => {}),
               conn.close(),
             })
         .onError((error, stackTrace) => {});
+  }
+
+  void set_userinfo(String nickname, String year, bool gender, int profession){
+    userInfo!.nickname = nickname;
+    userInfo!.year = year;
+    userInfo!.gender = gender;
+    userInfo!.profession = profession;
   }
 }
 
@@ -191,8 +209,8 @@ class UserInfo {
   String? uerId;
   String? nickname;
   String? year;
-  String? gender;
-  String? profession;
+  bool? gender;
+  int? profession;
   DateTime? analysisDate;
   DateTime? updateDate;
 }
