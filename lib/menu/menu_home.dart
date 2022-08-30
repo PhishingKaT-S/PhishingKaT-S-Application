@@ -9,6 +9,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_switch/flutter_switch.dart';
 import 'package:phishing_kat_pluss/theme.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
+import 'package:provider/provider.dart';
+
+import '../providers/launch_provider.dart';
 
 class MenuHome extends StatefulWidget {
   const MenuHome({Key? key}) : super(key: key);
@@ -86,6 +89,7 @@ class _MenuHomeState extends State<MenuHome> {
 
   @override
   Widget build(BuildContext context) {
+    //LaunchProvider _userProvider = Provider.of<LaunchProvider>(context);
     return Scaffold(
         body: Column(
       children: [
@@ -97,136 +101,138 @@ class _MenuHomeState extends State<MenuHome> {
               height: MediaQuery.of(context).size.height * 0.30,
               fit: BoxFit.none,
             ),
-            Container(
-              padding: const EdgeInsets.all(20),
-              child: Column(
-                children: [
-                  SizedBox(
-                    height: MediaQuery.of(context).size.height * 0.01,
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      GestureDetector(
-                        child: const Icon(Icons.close),
-                        onTap: () {
-                          Navigator.pop(context);
-                        },
-                      ),
-                      /**
-                           * 여기에 알람에 유무에 따라 동적으로 아이콘을 변경해야함.
-                           */
-                      Stack(
-                        children: [
-                          InkWell(
-                            child: Container(
-                              child: Image.asset(
-                                'assets/images/alert.png',
-                                width: 20,
-                              )
-                            ),
-                            onTap: () {
-                              Navigator.pushNamed(context, '/menu/alarm');
-                            }
-                          )
-                        ],
-                      )
-                    ],
-                  ),
-                  SizedBox(
-                    height: MediaQuery.of(context).size.height * 0.02,
-                  ),
-                  Row(
-                    crossAxisAlignment: CrossAxisAlignment.end,
-                    children: [
-                      Image.asset(
-                        'assets/images/menu_profile.png',
-                        width: MediaQuery.of(context).size.width * 0.2,
-                      ),
-                      SizedBox(
-                        width: MediaQuery.of(context).size.width * 0.05,
-                      ),
-                      Column(
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        crossAxisAlignment: CrossAxisAlignment.end,
-                        children: [
-                          const Text(
-                            '홍길동(1234)',
-                            style: TextStyle(
-                              fontSize: 15,
-                              fontWeight: FontWeight.bold,
-                            ),
-                            textAlign: TextAlign.left,
-                          ),
-                          SizedBox(
-                            height: MediaQuery.of(context).size.height * 0.01,
-                          ),
-                          Row(
-                            children: const [
-                              Text(
-                                '안심점수',
-                                style: TextStyle(
-                                    fontSize: 15,
-                                    fontWeight: FontWeight.w100,
-                                    color: Color(0xFF0b80f5)),
-                              ),
-                              Text(
-                                ' 69점',
-                                style: TextStyle(
-                                    fontSize: 15,
-                                    fontWeight: FontWeight.w900,
-                                    color: Color(0xFF0b80f5)),
-                              ),
-                            ],
-                          )
-                        ],
-                      )
-                    ],
-                  ),
-                  SizedBox(
-                    height: MediaQuery.of(context).size.height * 0.02,
-                  ),
-                  Container(
-                    height: MediaQuery.of(context).size.height * 0.07,
-                    //padding: const EdgeInsets.all(20.0),
-                    // alignment: Alignment.topLeft,
-                    decoration: BoxDecoration(
-                        color: Color(0xFFabe7ff),
-                        border: Border.all(color: Color(0xFFabe7ff)),
-                        borderRadius: BorderRadius.circular(15.0)),
-                    padding: EdgeInsets.only(left: 10, right: 10),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.start,
+            Consumer<LaunchProvider>(
+              builder: (BuildContext context, countProvider, child) => Container(
+                padding: const EdgeInsets.all(20),
+                child: Column(
+                  children: [
+                    SizedBox(
+                      height: MediaQuery.of(context).size.height * 0.01,
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        const Text(
-                          '피싱관련 주요뉴스',
-                          style: AppTheme.menu_news,
-                          textAlign: TextAlign.left,
+                        GestureDetector(
+                          child: const Icon(Icons.close),
+                          onTap: () {
+                            Navigator.pop(context);
+                          },
                         ),
-                        Row(
-                          children: const [
-                            Text(
-                              '[관련기사] ',
-                              style: AppTheme.menu_news,
-                              textAlign: TextAlign.left,
-                            ),
-                            // row안에 text overflow를 적용하려면 flexible을 사용해야함.
-                            Flexible(
-                              child: Text(
-                                '야간근무 전 은행 들렀다 보이스피싱범 잡은 경찰이 어쩌고 저쩌고 일단 길게 쓰고',
-                                style: AppTheme.menu_news2,
-                                overflow: TextOverflow.ellipsis,
-                                maxLines: 1,
-                                softWrap: true,
+                        /**
+                             * 여기에 알람에 유무에 따라 동적으로 아이콘을 변경해야함.
+                             */
+                        Stack(
+                          children: [
+                            InkWell(
+                              child: Container(
+                                child: Image.asset(
+                                  'assets/images/alert.png',
+                                  width: 20,
+                                )
                               ),
+                              onTap: () {
+                                Navigator.pushNamed(context, '/menu/alarm');
+                              }
                             )
                           ],
                         )
                       ],
                     ),
-                  )
-                ],
+                    SizedBox(
+                      height: MediaQuery.of(context).size.height * 0.02,
+                    ),
+                    Row(
+                      crossAxisAlignment: CrossAxisAlignment.end,
+                      children: [
+                        Image.asset(
+                          'assets/images/menu_profile.png',
+                          width: MediaQuery.of(context).size.width * 0.2,
+                        ),
+                        SizedBox(
+                          width: MediaQuery.of(context).size.width * 0.05,
+                        ),
+                        Column(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          crossAxisAlignment: CrossAxisAlignment.end,
+                          children: [
+                            Text(
+                              Provider.of<LaunchProvider>(context).getuserinfo().nickname.toString(),
+                              style: TextStyle(
+                                fontSize: 15,
+                                fontWeight: FontWeight.bold,
+                              ),
+                              textAlign: TextAlign.left,
+                            ),
+                            SizedBox(
+                              height: MediaQuery.of(context).size.height * 0.01,
+                            ),
+                            Row(
+                              children: const [
+                                Text(
+                                  '안심점수',
+                                  style: TextStyle(
+                                      fontSize: 15,
+                                      fontWeight: FontWeight.w100,
+                                      color: Color(0xFF0b80f5)),
+                                ),
+                                Text(
+                                  ' 69점',
+                                  style: TextStyle(
+                                      fontSize: 15,
+                                      fontWeight: FontWeight.w900,
+                                      color: Color(0xFF0b80f5)),
+                                ),
+                              ],
+                            )
+                          ],
+                        )
+                      ],
+                    ),
+                    SizedBox(
+                      height: MediaQuery.of(context).size.height * 0.02,
+                    ),
+                    Container(
+                      height: MediaQuery.of(context).size.height * 0.07,
+                      //padding: const EdgeInsets.all(20.0),
+                      // alignment: Alignment.topLeft,
+                      decoration: BoxDecoration(
+                          color: Color(0xFFabe7ff),
+                          border: Border.all(color: Color(0xFFabe7ff)),
+                          borderRadius: BorderRadius.circular(15.0)),
+                      padding: EdgeInsets.only(left: 10, right: 10),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          const Text(
+                            '피싱관련 주요뉴스',
+                            style: AppTheme.menu_news,
+                            textAlign: TextAlign.left,
+                          ),
+                          Row(
+                            children: const [
+                              Text(
+                                '[관련기사] ',
+                                style: AppTheme.menu_news,
+                                textAlign: TextAlign.left,
+                              ),
+                              // row안에 text overflow를 적용하려면 flexible을 사용해야함.
+                              Flexible(
+                                child: Text(
+                                  '야간근무 전 은행 들렀다 보이스피싱범 잡은 경찰이 어쩌고 저쩌고 일단 길게 쓰고',
+                                  style: AppTheme.menu_news2,
+                                  overflow: TextOverflow.ellipsis,
+                                  maxLines: 1,
+                                  softWrap: true,
+                                ),
+                              )
+                            ],
+                          )
+                        ],
+                      ),
+                    )
+                  ],
+                ),
               ),
             )
           ],
