@@ -176,14 +176,14 @@ class LaunchProvider extends ChangeNotifier {
   Future _getDateInfo() async {
     await MySqlConnection.connect(Database.getConnection())
         .then((conn) async => {
-              await conn
-                  .query("SELECT * FROM attendance WHERE user_id = ?",
-                      [userInfo?.uerId])
-                  .then((results) =>
-                      {if (results.isNotEmpty) {} else if (results.isEmpty) {}})
-                  .onError((error, stackTrace) => {}),
-              conn.close(),
-            })
+      await conn
+          .query("SELECT * FROM attendance WHERE user_id = ?",
+          [userInfo?.uerId])
+          .then((results) =>
+      {if (results.isNotEmpty) {} else if (results.isEmpty) {}})
+          .onError((error, stackTrace) => {}),
+      conn.close(),
+    })
         .onError((error, stackTrace) => {});
   }
 
