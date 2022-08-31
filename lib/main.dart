@@ -30,21 +30,21 @@ void main() {
   // KakaoSdk.init(nativeAppKey: '	2c174d14857608bc5b5be9a32c0b2a31');
 
   runApp(
-      /**
+    /**
      * Provider initialization
      * TestProvider: Test를 위한 Provider
      */
       MultiProvider(
-    providers: [
-      ChangeNotifierProvider(
-        create: (BuildContext context) => TestProvider(),
-      ),
-      ChangeNotifierProvider(
-        create: (BuildContext context) => LaunchProvider(),
-      ),
-    ],
-    child: const MyApp(),
-  ));
+        providers: [
+          ChangeNotifierProvider(
+            create: (BuildContext context) => TestProvider(),
+          ),
+          ChangeNotifierProvider(
+            create: (BuildContext context) => LaunchProvider(),
+          ),
+        ],
+        child: const MyApp(),
+      ));
 }
 
 class MyApp extends StatelessWidget {
@@ -59,7 +59,7 @@ class MyApp extends StatelessWidget {
      */
     return FutureBuilder(
 
-        ///future: 앱의 초기 설정및 데이터를 불러오는 곳
+      ///future: 앱의 초기 설정및 데이터를 불러오는 곳
         future: LaunchProvider().Init(),
 
         /// future의 상태에 따라 보여주는 화면이 다르다.
@@ -91,36 +91,37 @@ class MyApp extends StatelessWidget {
                 //'/login': (BuildContext context) => const LoginPage(),
                 '/homepage': (BuildContext context) => const HomePage(),
                 '/splash_screen': (BuildContext context) =>
-                    const SplashScreen(),
+                const SplashScreen(),
                 '/kat_pages/attendance': (BuildContext context) =>
-                    const AttendancePage(),
+                const AttendancePage(),
                 '/kat_pages/score': (BuildContext context) => const ScorePage(),
                 '/kat_pages/one_click': (BuildContext context) =>
-                    const OneClickPage(),
+                const OneClickPage(),
                 '/kat_pages/info_check': (BuildContext context) =>
-                    const InfoCheckPage(),
+                const InfoCheckPage(),
                 '/kat_pages/url_check': (BuildContext context) =>
-                    const UrlCheckPage(),
+                const UrlCheckPage(),
                 '/kat_pages/detect_load': (BuildContext context) =>
-                    const DetectLoadPage(),
+                const DetectLoadPage(),
                 '/launch/login': (BuildContext context) => const LoginPage(),
                 '/splash/test': (BuildContext context) => const TestPage(),
                 '/kat_pages/url_home': (BuildContext context) =>
-                    const InspectFeedback(),
+                InspectFeedback(),
                 '/menu/menu_home': (BuildContext context) => const MenuHome(),
                 '/menu/service_center': (BuildContext context) =>
-                    const ServiceCenter(),
+                const ServiceCenter(),
                 '/menu/alarm': (BuildContext context) =>
-                    const PhishingAlarmPage(),
+                const PhishingAlarmPage(),
                 '/menu/notice': (BuildContext context) => const NoticePage(),
                 '/menu/alarm/setting': (BuildContext context) =>
                     const SettingPage(),
                 '/menu/news': (BuildContext context) =>
                 const NewsWebView(),
+                const SettingPage(),
               },
             );
           } else //(snapshot.connectionState == ConnectionState.waiting) {
-          {
+              {
             return const MaterialApp(
                 home: SplashScreen()); // 초기 로딩 시 Splash Screen
           }

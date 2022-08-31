@@ -11,9 +11,9 @@ import 'package:flutter/material.dart';
 
 import '../Theme.dart';
 import '../kat_widget/kat_appbar_back.dart';
+import '../kat_widget/no_smishing.dart';
 
 class InspectFeedback extends StatefulWidget {
-  const InspectFeedback({Key? key}) : super(key: key);
 
   @override
   State<InspectFeedback> createState() => _InspectFeedbackState();
@@ -23,14 +23,18 @@ enum SingingCharacter { smishingURL, remoteControll, privateInfo, scam, teleMark
 
 class _InspectFeedbackState extends State<InspectFeedback> with SingleTickerProviderStateMixin {
 
+  late int type;
   final _isVisible = List<bool>.filled(100, false);
   int _idx =0; // 몇 번째 문자를 보고 있는지에 대한 변수
-  int flag = 0; //
   late TabController _tabController; // tab bar를 위한 변수
   int _isSelected =0;       //
   bool _changeCategory=false; // 분류수정이 눌렸는지에 대한 변수
   List<bool> toggleSelected=[false, false];
   SingingCharacter? _character = SingingCharacter.smishingURL;
+  late List<int?> scoreList = scoreList = List<int>.empty();
+  List<String> msgList = ['위험 URL으로 분류된문자입니다.','텔레마케팅으로 분류된 문자입니다.','지인사칭으로 분류된 문자입니다.', '위험 URL 포함으로 분류된 문자입니다.', '기타로 분류된 문자입니다.'];
+  String content='고객님의 택배가 반송 처리되었습니다. 고객님의 택배가 반송 처리되었습니다. \n 고객님의 택배가 반송 처리되었습니다. \n고객님의 택배가 반송 처리되었습니다. \n고객님의 택배가 반송 처리되었습니다. \n고객님의 택배가 반송 처리되었습니다. \n고객님의 택배가 반송 처리되었습니다. \n고객님의 택배가 반송 처리되었습니다. \n고객님의 택배가 반송 처리되었습니다. \n고객님의 택배가 반송 처리되었습니다. \n 고객님의 택배가 반송 처리되었습니다. \n고객님의 택배가 반송 처리되었습니다. \n고객님의 택배가 반송 처리되었습니다. \n고객님의 택배가 반송 처리되었습니다. \n고객님의 택배가 반송 처리되었습니다. \n고객님의 택배가 반송 처리되었습니다. \n' ;
+  late int cnt=0;
   void buttonInit(int num){
       _isSelected =0;
       toggleSelected  = [false, false]; // 토글 버튼에 대한 index
@@ -41,7 +45,7 @@ class _InspectFeedbackState extends State<InspectFeedback> with SingleTickerProv
 
   }
 
-  void _settingModalBottomSheet(context)
+  void _settingModalBottomSheet(context) // 분류수정
   {
     List<bool> buttonCheck = List<bool>.filled(7, false);
     buttonCheck[0]=true;
@@ -60,7 +64,6 @@ class _InspectFeedbackState extends State<InspectFeedback> with SingleTickerProv
 
               ),
              height: MediaQuery.of(context).size.height * 0.55,
-              width: MediaQuery.of(context).size.width,
                 child: Column(
                   //mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
@@ -218,11 +221,11 @@ class _InspectFeedbackState extends State<InspectFeedback> with SingleTickerProv
                           });
                         },
                         children: <Widget>[
-                          Container(width: MediaQuery.of(context).size.width*0.496,  color: Colors.grey[300],
+                          Container(width: MediaQuery.of(context).size.width*0.495,  color: Colors.grey[300],
                             child:
                             Center(child: Text('취소', style: AppTheme.whitetitle)),
                           ),
-                          Container(width: MediaQuery.of(context).size.width*0.496, color: AppTheme.startBackground,
+                          Container(width: MediaQuery.of(context).size.width*0.495, color: AppTheme.startBackground,
                             child:
                             Center(child: Text('변경하기', style: AppTheme.whitetitle)),
                           ),
@@ -241,11 +244,97 @@ class _InspectFeedbackState extends State<InspectFeedback> with SingleTickerProv
         });
   }
 
+  void _alertModalBottomSheet(context){
+    showModalBottomSheet(backgroundColor: Colors.transparent,
+        context: context,
+        builder: (context){
+        return Container(
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.only(topRight: Radius.circular(20), topLeft: Radius.circular(20)
+            ),
+
+          ),
+          height: MediaQuery.of(context).size.height * 0.25,
+          width: MediaQuery.of(context).size.width,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: <Widget>[
+
+              Container(
+                padding: EdgeInsets.fromLTRB(40, MediaQuery.of(context).size.height * 0.05, 40, 0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    Row(
+                      children: [
+                        Text('차단 해제 시', style: AppTheme.menu_news2),
+                        Text(' 보안에 취약해지고 스미싱 위험에', style: AppTheme.subtitle),
+                      ],
+                    ),
+                    Row(
+                      children: <Widget>[
+                        Text('노출', style: AppTheme.subtitle),
+                        Text(' 될 수 있습니다.', style: AppTheme.service_center),
+                      ],
+                    ),
+                    Text('그래도 해제하시겠어요?', style: AppTheme.service_center)
+                  ],
+                ),
+              ),
+              Container(
+                height: MediaQuery.of(context).size.height * 0.08,
+                child: ToggleButtons(
+                  isSelected: toggleSelected,
+                  onPressed: (int index){
+                    setState(() {
+                      toggleSelected[index] = !toggleSelected[index];
+                      if(toggleSelected[0] == true){
+                        Navigator.pop(context);
+                        toggleSelected[0] = false;
+                      }
+                      if(toggleSelected[1] == true)
+                      {
+                        setState((){scoreList.removeAt(_isSelected);});
+
+                        Navigator.pop(context);
+                        _changeCategory=false;
+                        toggleSelected[1] = false;
+                      }
+                    });
+                  },
+                  children: <Widget>[
+                    Container(width: MediaQuery.of(context).size.width*0.49,  color: Colors.grey[300],
+                      child:
+                      Center(child: Text('취소', style: AppTheme.whitetitle)),
+                    ),
+                    Container(width: MediaQuery.of(context).size.width*0.49, color: AppTheme.startBackground,
+                      child:
+                      Center(child: Text('해체하기', style: AppTheme.whitetitle)),
+                    ),
+                  ],
+                ),
+              )
+            ],
+          ),
+
+        );
+      });
+  } // 차단해제
+
 
   @override
   void initState() {
+    scoreList = [90, 30, 100, 20];
     _tabController = TabController(vsync: this, length: 3);
     super.initState();
+    for(int i=0; i<content.length; i++) {
+      if (content[i] == "\n") {
+        cnt += 1;
+      }
+    }
+    cnt = (cnt>=content.length ~/13 ? cnt : content.length~/13);
+    print("cnt: " + cnt.toString() + content.length.toString()); // 글자수 계산해서 container 만들거임
   }
   @override
   void dispose() {
@@ -254,160 +343,170 @@ class _InspectFeedbackState extends State<InspectFeedback> with SingleTickerProv
   }
 
   Widget _last_list(int type) {
-    List<String> msgList = ['텔레마케팅으로 분류된 문자입니다.','지인사칭으로 분류된 문자입니다.', '위험 URL 포함으로 분류된 문자입니다.'];
-    List<int> scoreList = [90, 70, 60, 70, 30, 10, 30, 90];
-
     if(type==2)
-        scoreList.sort((b,a) => a.compareTo(b));
+        scoreList.sort((b,a) => a!.compareTo(b!));
 
 
-      return SingleChildScrollView(
-      child: Container(
-        padding: EdgeInsets.only(top: 20, bottom: 10, left: MediaQuery.of(context).size.width * 0.05, right: MediaQuery.of(context).size.width * 0.05),
-        child: Column(
-          children: List.generate(scoreList.length, (index) {
-            return Container(
-              width: MediaQuery.of(context).size.width * 0.9,
-              padding: const EdgeInsets.symmetric(vertical: 10),
+      return 
+        SingleChildScrollView(
+          child: Container(
+            padding: EdgeInsets.only(top: 20, bottom: 10, left: MediaQuery.of(context).size.width * 0.05, right: MediaQuery.of(context).size.width * 0.05),
+            child: Column(
+              children: List.generate(scoreList.length, (index) {
+                return Container(
+                  width: MediaQuery.of(context).size.width * 0.9,
+                  padding: const EdgeInsets.symmetric(vertical: 10),
 
-              child: Column(
-                children: [
-                  Row(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  child: Column(
                     children: [
-                      Container(
-                        width: MediaQuery.of(context).size.width * 0.1,
-                        child: (scoreList[index] > 80 ) ? const Image(image: AssetImage('assets/images/smsManage1.png')) : (scoreList[index] > 60) ? const Image(image: AssetImage('assets/images/smsManage2.png')) : const Image(image: AssetImage('assets/images/smsManage3.png')),
-                      ), // 노란, 빨강, 오렌지 등의 사진 문자 아이콘
-                      Container(
-                        width: MediaQuery.of(context).size.width * 0.75,
-                        height: 60,
-                        color: _isVisible[index]? AppTheme.blueText:AppTheme.whiteGrey,
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Container(
-
-                              height: 30,
-                              child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                  children:[
-
-                                    Container(
-
-                                        margin: EdgeInsets.fromLTRB(8, 0, MediaQuery.of(context).size.width*0.02, 0),
-                                        child: Text('010-1234-1234', style: _isVisible[index]?  AppTheme.smsPhone: AppTheme.subtitle)),
-                                    Row(
-                                      children:<Widget> [
-                                        Container(
-                                            margin: EdgeInsets.fromLTRB(MediaQuery.of(context).size.width * 0.01, 0,0, 0),
-                                            child: Text('2021-10-26 11:40', style: _isVisible[index]?  AppTheme.selectDate:AppTheme.unseletDate),),
-
-                                        IconButton(
-                                            icon: Icon(
-                                                Icons.arrow_drop_down,
-                                                size: 10),
-                                            onPressed: (){
-                                              setState((){
-                                                buttonInit(index);
-                                                _isSelected = index;
-                                                _isVisible[index] = !_isVisible[index];
-                                                if(_isVisible[index]==true) flag++;
-                                                else {flag--; _isSelected=0;}
-                                              });
-                                            },
-                                          ),
-
-
-
-                                      ],
-                                    ),
-                                  ]
-                              ),
-                            ),
-
-                            Container(
-                              height: 30,
-                                margin: EdgeInsets.fromLTRB(8, 0, 2, 0),
-                                child: Text(msgList[index%3], style: _isVisible[index]?  AppTheme.checksmsContent: AppTheme.unchecksmsContent)),
-                          ],
-                        )
-                      ),
-                    ],
-                  ),
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.end,
-
-                    children: <Widget>[
                       Row(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          SizedBox(width: MediaQuery.of(context).size.width * 0.15,),
+                          Container(
+                            width: MediaQuery.of(context).size.width * 0.1,
+                            child: (scoreList[index]! > 80 ) ? const Image(image: AssetImage('assets/images/smsManage1.png')) : (scoreList[index]! > 60) ? const Image(image: AssetImage('assets/images/smsManage2.png')) : const Image(image: AssetImage('assets/images/smsManage3.png')),
+                          ), // 노란, 빨강, 오렌지 등의 사진 문자 아이콘
+                          Container(
+                            width: MediaQuery.of(context).size.width * 0.75,
+                            height: 60,
+                            color: _isVisible[index]? AppTheme.blueText:AppTheme.whiteGrey,
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Container(
+
+                                  height: 30,
+                                  child: Row(
+                                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                      children:[
+
+                                        Container(
+
+                                            margin: EdgeInsets.fromLTRB(8, 0, MediaQuery.of(context).size.width*0.02, 0),
+                                            child: Text('010-1234-1234', style: _isVisible[index]?  AppTheme.smsPhone: AppTheme.subtitle)),
+                                        Row(
+                                          children:<Widget> [
+                                            Container(
+                                                margin: EdgeInsets.fromLTRB(MediaQuery.of(context).size.width * 0.01, 0,0, 0),
+                                                child: Text('2021-10-26 11:40', style: _isVisible[index]?  AppTheme.selectDate:AppTheme.unseletDate),),
+
+
+                                            Container(
+                                              width: 15,
+                                              height:20,
+                                              child: IconButton(
+                                                  icon: Icon(
+                                                      Icons.arrow_drop_down,
+                                                      size: 5),
+                                                  onPressed: (){
+                                                    setState((){
+                                                      buttonInit(index);
+                                                      _isSelected = index;
+                                                      _isVisible[index] = !_isVisible[index];
+                                                      if(_isVisible[index]==false) {_isSelected=0;}
+                                                    });
+                                                  },
+                                                ),
+                                            ),
+
+
+
+                                          ],
+                                        ),
+                                      ]
+                                  ),
+                                ),
+
+                                Container(
+                                  height: 30,
+                                    margin: EdgeInsets.fromLTRB(8, 0, 2, 0),
+                                    child: Text(msgList[index%3], style: _isVisible[index]?  AppTheme.checksmsContent: AppTheme.unchecksmsContent)),
+                              ],
+                            )
+                          ),
+                        ],
+                      ),
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.end,
+
+                        children: <Widget>[
+                          Row(
+                            children: [
+                              SizedBox(width: MediaQuery.of(context).size.width * 0.15,),
+                              Visibility(
+                                      visible: _isVisible[index],
+                                      child:
+
+                                        Container(
+                                            width: MediaQuery.of(context).size.width * 0.749,
+                                            height: MediaQuery.of(context).size.height*0.02 >=  (cnt ) * MediaQuery.of(context).size.height*0.03 ?MediaQuery.of(context).size.height*0.2:(cnt) * MediaQuery.of(context).size.height*0.02,
+                                            decoration: BoxDecoration(
+                                              border: Border.all(color: AppTheme.blueText)
+
+                                            ),
+                                              child: Padding(
+                                                padding: const EdgeInsets.all(8.0),
+                                                child: Text('$content'),
+                                              )
+
+                                      ),
+                                      )
+
+                               // 문자 내용 메시지 보여지는 text
+
+                            ],
+                          ), // 문자 내용 보여주는 로우
+                          SizedBox(height: 10),
                           Visibility(
                               visible: _isVisible[index],
-                              child: Container(
-                                width: MediaQuery.of(context).size.width * 0.749,
-                                height: MediaQuery.of(context).size.height * 0.3,
-                                decoration: BoxDecoration(
-                                  border: Border.all(color: AppTheme.blueText)
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.end,
+                                children: <Widget>[
 
-                                ),
-                                  child: Padding(
-                                    padding: const EdgeInsets.all(8.0),
-                                    child: Text('고객님의 택배가 반송 처리되었습니다. 자세한 사항은 아래 링크를 통해 확인할 수 있습니다.'),
-                                  )
-                          )), // 문자 내용 메시지 보여지는 text
-
+                                  Container(
+                                    //color: Colors.blue,
+                                    width: 80,
+                                    height: 35,
+                                    child: TextButton(
+                                      style: AppTheme.buttonStyle_whitewithbolder,
+                                      onPressed: (){
+                                        setState((){
+                                        //  _changeCategory= !(_changeCategory);
+                                          _settingModalBottomSheet(context);
+                                        });
+                                        },
+                                      child: Text('분류수정', style: AppTheme.caption)
+                                    ),
+                                  ),
+                                  SizedBox(width:30),
+                                  Container(
+                                     // color: Colors.blue,
+                                      width: 80,
+                                      height: 35,
+                                      child: TextButton(
+                                        style: AppTheme.buttonStyle_whitewithbolder,
+                                        onPressed: (){_alertModalBottomSheet(context);
+                                          print(index);},
+                                        child: Text('차단해제', style: AppTheme.caption)
+                                    ),
+                                     )
+                                ],
+                              )
+                          ) // 분류수정, 차단해제 버튼
                         ],
-                      ), // 문자 내용 보여주는 로우
-                      SizedBox(height: 10),
-                      Visibility(
-                          visible: _isVisible[index],
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.end,
-                            children: <Widget>[
-
-                              Container(
-                                //color: Colors.blue,
-                                width: 80,
-                                height: 35,
-                                child: TextButton(
-                                  style: AppTheme.buttonStyle_whitewithbolder,
-                                  onPressed: (){
-                                    setState((){
-                                    //  _changeCategory= !(_changeCategory);
-                                      _settingModalBottomSheet(context);
-                                    });
-                                    },
-                                  child: Text('분류수정', style: AppTheme.caption)
-                                ),
-                              ),
-                              SizedBox(width:30),
-                              Container(
-                                 // color: Colors.blue,
-                                  width: 80,
-                                  height: 35,
-                                  child: TextButton(
-                                    style: AppTheme.buttonStyle_whitewithbolder,
-                                    onPressed: (){},
-                                    child: Text('차단해제', style: AppTheme.caption)
-                                ),
-                                 )
-                            ],
-                          )
-                      ) // 분류수정, 차단해제 버튼
+                      ), //문자 내용 보여주는 위젯
                     ],
-                  ), //문자 내용 보여주는 위젯
-                ],
-              ),
-            );
-          })
-        )
-      ),
-    );
-  }
+                  ),
+                );
+              })
+            )
+          ),
+        );
 
-  BottomAppBar BottomAppbar(BuildContext context) {
+  } // 메인 UI
+
+  /*BottomAppBar BottomAppbar(BuildContext context) {
     return BottomAppBar(
       child:
       Container(
@@ -579,12 +678,14 @@ class _InspectFeedbackState extends State<InspectFeedback> with SingleTickerProv
 
 
     );
-  } //bottom show up
+  } //bottom show up */
 
   @override
   Widget build(BuildContext context) {
+    print((ModalRoute.of(context))!.settings.arguments);
+
     return Scaffold(
-        appBar: (flag == 0) ? AppBarBack( title: '메세지 관리',) : AppBarBack( title: 'Url 검사결과',),
+        appBar: ((ModalRoute.of(context))!.settings.arguments) == 1? AppBarBack( title: '메세지 관리',) : AppBarBack( title: 'Url 검사결과',),
 
 
       body:Column(
@@ -658,9 +759,9 @@ class _InspectFeedbackState extends State<InspectFeedback> with SingleTickerProv
               TabBarView(
                 controller: _tabController,
                 children: [
-                  _last_list(1),
-                  _last_list(2),
-                  _last_list(3),
+                  scoreList.isEmpty ?noSmishing() : _last_list(1),
+                  scoreList.isEmpty ?noSmishing() :_last_list(2),
+                  scoreList.isEmpty ?noSmishing() :_last_list(3),
                 ],
 
           ))
