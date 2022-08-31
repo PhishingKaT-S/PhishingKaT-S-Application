@@ -6,8 +6,8 @@
  * 해야할 일:
  *  1. user_id (객체에서 꼽아주기)
  *  2. 네트워크 에러 페이지로 넘기기 (연동)
+ *  3. 이번달 출석일수 Provider 작성
  */
-
 
 import 'dart:collection';
 
@@ -49,30 +49,30 @@ class _AttendancePage extends State<AttendancePage> {
     DateTime _date ;
     Map<DateTime, dynamic> dates = {} ;
     await MySqlConnection.connect(Database.getConnection())
-        .then((conn) async => {
+        .then((conn) async {
           await conn.query("SELECT * FROM attendance WHERE user_id = ?", [user_id])
-          .then((results) => {
+          .then((results) {
             if ( results.isNotEmpty ) {
               for (var res in results )  {
-                _date = res['attendance'] as DateTime,
-                dates[_date] = _date,
-              },
-              _events.addAll(dates),
+                _date = res['attendance'] as DateTime;
+                dates[_date] = _date;
+              }
+              _events.addAll(dates);
             } else {
 
-            },
-          }).onError((error, stackTrace) => {
-
-          }),
-          conn.close(),
-        }).onError((error, stackTrace) => {
+            }
+          }).onError((error, stackTrace) {
+            /// 쿼리 에러 처리
+          });
+          conn.close();
+        }).onError((error, stackTrace) {
           /// 네트워크 에러 처리
         });
     print(_events) ;
     return _events ;
   }
 
-  Widget _oneday_onecheck_notice() {
+  Widget _onedayOnecheckNotice() {
     const double NOTICE_HEIGHT = 60.0;
     /**
      * _oneday_onecheck_notice
@@ -88,14 +88,14 @@ class _AttendancePage extends State<AttendancePage> {
     ) ;
   }
 
-  Widget _dividing_line() {
+  Widget _dividingLine() {
     return Container(
       height: 15,
       color: AppTheme.whiteGrey,
     );
   }
 
-  Widget _calendar_title() {
+  Widget _calendarTitle() {
     const double TITLE_HEIGHT = 90.0;
 
     /**
@@ -140,7 +140,7 @@ class _AttendancePage extends State<AttendancePage> {
     );
   }
 
-  Widget _calendar_content() {
+  Widget _calendarContent() {
     CalendarFormat _calendarFormat = CalendarFormat.month;
     DateTime? _selectedDay;
     List<String> days = ['_', '월', '화', '수', '목', '금', '토', '일'];
@@ -219,14 +219,14 @@ class _AttendancePage extends State<AttendancePage> {
               ),
             );
           } else {
-            return const Text('캘린더를 불러 올 수 없습니다.') ;
+            return Container();
           }
         },
       )
     );
   }
 
-  Widget _oneday_onecheck_additional_notice() {
+  Widget _onedayOnecheckAdditionalNotice() {
     const double NOTICE_HEIGHT = 100.0;
 
     /**
@@ -253,11 +253,11 @@ class _AttendancePage extends State<AttendancePage> {
       body: SingleChildScrollView(
         child: Column(
           children: [
-            _oneday_onecheck_notice(),
-            _dividing_line(),
-            _calendar_title(),
-            _calendar_content(),
-            _oneday_onecheck_additional_notice(),
+            _onedayOnecheckNotice(),
+            _dividingLine(),
+            _calendarTitle(),
+            _calendarContent(),
+            _onedayOnecheckAdditionalNotice(),
           ],
         ),
       )
