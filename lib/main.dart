@@ -4,6 +4,7 @@ import 'package:kakao_flutter_sdk/kakao_flutter_sdk.dart';
 import 'package:phishing_kat_pluss/kat_pages/attendance_page.dart';
 import 'package:phishing_kat_pluss/kat_pages/detect_load_page.dart';
 import 'package:phishing_kat_pluss/kat_pages/home_page.dart';
+import 'package:phishing_kat_pluss/menu/newsWebView.dart';
 import 'package:phishing_kat_pluss/menu/notice_page.dart';
 import 'package:phishing_kat_pluss/kat_pages/one_click_bank_page.dart';
 import 'package:phishing_kat_pluss/menu/phishing_alarm_page.dart';
@@ -105,7 +106,7 @@ class MyApp extends StatelessWidget {
                 '/launch/login': (BuildContext context) => const LoginPage(),
                 '/splash/test': (BuildContext context) => const TestPage(),
                 '/kat_pages/url_home': (BuildContext context) =>
-                InspectFeedback(),
+                    InspectFeedback(),
                 '/menu/menu_home': (BuildContext context) => const MenuHome(),
                 '/menu/service_center': (BuildContext context) =>
                 const ServiceCenter(),
@@ -114,6 +115,8 @@ class MyApp extends StatelessWidget {
                 '/menu/notice': (BuildContext context) => const NoticePage(),
                 '/menu/alarm/setting': (BuildContext context) =>
                 const SettingPage(),
+                '/menu/news': (BuildContext context) =>
+                const NewsWebView(),
               },
             );
           } else //(snapshot.connectionState == ConnectionState.waiting) {
