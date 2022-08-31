@@ -22,25 +22,24 @@ class LaunchProvider extends ChangeNotifier {
     await request_permission();
     //getMessage();
     //getContacts();
-    userInfo = UserInfo(
-        imei: await getIMEI() as String,
-        phoneNumber: await getPhoneNumber() as String);
+    _userInfo.imei = await getIMEI() as String;
+    _userInfo.phoneNumber = await getPhoneNumber() as String;
     await MySqlConnection.connect(Database.getConnection()).then((conn) async {
       await conn.query(
           "SELECT nickname FROM users WHERE IMEI = ? AND phone_number = ?",
-          [userInfo!.imei, userInfo!.phoneNumber]).then((results) {
+          [_userInfo.imei, _userInfo.phoneNumber]).then((results) {
         if (results.isNotEmpty) {
           if (results.length > 1) {
             //  동일한 IMEI와 핸드폰 번호가 있으면 2개 이상이 나오는데 그 때는 우짜나?
             _signUp = false;
           } else {
-            userInfo!.uerId = results.first["id"];
-            userInfo!.analysisDate = results.first["analysis_date"];
-            userInfo!.gender = results.first["gender"];
-            userInfo!.profession = results.first["profession"];
-            userInfo!.year = results.first["year"];
-            userInfo!.nickname = results.first["nickname"];
-            userInfo!.updateDate = results.first["update_date"];
+            _userInfo.uerId = results.first["id"];
+            _userInfo.analysisDate = results.first["analysis_date"];
+            _userInfo.gender = results.first["gender"];
+            _userInfo.profession = results.first["profession"];
+            _userInfo.year = results.first["year"];
+            _userInfo.nickname = results.first["nickname"];
+            _userInfo.updateDate = results.first["update_date"];
             _signUp = true;
             print("get data");
             // notifyListeners();
@@ -60,9 +59,9 @@ class LaunchProvider extends ChangeNotifier {
     return _signUp;
   }
 
-  UserInfo? userInfo;
-  UserInfo getuserinfo(){
-    return userInfo!;
+  UserInfo _userInfo = UserInfo();
+  UserInfo getUserInfo(){
+    return _userInfo;
   }
 
   bool getSignUp() {
@@ -152,14 +151,14 @@ class LaunchProvider extends ChangeNotifier {
     ].request();
   }
 
-  Future getUserInfo() async {
-    var conn = await MySqlConnection.connect(Database.getConnection());
-    var results = await conn.query(
-        'SELECT * FROM users WHERE IMEI == ? AND phone_number = ?',
-        [userInfo?.imei, userInfo?.phoneNumber]);
-    conn.close();
-    return results;
-  }
+  // Future getUserInfo() async {
+  //   var conn = await MySqlConnection.connect(Database.getConnection());
+  //   var results = await conn.query(
+  //       'SELECT * FROM users WHERE IMEI == ? AND phone_number = ?',
+  //       [userInfo?.imei, userInfo?.phoneNumber]);
+  //   conn.close();
+  //   return results;
+  // }
 
   Future getPhoneNumber() async {
     var status = await Permission.contacts.status;
@@ -176,22 +175,22 @@ class LaunchProvider extends ChangeNotifier {
   Future _getDateInfo() async {
     await MySqlConnection.connect(Database.getConnection())
         .then((conn) async => {
-      await conn
-          .query("SELECT * FROM attendance WHERE user_id = ?",
-          [userInfo?.uerId])
-          .then((results) =>
-      {if (results.isNotEmpty) {} else if (results.isEmpty) {}})
-          .onError((error, stackTrace) => {}),
-      conn.close(),
-    })
+              await conn
+                  .query("SELECT * FROM attendance WHERE user_id = ?",
+                      [_userInfo.uerId])
+                  .then((results) =>
+                      {if (results.isNotEmpty) {} else if (results.isEmpty) {}})
+                  .onError((error, stackTrace) => {}),
+              conn.close(),
+            })
         .onError((error, stackTrace) => {});
   }
 
   void set_userinfo(String nickname, String year, bool gender, int profession){
-    userInfo!.nickname = nickname;
-    userInfo!.year = year;
-    userInfo!.gender = gender;
-    userInfo!.profession = profession;
+    _userInfo.nickname = nickname;
+    _userInfo.year = year;
+    _userInfo.gender = gender;
+    _userInfo.profession = profession;
   }
 }
 
@@ -202,15 +201,15 @@ class SmsData {
 }
 
 class UserInfo {
-  UserInfo({required this.imei, required this.phoneNumber});
+  // UserInfo({this.imei = "", this.phoneNumber = ""});
 
-  String imei;
-  String phoneNumber;
-  String? uerId;
-  String? nickname;
-  String? year;
-  bool? gender;
-  int? profession;
-  DateTime? analysisDate;
-  DateTime? updateDate;
+  String imei = "";
+  String phoneNumber = "";
+  String uerId = "";
+  String nickname = "";
+  String year = "";
+  bool gender = true;
+  int profession = 0;
+  DateTime analysisDate = DateTime.now();
+  DateTime updateDate = DateTime.now();
 }
