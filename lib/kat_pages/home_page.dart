@@ -5,11 +5,13 @@
 import 'package:flutter/material.dart';
 import 'package:line_chart/charts/line-chart.widget.dart';
 import 'package:line_chart/model/line-chart.model.dart';
+import 'package:mysql1/mysql1.dart';
 import 'package:phishing_kat_pluss/kat_widget/kat_appbar.dart';
 import 'package:phishing_kat_pluss/kat_widget/kat_bottombar.dart';
 import 'package:phishing_kat_pluss/providers/launch_provider.dart';
 import 'package:phishing_kat_pluss/theme.dart';
 import 'package:provider/provider.dart';
+import '../db_conn.dart';
 import '../kat_widget/kat_drawer.dart';
 import 'package:flutter_circular_chart_two/flutter_circular_chart_two.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -29,7 +31,7 @@ class _HomePage extends State<HomePage> {
   double SCORE_WIDTH_RANGE = 110;
   bool smish_detect_flag = true; // provider ?
 
-  Widget _get_circular_chart(double score) {
+  Widget _getCircularChart(double score) {
     return AnimatedCircularChart(
       key: _chartKey,
       size: Size(SCORE_WIDTH_RANGE + 30, SCORE_WIDTH_RANGE + 30),
@@ -69,7 +71,7 @@ class _HomePage extends State<HomePage> {
     );
   }
 
-  Widget _main_score_view() {
+  Widget _mainScoreView() {
     double score = 69;
 
     /**
@@ -178,14 +180,14 @@ class _HomePage extends State<HomePage> {
                                                             TextAlign.center)
                                                   ]
                                                 : [
-                                                    Text('분석 시작',
+                                                    const Text('분석 시작',
                                                         style: AppTheme
                                                             .score_start_pink,
                                                         textAlign:
                                                             TextAlign.center),
                                                   ],
                                           ))),
-                                  _get_circular_chart(score),
+                                  _getCircularChart(score),
                                 ],
                               ),
                             ),
@@ -271,7 +273,7 @@ class _HomePage extends State<HomePage> {
     );
   }
 
-  Widget _smishing_data(String bullet, String name, String num, Color color) {
+  Widget _smishingData(String bullet, String name, String num, Color color) {
     /**
      * _smishingData
      * _smishingDataAnalysisView 에서 사용하고 있음
@@ -308,12 +310,12 @@ class _HomePage extends State<HomePage> {
     ));
   }
 
-  Widget _data_analysis_day_button() {
+  Widget _dataAnalysisDayButton() {
     const double BUTTON_WIDTH = 50;
     const double BUTTON_HEIGHT = 30;
     const double PADDING_SIZE = 10;
 
-    final isSelected = [false, false, false];
+    final _isSelected = [false, false, false];
     List<String> dayList = ['1개월', '3개월', '전체'];
 
     return Row(
@@ -325,19 +327,29 @@ class _HomePage extends State<HomePage> {
             width: BUTTON_WIDTH,
             height: BUTTON_HEIGHT,
             child: TextButton(
-                onPressed: () {},
+                onPressed: () {
+                  setState(() {
+                    for (int i = 0; i < _isSelected.length; i++) {
+                      if (i == index) {
+                        _isSelected[index] = true;
+                      } else {
+                        _isSelected[i] = false;
+                      }
+                    }
+                  });
+                },
                 child: Text(
                   dayList[index],
                   style: AppTheme.caption,
                 ),
                 style: TextButton.styleFrom(
                     padding: EdgeInsets.zero,
-                    backgroundColor: AppTheme.whiteGreyBackground)),
+                    backgroundColor: (_isSelected[index]) ? const Color(0xFF95DBED) : AppTheme.whiteGreyBackground)),
           );
-        }));
+    }));
   }
 
-  Widget _smishing_data_analysis_view() {
+  Widget _smishingDataAnalysisView() {
     const DATA_ANALYSIS_VIEW_HEIGHT = 120.0;
     const bullet = "\u2022";
 
@@ -366,20 +378,20 @@ class _HomePage extends State<HomePage> {
                   child: Text('이번주 피싱 분석', style: AppTheme.subtitle0),
                 ),
                 Container(
-                  child: _data_analysis_day_button(),
+                  child: _dataAnalysisDayButton(),
                 )
               ],
             ),
           ),
-          _smishing_data(bullet, " 기존 받은 문자", "000", AppTheme.greenText),
-          _smishing_data(bullet, " 모르는 번호", "000", AppTheme.yellowText),
-          _smishing_data(bullet, " 피싱 의심 문자", "000", AppTheme.redText),
+          _smishingData(bullet, " 기존 받은 문자", "000", AppTheme.greenText),
+          _smishingData(bullet, " 모르는 번호", "000", AppTheme.yellowText),
+          _smishingData(bullet, " 피싱 의심 문자", "000", AppTheme.redText),
         ],
       ),
     );
   }
 
-  Widget _attendance_check() {
+  Widget _attendanceCheck() {
     List<String> dayList = <String>['월', '화', '수', '목', '금', '토', '일'];
     List<bool> dayCheckList = <bool>[
       false,
@@ -471,7 +483,7 @@ class _HomePage extends State<HomePage> {
             ));
   }
 
-  Widget _additional_fuctions() {
+  Widget _additionalFuctions() {
     List<String> functionList = <String>['원클릭 신고', '털린 정보 확인', 'URL검사'];
     List<String> imgList = <String>[
       'phone_check.png',
@@ -518,21 +530,55 @@ class _HomePage extends State<HomePage> {
             })));
   }
 
-  Widget _vertical_divider() {
-    return const VerticalDivider(
-      thickness: 1,
-      color: Color(0xFFF6F4F4),
+  Widget _verticalDivider() {
+    return Container(
+      width: 2,
+      height: 150,
+      color: const Color(0xFFF6F4F4),
     );
   }
 
-  Widget _daily_chart() {
+  Widget _currentLine() {
+    return Container(
+      width: MediaQuery.of(context).size.width,
+      // padding: EdgeInsets.only(
+      //   left: MediaQuery.of(context).size.width * 0.05,
+      //   right: MediaQuery.of(context).size.width * 0.05),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.end,
+        children: [
+          Stack(
+              children: [
+                Container(
+                  width: MediaQuery.of(context).size.width * 0.2,
+                  padding: EdgeInsets.only(right: MediaQuery.of(context).size.width * 0.05),
+                  height: 220,
+                  child: Card(
+                    shadowColor: AppTheme.grey,
+                    elevation: 10,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(30.0),
+                    ),
+                  ),
+                ),
+
+              ]
+          )
+        ],
+      )
+    );
+  }
+
+  Widget _dailyChart() {
+    List<String> dayList = ['1/24', '1/25', '2/20', '2/27', '2/28', '3/30'];
+
     List<LineChartModel> data = [
       LineChartModel(amount: 77, date: DateTime(2020, 1, 1)),
       LineChartModel(amount: 76, date: DateTime(2020, 1, 2)),
       LineChartModel(amount: 75, date: DateTime(2020, 1, 3)),
       LineChartModel(amount: 85, date: DateTime(2020, 1, 4)),
       LineChartModel(amount: 78, date: DateTime(2020, 1, 5)),
-      LineChartModel(amount: 97, date: DateTime(2020, 1, 6)),
+      LineChartModel(amount: 100, date: DateTime(2020, 1, 6)),
     ];
 
     Paint circlePaint = Paint()..color = AppTheme.blueLineChart;
@@ -544,49 +590,86 @@ class _HomePage extends State<HomePage> {
     Paint insideCirclePaint = Paint()..color = Colors.white;
 
     return Container(
-        padding: EdgeInsets.only(
-            left: MediaQuery.of(context).size.width * 0.1,
-            right: MediaQuery.of(context).size.width * 0.1,
+        padding: const EdgeInsets.only(
             top: 20,
             bottom: 10),
-        height: 200,
+        height: 300,
         child: Stack(
           children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                _vertical_divider(),
-                _vertical_divider(),
-                _vertical_divider(),
-                _vertical_divider(),
-                _vertical_divider(),
-                _vertical_divider(),
-              ],
+            Container(
+              padding: EdgeInsets.only(
+                top: 10,
+                left: MediaQuery.of(context).size.width * 0.1,
+                right: MediaQuery.of(context).size.width * 0.1,),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  _verticalDivider(),
+                  _verticalDivider(),
+                  _verticalDivider(),
+                  _verticalDivider(),
+                  _verticalDivider(),
+                  _verticalDivider(),
+                ],
+              ),
             ),
-            LineChart(
-              width: MediaQuery.of(context).size.width * 0.91,
-              height: 100,
-              data: data,
-              linePaint: linePaint,
-              circlePaint: circlePaint,
-              showPointer: true,
-              showCircles: true,
-              customDraw: (Canvas canvas, Size size) {},
-              insideCirclePaint: insideCirclePaint,
-              onValuePointer: (LineChartModelCallback value) {
-                print('${value.chart} ${value.percentage}');
-              },
-              onDropPointer: () {
-                print('onDropPointer');
-              },
-              insidePadding: 15,
+
+            Container(
+              width: MediaQuery.of(context).size.width,
+              height: 150,
+              padding: EdgeInsets.only(left: MediaQuery.of(context).size.width * 0.08,
+                right: MediaQuery.of(context).size.width * 0.08,),
+              child: LineChart(
+                width: MediaQuery.of(context).size.width * 0.95,
+                height: 100,
+                data: data,
+                linePaint: linePaint,
+                circlePaint: circlePaint,
+                showPointer: true,
+                showCircles: true,
+                customDraw: (Canvas canvas, Size size) {},
+                insideCirclePaint: insideCirclePaint,
+                onValuePointer: (LineChartModelCallback value) {
+                  print('${value.chart} ${value.percentage}');
+                },
+                onDropPointer: () {
+                  print('onDropPointer');
+                },
+                insidePadding: 15,
+              ),
             ),
+
+            // _currentLine(),
+
+            Container(
+              width: MediaQuery.of(context).size.width,
+              padding: EdgeInsets.only(
+                left: MediaQuery.of(context).size.width * 0.06,
+                right: MediaQuery.of(context).size.width * 0.06
+              ),
+              margin: EdgeInsets.only(top: 170),
+                child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: List.generate(dayList.length, (index) {
+                      return Text(dayList[index]) ;
+                        // (index < 5)
+                        //   ? Text(dayList[index])
+                        //   : Container(
+                        //     width: MediaQuery.of(context).size.width * 0.12,
+                        //     height: MediaQuery.of(context).size.width * 0.12,
+                        //     decoration: BoxDecoration(
+                        //       color: AppTheme.blueLineChart,
+                        //       borderRadius: BorderRadius.circular(25),
+                        //     ),
+                        //     child: Center(child: Text(dayList[index], textAlign: TextAlign.center, style: const TextStyle(color: AppTheme.white))),
+                        //   );
+                    }))),
           ],
         ));
   }
 
-  Widget _daily_report() {
-    List<String> dayList = ['1/24', '1/25', '2/20', '2/27', '2/28', '3/30'];
+  Widget _dailyReport() {
+
     /**
      * _daily_report
      * 업데이트한 날짜를 데이터로 차트 표시
@@ -614,16 +697,7 @@ class _HomePage extends State<HomePage> {
           ),
 
           /// Daily Chart
-          _daily_chart(),
-
-          Container(
-              padding: EdgeInsets.symmetric(
-                  horizontal: MediaQuery.of(context).size.width * 0.1),
-              child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: List.generate(dayList.length, (index) {
-                    return Text(dayList[index]);
-                  }))),
+          _dailyChart(),
         ],
       ),
     );
@@ -642,11 +716,11 @@ class _HomePage extends State<HomePage> {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
-            _main_score_view(),
-            _smishing_data_analysis_view(),
-            _attendance_check(),
-            _additional_fuctions(),
-            _daily_report(),
+            _mainScoreView(),
+            _smishingDataAnalysisView(),
+            _attendanceCheck(),
+            _additionalFuctions(),
+            _dailyReport(),
           ],
         ),
       ),
