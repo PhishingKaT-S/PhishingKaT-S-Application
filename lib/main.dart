@@ -117,7 +117,6 @@ class MyApp extends StatelessWidget {
                     const SettingPage(),
                 '/menu/news': (BuildContext context) =>
                 const NewsWebView(),
-                const SettingPage(),
               },
             );
           } else //(snapshot.connectionState == ConnectionState.waiting) {
