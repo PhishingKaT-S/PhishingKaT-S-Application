@@ -10,8 +10,10 @@ import 'package:flutter_switch/flutter_switch.dart';
 import 'package:phishing_kat_pluss/theme.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:provider/provider.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import '../providers/launch_provider.dart';
+import 'package:flutter_share/flutter_share.dart';
 
 class MenuHome extends StatefulWidget {
   const MenuHome({Key? key}) : super(key: key);
@@ -51,18 +53,23 @@ class _MenuHomeState extends State<MenuHome> {
     );
   }
 
-  Column family_app(String image, String app_name) {
-    return Column(
-      children: [
-        Image.asset(
-          image,
-          width: MediaQuery.of(context).size.width * 0.1,
-        ),
-        Text(
-          app_name,
-          style: AppTheme.menu_news2,
-        )
-      ],
+  GestureDetector family_app(String image, String app_name, String url) {
+    return GestureDetector(
+      onTap: (){
+        launchUrl(Uri.parse(url));
+      },
+      child: Column(
+        children: [
+          Image.asset(
+            image,
+            width: MediaQuery.of(context).size.width * 0.1,
+          ),
+          Text(
+            app_name,
+            style: AppTheme.menu_news2,
+          )
+        ],
+      ),
     );
   }
 
@@ -84,6 +91,15 @@ class _MenuHomeState extends State<MenuHome> {
           )
         ],
       ),
+    );
+  }
+
+  Future<void> share() async {
+    await FlutterShare.share(
+        title: 'Example share',
+        text: 'Example share text',
+        linkUrl: 'https://flutter.dev/',
+        chooserTitle: 'Example Chooser Title'
     );
   }
 
@@ -142,7 +158,7 @@ class _MenuHomeState extends State<MenuHome> {
                       height: MediaQuery.of(context).size.height * 0.02,
                     ),
                     Row(
-                      crossAxisAlignment: CrossAxisAlignment.end,
+                      crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
                         Image.asset(
                           'assets/images/menu_profile.png',
@@ -152,11 +168,11 @@ class _MenuHomeState extends State<MenuHome> {
                           width: MediaQuery.of(context).size.width * 0.05,
                         ),
                         Column(
-                          mainAxisAlignment: MainAxisAlignment.end,
-                          crossAxisAlignment: CrossAxisAlignment.end,
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              Provider.of<LaunchProvider>(context).getuserinfo().nickname.toString(),
+                              Provider.of<LaunchProvider>(context).getUserInfo().nickname.toString(),
                               style: TextStyle(
                                 fontSize: 15,
                                 fontWeight: FontWeight.bold,
@@ -191,44 +207,49 @@ class _MenuHomeState extends State<MenuHome> {
                     SizedBox(
                       height: MediaQuery.of(context).size.height * 0.02,
                     ),
-                    Container(
-                      height: MediaQuery.of(context).size.height * 0.07,
-                      //padding: const EdgeInsets.all(20.0),
-                      // alignment: Alignment.topLeft,
-                      decoration: BoxDecoration(
-                          color: Color(0xFFabe7ff),
-                          border: Border.all(color: Color(0xFFabe7ff)),
-                          borderRadius: BorderRadius.circular(15.0)),
-                      padding: EdgeInsets.only(left: 10, right: 10),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          const Text(
-                            '피싱관련 주요뉴스',
-                            style: AppTheme.menu_news,
-                            textAlign: TextAlign.left,
-                          ),
-                          Row(
-                            children: const [
-                              Text(
-                                '[관련기사] ',
-                                style: AppTheme.menu_news,
-                                textAlign: TextAlign.left,
-                              ),
-                              // row안에 text overflow를 적용하려면 flexible을 사용해야함.
-                              Flexible(
-                                child: Text(
-                                  '야간근무 전 은행 들렀다 보이스피싱범 잡은 경찰이 어쩌고 저쩌고 일단 길게 쓰고',
-                                  style: AppTheme.menu_news2,
-                                  overflow: TextOverflow.ellipsis,
-                                  maxLines: 1,
-                                  softWrap: true,
+                    GestureDetector(
+                      onTap: (){
+                        Navigator.pushNamed(context, '/menu/news');
+                      },
+                      child: Container(
+                        height: 50,
+                        //padding: const EdgeInsets.all(20.0),
+                        // alignment: Alignment.topLeft,
+                        decoration: BoxDecoration(
+                            color: Color(0xFFabe7ff),
+                            border: Border.all(color: Color(0xFFabe7ff)),
+                            borderRadius: BorderRadius.circular(15.0)),
+                        padding: EdgeInsets.only(left: 10, right: 10),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            const Text(
+                              '피싱관련 주요뉴스',
+                              style: AppTheme.menu_news,
+                              textAlign: TextAlign.left,
+                            ),
+                            Row(
+                              children: const [
+                                Text(
+                                  '[관련기사] ',
+                                  style: AppTheme.menu_news,
+                                  textAlign: TextAlign.left,
                                 ),
-                              )
-                            ],
-                          )
-                        ],
+                                // row안에 text overflow를 적용하려면 flexible을 사용해야함.
+                                Flexible(
+                                  child: Text(
+                                    '야간근무 전 은행 들렀다 보이스피싱범 잡은 경찰이 어쩌고 저쩌고 일단 길게 쓰고',
+                                    style: AppTheme.menu_news2,
+                                    overflow: TextOverflow.ellipsis,
+                                    maxLines: 1,
+                                    softWrap: true,
+                                  ),
+                                )
+                              ],
+                            )
+                          ],
+                        ),
                       ),
                     )
                   ],
@@ -252,7 +273,8 @@ class _MenuHomeState extends State<MenuHome> {
                 ),
                 dense: true,
                 onTap: () {
-                  buildShowMaterialModalBottomSheet(context);
+                  //buildShowMaterialModalBottomSheet(context);
+                  share();
                 },
               ),
               menu_divider(),
@@ -342,9 +364,9 @@ class _MenuHomeState extends State<MenuHome> {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          family_app('assets/images/line.png', '피싱캣'),
-                          family_app('assets/images/line.png', '모의훈련\n출시예정'),
-                          family_app('assets/images/line.png', '시티즌코난'),
+                          family_app('assets/images/phishingKat.png', '피싱캣', 'https://m.onestore.co.kr/mobilepoc/apps/appsDetail.omp?prodId=0000758242'),
+                          family_app('assets/images/phishingKatPlus.png', '모의훈련\n출시예정', 'http://phishingkat.com/app/PKat-TL-22.apk'),
+                          family_app('assets/images/citizenConan.png', '시티즌코난', 'https://m.onestore.co.kr/mobilepoc/apps/appsDetail.omp?prodId=0000758242'),
                         ],
                       ),
                     )
