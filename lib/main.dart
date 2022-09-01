@@ -84,7 +84,7 @@ class MyApp extends StatelessWidget {
                 primaryColor: Colors.blueGrey,
                 scaffoldBackgroundColor: Colors.white,
               ),
-              home: snapshot.data ? const HomePage() : const LoginPage(),
+              home: const HomePage(),//snapshot.data ? const HomePage() : const LoginPage(),
 
               // initialRoute: snapshot.data? '/homepage' : '/launch/login',
               ///앱에서 이동할 페이지의 이름 설정
@@ -126,21 +126,5 @@ class MyApp extends StatelessWidget {
                 home: SplashScreen()); // 초기 로딩 시 Splash Screen
           }
         });
-  }
-}
-
-class Init {
-  Init._();
-
-  static final instance = Init._();
-
-  Future<Widget?> initialize(BuildContext context) async {
-    await Future.delayed(const Duration(milliseconds: 2000));
-
-    // . . .
-    // 초기 로딩 작성
-    // . . .
-
-    return const HomePage(); // 초기 로딩 완료 시 띄울 앱 첫 화면
   }
 }
