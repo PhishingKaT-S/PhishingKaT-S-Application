@@ -23,7 +23,7 @@ class _KatBottomBar extends State<KatBottomBar> {
       if ( _selectedIndex == 0 ) {
         Navigator.pushNamed(context, '/kat_pages/home') ;
       } else if ( _selectedIndex == 1 ) {
-        Navigator.pushNamed(context, '/splash/test') ;
+        Navigator.pushNamed(context, '/kat_pages/url_home', arguments: 1 );
       } else if ( _selectedIndex == 2 ) {
         Navigator.pushNamed(context, '/menu/menu_home') ;
       }

@@ -21,10 +21,10 @@ class CeleBration extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    Future.delayed(const Duration(milliseconds: 2000))
+    Future.delayed(const Duration(milliseconds: 3000))
         .then((value) => Navigator.pushAndRemoveUntil(context, MaterialPageRoute(
                 builder: (BuildContext context) =>
-                    HomePage()), (route) => false));
+                    const HomePage()), (route) => false));
     return Scaffold(
       body: Container(
         child: Column(
@@ -59,6 +59,7 @@ class CeleBration extends StatelessWidget {
               ),
             ),
             Expanded(
+              flex: 1,
               child: Container(
                 child: Image.asset('assets/images/launch_end.png',
                     fit: BoxFit.fitWidth),

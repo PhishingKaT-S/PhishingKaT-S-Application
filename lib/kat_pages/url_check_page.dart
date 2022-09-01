@@ -22,7 +22,7 @@ class UrlCheckPage extends StatelessWidget {
         child: Center(
           child: InkWell(
             onTap: (){
-              Navigator.pushNamed(context, '/kat_pages/url_home');
+              Navigator.pushNamed(context, '/kat_pages/url_home', arguments: 0 );
             },
             child: Container(
                 width:230,
