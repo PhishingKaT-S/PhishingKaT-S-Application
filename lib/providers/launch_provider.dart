@@ -1,4 +1,3 @@
-import 'dart:ffi';
 
 import 'package:contacts_service/contacts_service.dart';
 import 'package:device_information/device_information.dart';
@@ -24,6 +23,9 @@ class LaunchProvider extends ChangeNotifier {
     //getContacts();
     _userInfo.imei = await getIMEI() as String;
     _userInfo.phoneNumber = await getPhoneNumber() as String;
+
+    print(_userInfo.imei);
+    print(_userInfo.phoneNumber);
     await MySqlConnection.connect(Database.getConnection()).then((conn) async {
       await conn.query(
           "SELECT nickname FROM users WHERE IMEI = ? AND phone_number = ?",
@@ -42,7 +44,7 @@ class LaunchProvider extends ChangeNotifier {
             _userInfo.updateDate = results.first["update_date"];
             _signUp = true;
             print("get data");
-            // notifyListeners();
+            notifyListeners();
           }
         } else if (results.isEmpty) {
           _signUp = false;
@@ -165,7 +167,9 @@ class LaunchProvider extends ChangeNotifier {
     String number = '';
     if (status.isGranted) {
       number = (await MobileNumber.mobileNumber) as String;
-      number = number.replaceFirst('82', '');
+      print(number);
+      number = number.replaceFirst('82+82', '0');
+      print(number);
     } else if (status.isDenied) {
       Permission.contacts.request();
     }
