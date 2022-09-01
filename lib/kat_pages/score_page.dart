@@ -6,6 +6,9 @@
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/painting.dart';
+import 'package:mysql1/mysql1.dart';
+import 'package:phishing_kat_pluss/db_conn.dart';
 import 'package:phishing_kat_pluss/kat_widget/kat_appbar_back.dart';
 
 import '../theme.dart';
@@ -18,7 +21,42 @@ class ScorePage extends StatefulWidget {
 }
 
 class _ScorePage extends State<ScorePage> {
+  List<String> types = ['', '공공기관 사칭', '070번호/해외발신', '[web]발신', '보험/금융상품', 'url/jpg\n파일 포함'] ; // 처음 ''은 0건 일 경우
   double score = 0.89;
+  List<int> types_of_ranks = [0] ;
+  List<int> num_of_sms_of_ranks = [0] ;
+
+  Future _get_rank_of_phishing_analysis() async {
+    var user_id = 2;
+
+    await MySqlConnection.connect(Database.getConnection())
+        .then((conn) async {
+      await conn.query("SELECT type, COUNT(*) AS num_of_sms FROM sms WHERE user_id = ? AND smishing = 1 GROUP BY type ORDER BY COUNT(*) DESC LIMIT 5", [user_id])
+          .then((results) {
+        if ( results.isNotEmpty ) {
+          for ( var res in results )  {
+            int type = res['type'] as int;
+            int num_of_sms = res['num_of_sms'] as int;
+
+            print(type.toString() + " " + num_of_sms.toString()) ;
+
+            types_of_ranks.add(type) ;
+            num_of_sms_of_ranks.add(num_of_sms) ;
+          }
+        } else {
+          print("No data") ;
+          return false;
+        }
+      }).onError((error, stackTrace) {
+        return false;
+      });
+      conn.close();
+    }).onError((error, stackTrace) {
+      /// 네트워크 에러 처리
+
+    });
+    return true ;
+  }
 
   Widget _dividing_line() {
     return Container(
@@ -164,53 +202,74 @@ class _ScorePage extends State<ScorePage> {
             ],
           ),
           Padding(padding: EdgeInsets.only(top:1)),
-          Text(content, style: AppTheme.rank_content_black),
+          Center(
+            child: Text(content, style: AppTheme.rank_content_black, textAlign: TextAlign.center,)
+          )
         ],
       )
     );
   }
 
   Widget _score_pie_chart() {
-    return Container(
-      padding: const EdgeInsets.only(top: 20),
-      height: MediaQuery.of(context).size.height * 0.43,
-      width: MediaQuery.of(context).size.height * 0.43,
-      child: Center(
-        child: Stack(
-          children: [
-            Image.asset('assets/images/pie_chart.png'),
+    return FutureBuilder(
+      future: _get_rank_of_phishing_analysis(),
+      builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
+        if ( snapshot.hasError) {
+          return Text('${snapshot.error}') ;
+        } else if ( snapshot.hasData ) {
+          return Container(
+              padding: const EdgeInsets.only(top: 20),
+              height: MediaQuery.of(context).size.height * 0.43,
+              width: MediaQuery.of(context).size.height * 0.43,
+              child: Center(
+                child: Stack(
+                  children: [
+                    Image.asset('assets/images/pie_chart.png'),
 
-            Container(
-              width: MediaQuery.of(context).size.width * 0.3,
-              margin: EdgeInsets.only(top: MediaQuery.of(context).size.height * 0.43 * 0.31, left: MediaQuery.of(context).size.height * 0.43 * 0.295),
-              child: Column(
-                children: [
-                  const Text('1위', style: TextStyle(fontFamily: AppTheme.fontName, fontSize: 20, fontWeight: FontWeight.bold, ), textAlign: TextAlign.center,),
-                  const Padding(padding: EdgeInsets.only(top:3)),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: const [
-                      Text('27', style: TextStyle(fontFamily: AppTheme.fontName, fontSize: 24, fontWeight: FontWeight.bold)),
-                      Text('건', style: TextStyle(fontFamily: AppTheme.fontName, fontSize: 14,)) ,
-                    ],
-                  ),
-                  const Padding(padding: EdgeInsets.only(top:1)),
-                  const Text('url/jpg 파일 포함', style: TextStyle(fontFamily: AppTheme.fontName, fontSize: 14)),
-                ],
-              ),
-            ),
+                    Container(
+                      width: MediaQuery.of(context).size.width * 0.3,
+                      margin: EdgeInsets.only(top: MediaQuery.of(context).size.height * 0.43 * 0.31, left: MediaQuery.of(context).size.height * 0.43 * 0.295),
+                      child: Column(
+                        children: [
+                          const Text('1위', style: TextStyle(fontFamily: AppTheme.fontName, fontSize: 20, fontWeight: FontWeight.bold, ), textAlign: TextAlign.center,),
+                          const Padding(padding: EdgeInsets.only(top:3)),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Text((types_of_ranks.length < 6) ? num_of_sms_of_ranks[0].toString() : num_of_sms_of_ranks[1].toString(),
+                                  style: TextStyle(fontFamily: AppTheme.fontName, fontSize: 24, fontWeight: FontWeight.bold)),
+                              const Text('건', style: TextStyle(fontFamily: AppTheme.fontName, fontSize: 14,)) ,
+                            ],
+                          ),
+                          const Padding(padding: EdgeInsets.only(top:1)),
+                          Text((types_of_ranks.length < 6) ? types[types_of_ranks[0]] : types[types_of_ranks[1]], style: TextStyle(fontFamily: AppTheme.fontName, fontSize: 14)),
+                        ],
+                      ),
+                    ),
 
-            _content_in_pie_chart(MediaQuery.of(context).size.width * 0.15, MediaQuery.of(context).size.height * 0.43 * 0.015,
-                MediaQuery.of(context).size.height * 0.43 * 0.16, '5위', '2', '공공기관 사칭'),
-            _content_in_pie_chart(MediaQuery.of(context).size.width * 0.2, MediaQuery.of(context).size.height * 0.43 * 0.13,
-                MediaQuery.of(context).size.height * 0.43 * 0.72, '2위', '5', '070번호/해외발신'),
-            _content_in_pie_chart(MediaQuery.of(context).size.width * 0.18, MediaQuery.of(context).size.height * 0.43 * 0.55,
-                0, '4위', '4', '[web]발신'),
-            _content_in_pie_chart(MediaQuery.of(context).size.width * 0.2, MediaQuery.of(context).size.height * 0.43 * 0.68,
-                MediaQuery.of(context).size.height * 0.43 * 0.62, '3위', '5', '보험/금융상품'),
-          ],
-        ),
-      )
+                    _content_in_pie_chart(MediaQuery.of(context).size.width * 0.15, MediaQuery.of(context).size.height * 0.43 * 0.015,
+                        MediaQuery.of(context).size.height * 0.43 * 0.16, '5위',
+                        (types_of_ranks.length < 6) ? num_of_sms_of_ranks[0].toString() : num_of_sms_of_ranks[5].toString(),
+                        (types_of_ranks.length < 6) ? types[types_of_ranks[0]] : types[types_of_ranks[5]]),
+                    _content_in_pie_chart(MediaQuery.of(context).size.width * 0.2, MediaQuery.of(context).size.height * 0.43 * 0.13,
+                        MediaQuery.of(context).size.height * 0.43 * 0.72, '2위',
+                        (types_of_ranks.length < 6) ? num_of_sms_of_ranks[2].toString() : num_of_sms_of_ranks[2].toString(),
+                        (types_of_ranks.length < 6) ? types[types_of_ranks[0]] : types[types_of_ranks[2]]),
+                    _content_in_pie_chart(MediaQuery.of(context).size.width * 0.18, MediaQuery.of(context).size.height * 0.43 * 0.55,
+                        0, '4위', (types_of_ranks.length < 6) ? num_of_sms_of_ranks[0].toString() : num_of_sms_of_ranks[4].toString(),
+                        (types_of_ranks.length < 6) ? types[types_of_ranks[0]] : types[types_of_ranks[4]]),
+                    _content_in_pie_chart(MediaQuery.of(context).size.width * 0.2, MediaQuery.of(context).size.height * 0.43 * 0.68,
+                        MediaQuery.of(context).size.height * 0.43 * 0.62, '3위',
+                        (types_of_ranks.length < 6) ? num_of_sms_of_ranks[0].toString() : num_of_sms_of_ranks[3].toString(),
+                        (types_of_ranks.length < 6) ? types[types_of_ranks[0]] : types[types_of_ranks[3]]),
+                  ],
+                ),
+              )
+          );
+        } else {
+          return Container() ;
+        }
+      },
     );
   }
 

@@ -7,6 +7,7 @@
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_circular_chart_two/flutter_circular_chart_two.dart';
 
 import '../Theme.dart';
@@ -23,11 +24,44 @@ class _DetectLoadPageState extends State<DetectLoadPage> {
   int num_of_completed_sms = 124 ;
   int num_of_total_sms = 223 ;
 
+  /* SMS Native
+  static const platform = MethodChannel('samples.flutter.dev/channel') ;
+
+  List<String> msgs = [] ;
+
+  @override
+  void initState() {
+    super.initState() ;
+    Future.microtask(() async {
+      await _get_sms_from_channel() ;
+    });
+  }
+
+  Future<void> _get_sms_from_channel() async {
+    List<String> ch = [];
+    try{
+      var res = await platform.invokeMethod('getResult');
+      ch = res.cast<String>() ;
+
+      for ( var sms in ch ) {
+        List<String> s = sms.split("[sms_text]") ;
+        print(s[0] + " " + s[1] + " " + s[2] + " " + s[3]) ;
+      }
+    } on PlatformException catch (e) {
+      ch.add("No data") ;
+    }
+
+    setState(() {
+      msgs = ch ;
+    });
+  }
+  */
+
   /**
    * _get_circular_chart
    * 현재 스미싱 검사 상태 원형 차트
    * */
-  Widget _get_circular_chart(double score) {
+  Widget _getCircularChart(double score) {
     return AnimatedCircularChart(
       key: _chartKey,
       size: Size(MediaQuery.of(context).size.width * 0.5, MediaQuery.of(context).size.width * 0.5),
@@ -53,6 +87,7 @@ class _DetectLoadPageState extends State<DetectLoadPage> {
       percentageValues: true,
     );
   }
+
   Widget _percentage() {
     double score = num_of_completed_sms / num_of_total_sms * 100;
     print(score);
@@ -83,7 +118,7 @@ class _DetectLoadPageState extends State<DetectLoadPage> {
                 )
               )
           ),
-          _get_circular_chart(score),
+          _getCircularChart(score),
         ],
       ),
     );
