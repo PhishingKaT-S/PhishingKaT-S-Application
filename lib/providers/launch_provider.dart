@@ -16,8 +16,10 @@ class LaunchProvider extends ChangeNotifier {
   LaunchProvider(){
     Init();
   }
-  Future<bool> Init() async {
+
+  Future Init() async {
     _signUp = false;
+
     await request_permission();
     //getMessage();
     //getContacts();
@@ -30,6 +32,7 @@ class LaunchProvider extends ChangeNotifier {
       await conn.query(
           "SELECT nickname FROM users WHERE IMEI = ? AND phone_number = ?",
           [_userInfo.imei, _userInfo.phoneNumber]).then((results) {
+            print(results) ;
         if (results.isNotEmpty) {
           if (results.length > 1) {
             //  동일한 IMEI와 핸드폰 번호가 있으면 2개 이상이 나오는데 그 때는 우짜나?
@@ -58,7 +61,7 @@ class LaunchProvider extends ChangeNotifier {
       print("error2: $error");
     });
     notifyListeners();
-    return _signUp;
+    return _signUp ;
   }
 
   UserInfo _userInfo = UserInfo();

@@ -29,42 +29,35 @@ import java.util.ArrayList;
 import io.flutter.embedding.android.FlutterActivity;
 import io.flutter.embedding.engine.FlutterEngine;
 import io.flutter.plugin.common.MethodChannel;
-
+import io.flutter.plugins.GeneratedPluginRegistrant;
 
 public class MainActivity extends FlutterActivity {
-    /*
     static final int PERMISSION_REQUEST_READ_SMS = 0x000001 ;
     String myPhoneNum = "01041609587" ;
 
     // Java API 에서는 CHANNEL 이름을 통해 실행
     // CHANNEL 변수의 값과 Flutter의 Channel 값이 동일해야합니다.
     private static final String CHANNEL = "samples.flutter.dev/channel" ;
-    ArrayList<String> sms ;
+    ArrayList<String> sms = new ArrayList<String>() ;
 
     @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
     public void configureFlutterEngine(@NonNull FlutterEngine flutterEngine)  {
+//        this.readSMS(sms);
+//        this.readMMS(sms);
 
+        GeneratedPluginRegistrant.registerWith(flutterEngine);
         new MethodChannel(flutterEngine.getDartExecutor().getBinaryMessenger(), CHANNEL)
                 .setMethodCallHandler(
                         (call, result) -> {
                             if ((sms.isEmpty())) {
-                                result.success("Error");
+                                sms.add("Error");
+                                result.success(sms);
                             } else {
                                 result.success(sms);
                             }// 결과 반환
                         }
                 );
-    }
-
-    @RequiresApi(api = Build.VERSION_CODES.M)
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-
-        OnCheckPermission();
-
-        sms = new ArrayList<String>() ;
 
         int sms_permission = ContextCompat.checkSelfPermission(this, Manifest.permission.READ_SMS) ;
         int contact_permission = ContextCompat.checkSelfPermission(this, Manifest.permission.READ_CONTACTS) ;
@@ -74,6 +67,7 @@ public class MainActivity extends FlutterActivity {
                 contact_permission == PackageManager.PERMISSION_DENIED ||
                 contact_state_permission == PackageManager.PERMISSION_DENIED) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+
                 if (this.readSMS(sms) && this.readMMS(sms)) {
                     for (int i = 0; i < sms.size(); i++) {
                         String[] __sms = sms.get(i).split("[sms_text]");
@@ -87,12 +81,36 @@ public class MainActivity extends FlutterActivity {
                 }
             }
         }
+    }
 
-//        ArrayList<MessageInfo> mms = this.readMMS();
-//
-//        for (int i = 0 ; i < mms.size(); i++) {
-//            Log.i(TAG, mms.get(i).name + " " + mms.get(i).date + " " + mms.get(i).body);
-//        }
+    @RequiresApi(api = Build.VERSION_CODES.M)
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        OnCheckPermission();
+
+        int sms_permission = ContextCompat.checkSelfPermission(this, Manifest.permission.READ_SMS) ;
+        int contact_permission = ContextCompat.checkSelfPermission(this, Manifest.permission.READ_CONTACTS) ;
+        int contact_state_permission = ContextCompat.checkSelfPermission(this, Manifest.permission.READ_PHONE_STATE) ;
+
+        if ( sms_permission == PackageManager.PERMISSION_GRANTED &&
+                contact_permission == PackageManager.PERMISSION_GRANTED &&
+                contact_state_permission == PackageManager.PERMISSION_GRANTED) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+
+                if (this.readSMS(sms) && this.readMMS(sms)) {
+                    for (int i = 0; i < sms.size(); i++) {
+                        String[] __sms = sms.get(i).split("[sms_text]");
+                        Log.i(TAG, __sms[0] + " " + __sms[1] + " " + __sms[2] + " " + __sms[3]);
+                    }
+                }
+
+                for (int i = 0; i < sms.size(); i++) {
+                    String[] __sms = sms.get(i).split("[sms_text]");
+                    Log.i(TAG, __sms[0] + " " + __sms[1] + " " + __sms[2] + " " + __sms[3]);
+                }
+            }
+        }
     }
 
     @RequiresApi(api = Build.VERSION_CODES.M)
@@ -105,7 +123,6 @@ public class MainActivity extends FlutterActivity {
                 contact_permission == PackageManager.PERMISSION_DENIED ||
                 contact_state_permission == PackageManager.PERMISSION_DENIED) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-
                 requestPermissions(new String[] { Manifest.permission.READ_SMS, Manifest.permission.READ_CONTACTS, Manifest.permission.READ_PHONE_STATE }, PERMISSION_REQUEST_READ_SMS) ;
             }
             return ;
@@ -329,6 +346,4 @@ public class MainActivity extends FlutterActivity {
         cursor.close();
         return true ;
     }
-
-     */
 }
