@@ -23,6 +23,7 @@ import 'kat_pages/info_check_page.dart';
 import 'kat_pages/one_click_page.dart';
 import 'kat_pages/url_check_page.dart';
 import 'kat_pages/detect_load_page.dart';
+import 'launch/celebration.dart';
 import 'launch/login_page.dart';
 import 'splash/test.dart';
 

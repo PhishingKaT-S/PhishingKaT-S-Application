@@ -1,4 +1,3 @@
-import 'dart:ffi';
 
 import 'package:contacts_service/contacts_service.dart';
 import 'package:device_information/device_information.dart';
@@ -17,17 +16,23 @@ class LaunchProvider extends ChangeNotifier {
   LaunchProvider(){
     Init();
   }
-  Future<bool> Init() async {
+
+  Future Init() async {
     _signUp = false;
+
     await request_permission();
     //getMessage();
     //getContacts();
     _userInfo.imei = await getIMEI() as String;
     _userInfo.phoneNumber = await getPhoneNumber() as String;
+
+    print(_userInfo.imei);
+    print(_userInfo.phoneNumber);
     await MySqlConnection.connect(Database.getConnection()).then((conn) async {
       await conn.query(
           "SELECT nickname FROM users WHERE IMEI = ? AND phone_number = ?",
           [_userInfo.imei, _userInfo.phoneNumber]).then((results) {
+            print(results) ;
         if (results.isNotEmpty) {
           if (results.length > 1) {
             //  동일한 IMEI와 핸드폰 번호가 있으면 2개 이상이 나오는데 그 때는 우짜나?
@@ -42,7 +47,7 @@ class LaunchProvider extends ChangeNotifier {
             _userInfo.updateDate = results.first["update_date"];
             _signUp = true;
             print("get data");
-            // notifyListeners();
+            notifyListeners();
           }
         } else if (results.isEmpty) {
           _signUp = false;
@@ -56,7 +61,7 @@ class LaunchProvider extends ChangeNotifier {
       print("error2: $error");
     });
     notifyListeners();
-    return _signUp;
+    return _signUp ;
   }
 
   UserInfo _userInfo = UserInfo();
@@ -165,7 +170,9 @@ class LaunchProvider extends ChangeNotifier {
     String number = '';
     if (status.isGranted) {
       number = (await MobileNumber.mobileNumber) as String;
-      number = number.replaceFirst('82', '');
+      print(number);
+      number = number.replaceFirst('82+82', '0');
+      print(number);
     } else if (status.isDenied) {
       Permission.contacts.request();
     }
