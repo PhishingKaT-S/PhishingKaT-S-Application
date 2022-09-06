@@ -16,16 +16,39 @@ class NewsWebView extends StatefulWidget {
 }
 
 class _NewsWebViewState extends State<NewsWebView> {
+
+  Widget _headerView() {
+    return Container(
+      height: MediaQuery.of(context).size.height * 0.3,
+      decoration: const BoxDecoration(
+        image: DecorationImage(
+          image: AssetImage('voicephishing.jpeg')
+        )
+      ),
+      child: Stack(
+        children: [
+
+
+        ],
+      )
+    );
+  }
+
+  Widget _newsList() {
+    return Container();
+  }
+
   @override
   Widget build(BuildContext context) {
-    return const Scaffold(
-        body: SafeArea(
-          child: WebView(
-            initialUrl: 'https://blog.naver.com/jubileeline21',
-            javascriptMode: JavascriptMode.unrestricted,
-            gestureNavigationEnabled: true,
-            userAgent: "random",
+    return Scaffold(
+        body: SingleChildScrollView(
+          child: Column(
+            children: [
+              _headerView(),
+              _newsList(),
+            ],
           ),
-        ));
+        )
+    );
   }
 }
