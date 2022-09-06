@@ -63,7 +63,7 @@ class LaunchProvider extends ChangeNotifier {
       print("error2: $error");
     });
     notifyListeners();
-    return _signUp ;
+    return _userInfo ;
   }
 
   UserInfo getUserInfo(){
