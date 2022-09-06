@@ -109,6 +109,7 @@ class _HomePage extends State<HomePage> {
         smish_detect_flag = Provider.of<LaunchProvider>(context, listen: false).getUserInfo().score == -1 ? false : true;
         if(smish_detect_flag){
           score = Provider.of<LaunchProvider>(context, listen: false).getUserInfo().score.toDouble();
+
         }
       });
     });
