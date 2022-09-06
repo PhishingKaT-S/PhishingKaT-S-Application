@@ -75,6 +75,7 @@ class AttendanceProvider extends ChangeNotifier {
 
         } else if (results.isEmpty) {
           _todayAttendance = false;
+          _monthAttendance = 1;
         }
       }).onError((error, stackTrace) {
         print("error: $error");
@@ -117,7 +118,9 @@ class AttendanceProvider extends ChangeNotifier {
           .then((conn) async {
         await conn.query("INSERT INTO attendance VALUES(?, ?)", [
           userId,
-          DateFormat('yy-MM-dd').format(DateTime.now())
+
+          DateFormat('yyyy-MM-dd').format(DateTime.now())
+
         ]).then((results) {
           if (results.isNotEmpty) {
           } else if (results.isEmpty) {}

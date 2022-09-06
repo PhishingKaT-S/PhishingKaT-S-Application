@@ -21,9 +21,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import '../providers/attendanceProvider.dart';
 
 class HomePage extends StatefulWidget {
-  const HomePage({Key? key, required this.userInfo}) : super(key: key);
-
-  final UserInfo userInfo;
+  const HomePage({Key? key,}) : super(key: key);
 
   @override
   State<StatefulWidget> createState() => new _HomePage();
@@ -36,14 +34,15 @@ class _HomePage extends State<HomePage> {
   void initState() {
     super.initState();
     WidgetsBinding.instance?.addPostFrameCallback((_) async {
-      print("user id:: ${widget.userInfo.userId}");
+      int _userId = Provider.of<LaunchProvider>(context, listen: false).getUserInfo().userId;
+      print("user id:: $_userId");
       _attendanceProvider =
           Provider.of<AttendanceProvider>(context, listen: false);
 
       bool _attendance =
-      await _attendanceProvider.getTodayAttendance(widget.userInfo.userId);
+      await _attendanceProvider.getTodayAttendance(_userId);
       if (!_attendance) {
-        _attendanceProvider.setTodayAttendance(widget.userInfo.userId);
+        _attendanceProvider.setTodayAttendance(_userId);
         showDialog(
           context: context,
           builder: (context) => AlertDialog(
@@ -107,9 +106,10 @@ class _HomePage extends State<HomePage> {
       }
       setState(() {
         _weekAttendance = _attendanceProvider.getWeekAttendance();
-        smish_detect_flag = widget.userInfo.score == -1 ? false : true;
+        smish_detect_flag = Provider.of<LaunchProvider>(context, listen: false).getUserInfo().score == -1 ? false : true;
         if(smish_detect_flag){
-          score = widget.userInfo.score.toDouble();
+          score = Provider.of<LaunchProvider>(context, listen: false).getUserInfo().score.toDouble();
+
         }
       });
     });
