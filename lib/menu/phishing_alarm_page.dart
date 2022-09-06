@@ -3,13 +3,16 @@
  * Detect phishngNoticePage
  * 최종 작성자: 김진일
  *
- * 해야할 일: 폰트 수정, 알림 확인 (디테일)
+ * 해야할 일:
+ *  폰트 수정, 알림 확인 (디테일)
  */
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:mysql1/mysql1.dart';
 
 import '../Theme.dart';
+import '../db_conn.dart';
 import '../kat_widget/kat_appbar_back.dart';
 
 class PhishingAlarmPage extends StatefulWidget {
@@ -20,14 +23,66 @@ class PhishingAlarmPage extends StatefulWidget {
 }
 
 class _PhishingAlarmPageState extends State<PhishingAlarmPage> {
+  List<int> _id = [] ;
+  List<String> _dateList = [] ;
+  List<String> _contents = [] ;
+  List<bool> _isReadList = [] ;
 
-  List<String> dateList = ['03월 03일', '03월 03일', '03월 03일'] ;
-  List<String> contents = ['보이스피싱이었다면 말할 것도 없고...', '보이스피싱이었다면 말할 것도 없고...', '보이스피싱이었다면 말할 것도 없고...'] ;
-  List<bool> isReadList = [true, false, true] ;
+  int user_id = 2 ;
+
+  Future<bool> _getPhishingAlarmData() async {
+
+    if ( _id.isEmpty && _dateList.isEmpty && _contents.isEmpty && _isReadList.isEmpty ) {
+      await MySqlConnection.connect(Database.getConnection())
+          .then((conn) async {
+        await conn.query("SELECT * FROM phishing_alarm WHERE user_id = ?", [user_id])
+            .then((results) {
+          if ( results.isNotEmpty ) {
+            for (var res in results )  {
+              DateTime _date = res['alarm_date'] as DateTime ;
+
+              String _month = (_date.month < 10) ? '0${_date.month}' : '${_date.month}';
+              String _day = (_date.month < 10) ? '0${_date.day}' : '${_date.day}';
+
+              _id.add(res['id']) ;
+              print(res['id']);
+              _dateList.add('$_month월 $_day일') ;
+              _contents.add(res['content']) ;
+              _isReadList.add((res['confirm'] == 1) ? true : false );
+            }
+          } else {
+            return false;
+          }
+        }).onError((error, stackTrace) {
+          /// 쿼리 에러 처리
+        });
+        conn.close();
+      }).onError((error, stackTrace) {
+        /// 네트워크 에러 처리
+      });
+    }
+    return true ;
+  }
+
+  Future _deleteAlarmData(int idx) async {
+    await MySqlConnection.connect(Database.getConnection())
+        .then((conn) async {
+      await conn.query(
+          "DELETE FROM phishing_alarm WHERE id = ?", [_id[idx]])
+          .then((results) {
+        _id = List.from(_id)..removeAt(idx) ;
+      }).onError((error, stackTrace) {
+        /// 쿼리 에러 처리
+      });
+      conn.close();
+    }).onError((error, stackTrace) {
+      /// 네트워크 에러 처리
+    });
+  }
 
   Widget _vertical_divider (){
     return Container(
-      margin: const EdgeInsets.only(left: 3.25),
+      margin: const EdgeInsets.only(left: 3),
       width: 1,
       decoration: const BoxDecoration(
         color: Color(0xFFB1AEAE),
@@ -53,7 +108,7 @@ class _PhishingAlarmPageState extends State<PhishingAlarmPage> {
                   height: MediaQuery.of(context).size.height * 0.01,
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
-                    color: (isReadList[index]) ? AppTheme.blueLineChart : Color(0xFFB1AEAE),
+                    color: (_isReadList[index]) ? AppTheme.blueLineChart : Color(0xFFB1AEAE),
                   ),
                 ),
 
@@ -65,10 +120,21 @@ class _PhishingAlarmPageState extends State<PhishingAlarmPage> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       /// 날짜
-                      Text(dateList[index], style: TextStyle(fontSize: 16)),
+                      Text(_dateList[index], style: TextStyle(fontSize: 16)),
                       InkWell(
-                        child: const Icon(Icons.close),
-                        onTap: () { },
+                        child: const Icon(Icons.close, color: AppTheme.greyText,),
+                        onTap: () async {
+                          if ( _id.isNotEmpty && _dateList.isNotEmpty && _isReadList.isNotEmpty && _contents.isNotEmpty ) {
+                            setState(() {
+                              _dateList = List.from(_dateList)..removeAt(index);
+                              _isReadList = List.from(_isReadList)..removeAt(index) ;
+                              _contents = List.from(_contents)..removeAt(index);
+                              // await _deleteAlarmData(_id[index]) ;
+                            });
+
+                            await _deleteAlarmData(index) ;
+                          }
+                        },
                       )
                     ]
                   ),
@@ -87,10 +153,10 @@ class _PhishingAlarmPageState extends State<PhishingAlarmPage> {
                 child: Container(
                   width: MediaQuery.of(context).size.width * 0.74,
                   padding: const EdgeInsets.only(left: 10, top: 5, bottom: 5),
-                  child: (isReadList[index]) ? Text(contents[index], style: TextStyle(color: Color(0xFF0473E1))) :
-                  Text(contents[index], style: TextStyle(color: Color(0xFFB1AEAE))),
+                  child: (_isReadList[index]) ? Text(_contents[index], style: const TextStyle(color: Color(0xFF0473E1), overflow: TextOverflow.ellipsis,)) :
+                  Text(_contents[index], style: const TextStyle(color: Color(0xFFB1AEAE)), overflow: TextOverflow.ellipsis,),
                   decoration: BoxDecoration(
-                    color: (isReadList[index]) ? Color(0xFFEAF5FF) : AppTheme.white,
+                    color: (_isReadList[index]) ? const Color(0xFFEAF5FF) : AppTheme.white,
                   ),
                 )
               )
@@ -123,28 +189,37 @@ class _PhishingAlarmPageState extends State<PhishingAlarmPage> {
       ),
       body: SingleChildScrollView(
         /// dateList.length != 0
-        child: (dateList.isNotEmpty) ? (
-          Container(
-          padding: EdgeInsets.only(top: 30, left: MediaQuery.of(context).size.width * 0.1, right: MediaQuery.of(context).size.width * 0.1),
-          child: Stack(
-            children: [
-              Container(
-                margin: EdgeInsets.only(top: MediaQuery.of(context).size.height * 0.015),
-                height: MediaQuery.of(context).size.height * 0.1 * (dateList.length - 1),
-                child: _vertical_divider(),
-              ),
-              Container(
-                child: Column(
-                  children: List.generate(contents.length, (index) {
-                    return _notice(index) ;
-                  }),
-                )
-              )
-            ],
-          )
-        )) :
-        /// dataList.length == 0
-        Container(),
+        child: FutureBuilder(
+          future: _getPhishingAlarmData(),
+          builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
+            if ( snapshot.hasError ) {
+              return const Text('데이터를 불러 올 수 없습니다.') ;
+            } else if ( snapshot.hasData ) {
+              return Container(
+                  padding: EdgeInsets.only(top: 30, left: MediaQuery.of(context).size.width * 0.1,
+                                                    right: MediaQuery.of(context).size.width * 0.1),
+                  child: Stack(
+                    children: [
+                      Container(
+                        margin: EdgeInsets.only(top: MediaQuery.of(context).size.height * 0.015),
+                        height: MediaQuery.of(context).size.height * 0.1 * (_dateList.length - 1),
+                        child: _vertical_divider(),
+                      ),
+                      Container(
+                          child: Column(
+                            children: List.generate(_contents.length, (index) {
+                              return _notice(index) ;
+                            }),
+                          )
+                      )
+                    ],
+                  )
+              );
+            } else {
+              return Container() ;
+            }
+          },
+        ),
       ),
     );
   }
