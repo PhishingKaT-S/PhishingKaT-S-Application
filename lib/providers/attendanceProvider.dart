@@ -51,12 +51,14 @@ class AttendanceProvider extends ChangeNotifier {
   }
 
   void _attendanceCheck(int userId) async{
+    print("user ID: $userId");
     if (!_todayAttendance) {
       await MySqlConnection.connect(Database.getConnection()).then((conn) async {
         await conn.query(
-            "INSERT INTO attendance VALUE(?, ?)",
+            "INSERT INTO attendance VALUES(?, ?)",
             [
-              userId,DateFormat('yy-MM-dd').format(DateTime.now())
+              userId,
+              DateFormat('yy-MM-dd').format(DateTime.now())
             ]).then((results) {
           if (results.isNotEmpty) {
           } else if (results.isEmpty) {
