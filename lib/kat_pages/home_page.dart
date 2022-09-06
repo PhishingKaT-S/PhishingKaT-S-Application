@@ -16,6 +16,8 @@ import '../kat_widget/kat_drawer.dart';
 import 'package:flutter_circular_chart_two/flutter_circular_chart_two.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
+import '../providers/attendanceProvider.dart';
+
 class HomePage extends StatefulWidget {
   const HomePage({Key? key, signUp}) : super(key: key);
 
@@ -344,9 +346,11 @@ class _HomePage extends State<HomePage> {
                 ),
                 style: TextButton.styleFrom(
                     padding: EdgeInsets.zero,
-                    backgroundColor: (_isSelected[index]) ? const Color(0xFF95DBED) : AppTheme.whiteGreyBackground)),
+                    backgroundColor: (_isSelected[index])
+                        ? const Color(0xFF95DBED)
+                        : AppTheme.whiteGreyBackground)),
           );
-    }));
+        }));
   }
 
   Widget _smishingDataAnalysisView() {
@@ -540,33 +544,30 @@ class _HomePage extends State<HomePage> {
 
   Widget _currentLine() {
     return Container(
-      width: MediaQuery.of(context).size.width,
-      // padding: EdgeInsets.only(
-      //   left: MediaQuery.of(context).size.width * 0.05,
-      //   right: MediaQuery.of(context).size.width * 0.05),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.end,
-        children: [
-          Stack(
-              children: [
-                Container(
-                  width: MediaQuery.of(context).size.width * 0.2,
-                  padding: EdgeInsets.only(right: MediaQuery.of(context).size.width * 0.05),
-                  height: 220,
-                  child: Card(
-                    shadowColor: AppTheme.grey,
-                    elevation: 10,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(30.0),
-                    ),
+        width: MediaQuery.of(context).size.width,
+        // padding: EdgeInsets.only(
+        //   left: MediaQuery.of(context).size.width * 0.05,
+        //   right: MediaQuery.of(context).size.width * 0.05),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.end,
+          children: [
+            Stack(children: [
+              Container(
+                width: MediaQuery.of(context).size.width * 0.2,
+                padding: EdgeInsets.only(
+                    right: MediaQuery.of(context).size.width * 0.05),
+                height: 220,
+                child: Card(
+                  shadowColor: AppTheme.grey,
+                  elevation: 10,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(30.0),
                   ),
                 ),
-
-              ]
-          )
-        ],
-      )
-    );
+              ),
+            ])
+          ],
+        ));
   }
 
   Widget _dailyChart() {
@@ -590,9 +591,7 @@ class _HomePage extends State<HomePage> {
     Paint insideCirclePaint = Paint()..color = Colors.white;
 
     return Container(
-        padding: const EdgeInsets.only(
-            top: 20,
-            bottom: 10),
+        padding: const EdgeInsets.only(top: 20, bottom: 10),
         height: 300,
         child: Stack(
           children: [
@@ -600,7 +599,8 @@ class _HomePage extends State<HomePage> {
               padding: EdgeInsets.only(
                 top: 10,
                 left: MediaQuery.of(context).size.width * 0.1,
-                right: MediaQuery.of(context).size.width * 0.1,),
+                right: MediaQuery.of(context).size.width * 0.1,
+              ),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
@@ -617,8 +617,10 @@ class _HomePage extends State<HomePage> {
             Container(
               width: MediaQuery.of(context).size.width,
               height: 150,
-              padding: EdgeInsets.only(left: MediaQuery.of(context).size.width * 0.08,
-                right: MediaQuery.of(context).size.width * 0.08,),
+              padding: EdgeInsets.only(
+                left: MediaQuery.of(context).size.width * 0.08,
+                right: MediaQuery.of(context).size.width * 0.08,
+              ),
               child: LineChart(
                 width: MediaQuery.of(context).size.width * 0.95,
                 height: 100,
@@ -642,34 +644,32 @@ class _HomePage extends State<HomePage> {
             // _currentLine(),
 
             Container(
-              width: MediaQuery.of(context).size.width,
-              padding: EdgeInsets.only(
-                left: MediaQuery.of(context).size.width * 0.06,
-                right: MediaQuery.of(context).size.width * 0.06
-              ),
-              margin: EdgeInsets.only(top: 170),
+                width: MediaQuery.of(context).size.width,
+                padding: EdgeInsets.only(
+                    left: MediaQuery.of(context).size.width * 0.06,
+                    right: MediaQuery.of(context).size.width * 0.06),
+                margin: EdgeInsets.only(top: 170),
                 child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: List.generate(dayList.length, (index) {
-                      return Text(dayList[index]) ;
-                        // (index < 5)
-                        //   ? Text(dayList[index])
-                        //   : Container(
-                        //     width: MediaQuery.of(context).size.width * 0.12,
-                        //     height: MediaQuery.of(context).size.width * 0.12,
-                        //     decoration: BoxDecoration(
-                        //       color: AppTheme.blueLineChart,
-                        //       borderRadius: BorderRadius.circular(25),
-                        //     ),
-                        //     child: Center(child: Text(dayList[index], textAlign: TextAlign.center, style: const TextStyle(color: AppTheme.white))),
-                        //   );
+                      return Text(dayList[index]);
+                      // (index < 5)
+                      //   ? Text(dayList[index])
+                      //   : Container(
+                      //     width: MediaQuery.of(context).size.width * 0.12,
+                      //     height: MediaQuery.of(context).size.width * 0.12,
+                      //     decoration: BoxDecoration(
+                      //       color: AppTheme.blueLineChart,
+                      //       borderRadius: BorderRadius.circular(25),
+                      //     ),
+                      //     child: Center(child: Text(dayList[index], textAlign: TextAlign.center, style: const TextStyle(color: AppTheme.white))),
+                      //   );
                     }))),
           ],
         ));
   }
 
   Widget _dailyReport() {
-
     /**
      * _daily_report
      * 업데이트한 날짜를 데이터로 차트 표시
@@ -703,27 +703,59 @@ class _HomePage extends State<HomePage> {
     );
   }
 
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance?.addPostFrameCallback((_) async{
+      AttendanceProvider _attendProvider =
+      Provider.of<AttendanceProvider>(context, listen: false);
+      LaunchProvider _userProvider = Provider.of<LaunchProvider>(context, listen: false);
+
+      bool _attendance = await _attendProvider.getRecentAttendance(_userProvider.getUserInfo().userId);
+      print(_attendance);
+      if(!_attendance){
+        _attendProvider.setTodayAttendance(_userProvider.getUserInfo().userId);
+        showDialog(
+          context: context,
+          builder: (context) => AlertDialog(
+            content: const Text('출석체크'),
+            actions: [
+              TextButton(
+                onPressed: () {
+
+                  Navigator.pop(context);
+                },
+                child: const Text('ok'),
+              ),
+            ],
+          ),
+        );
+      }
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     LaunchProvider _userProvider = Provider.of<LaunchProvider>(context);
-    print(_userProvider.getSignUp());
-    return Scaffold(
-      appBar: const KaTAppBar(),
-      // drawer: KaTDrawer(),
-      bottomNavigationBar: const KatBottomBar(),
-      body: SingleChildScrollView(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: [
-            _mainScoreView(),
-            _smishingDataAnalysisView(),
-            _attendanceCheck(),
-            _additionalFuctions(),
-            _dailyReport(),
-          ],
+    AttendanceProvider _attendProvider =
+        Provider.of<AttendanceProvider>(context);
+    print(_userProvider.getUserInfo().userId);
+      return Scaffold(
+        appBar: const KaTAppBar(),
+        // drawer: KaTDrawer(),
+        bottomNavigationBar: const KatBottomBar(),
+        body: SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              _mainScoreView(),
+              _smishingDataAnalysisView(),
+              _attendanceCheck(),
+              _additionalFuctions(),
+              _dailyReport(),
+            ],
+          ),
         ),
-      ),
-    );
+      );
   }
 }
