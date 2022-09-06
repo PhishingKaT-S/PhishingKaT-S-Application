@@ -2,11 +2,15 @@
  * update: 2022-08-18
  * Detect noticePage
  * 최종 작성자: 김진일
+ *
+ * 완료
  */
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:mysql1/mysql1.dart';
 
+import '../db_conn.dart';
 import '../kat_widget/kat_appbar_back.dart';
 
 class NoticePage extends StatefulWidget {
@@ -17,9 +21,42 @@ class NoticePage extends StatefulWidget {
 }
 
 class _NoticePageState extends State<NoticePage> {
-  List<String> title = ['피싱캣S 공지사항', '피싱캣S 공지사항'] ;
-  List<String> written_date = ['2021. 5. 31', '2021. 5. 31'] ;
-  List<String> content = ['hello', '안녕하세요, 피싱캣S 개발팀 입니다.\n\n드디어 정식 서비스를 런칭하게 되었습니다.\n\n저희 서비스는 데이터 취약계층을 위한 스미싱 솔루션으로 자연어처리기법(NLP)를 이용하여 실시간 문자탐지로 사기 위험이 높은 문자를 분류하고 스미싱 피해를 예방(방지)하는 솔루션입니다.\n\n베타 런칭 기간'] ;
+  List<String> _title = [] ;
+  List<String> _written_date = [] ;
+  List<String> _content = [];
+
+  Future<bool> _getNoticeData() async {
+
+    await MySqlConnection.connect(Database.getConnection())
+        .then((conn) async {
+      await conn.query("SELECT * FROM notice WHERE view = 1")
+          .then((results) {
+        if ( results.isNotEmpty ) {
+          for (var res in results )  {
+            _title.add(res['title']) ;
+
+            DateTime _datetime = res['day'] as DateTime ;
+            int _year = _datetime.year ;
+            int _month = _datetime.month ;
+            int _day = _datetime.day ;
+
+            _written_date.add('$_year. $_month. $_day') ;
+
+            _content.add(res['content']) ;
+          }
+        } else {
+          return false;
+        }
+      }).onError((error, stackTrace) {
+        /// 쿼리 에러 처리
+      });
+      conn.close();
+    }).onError((error, stackTrace) {
+      /// 네트워크 에러 처리
+    });
+
+    return true;
+  }
 
   Widget _expansionTile(int index) {
     bool notice_tap = false;
@@ -31,11 +68,11 @@ class _NoticePageState extends State<NoticePage> {
       onExpansionChanged: (val) {
         notice_tap = !notice_tap ;
       },
-      title: Text(title[index]),
-      subtitle: Text(written_date[index]),
+      title: Text(_title[index]),
+      subtitle: Text(_written_date[index]),
       children: <Widget>[
         ListTile(
-          title: Text(content[index]), tileColor: const Color(0xFFF6F6F6),
+          title: Text(_content[index]), tileColor: const Color(0xFFF6F6F6),
         ),
       ],
     );
@@ -45,11 +82,22 @@ class _NoticePageState extends State<NoticePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBarBack(title: '공지사항'),
-      body: Column(
-        children: List.generate(title.length, (index) {
-          return _expansionTile(index) ;
-        }),
-      ),
+      body: FutureBuilder(
+        future: _getNoticeData(),
+        builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
+          if ( snapshot.hasError ) {
+            return const Text('데이터를 불러 올 수 없습니다.') ;
+          } else if ( snapshot.hasData ) {
+            return Column(
+              children: List.generate(_title.length, (index) {
+                return _expansionTile(index) ;
+              }),
+            );
+          } else {
+            return Container();
+          }
+        },
+      )
     );
   }
 }

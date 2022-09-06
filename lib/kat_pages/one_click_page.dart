@@ -3,11 +3,7 @@
  * OneClickPage
  * 최종 작성자: 김진일
  *
- * 해야할 작업:
- *  1. 예금/대출/신용카드 조회 페이지 URL 수정 (해당 홈페이지 접근 방식 변형)
- *  2. Search 되는지 확인
- *  3. 명의 도용 페이지 연결
- *  4. 전화로 연동 (Done)
+ * 완료
  */
 
 import 'dart:convert';
@@ -241,6 +237,24 @@ class _OneClickPageState extends State<OneClickPage> {
     );
   }
 
+  _displayDialog(BuildContext context) async {
+    return showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            title: const Text('현재 서비스 이용시간이 아닙니다.'),
+            content: const Text('서비스 이용 시간\n매일 09:00~22:00'),
+            actions: <Widget>[
+              FlatButton(
+                child: const Text('닫기'),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              )
+            ],
+          );
+        });
+  }
   Widget _other_functions() {
     const double HEIGHT = 100;
     const double LABEL_HEIGHT = 40;
@@ -283,9 +297,25 @@ class _OneClickPageState extends State<OneClickPage> {
             ),
             onTap: () {
               if (index != 2) {
-                Navigator.push(context, MaterialPageRoute(builder: (context) => KaTWebView(title: titleList[index], url: urlList[index],))) ;
+                if ( index == 0 ) {
+                  DateTime _now = DateTime.now() ;
+
+                  if ( _now.hour < 9 || _now.hour > 22 ) {
+                    /**
+                     * 서비스 이용 불가 표시
+                     */
+                    _displayDialog(context) ;
+                  } else {
+                    Navigator.push(context, MaterialPageRoute(
+                        builder: (context) => KaTWebView(title: titleList[index], url: urlList[index],))) ;
+                  }
+                } else {
+                  Navigator.push(context, MaterialPageRoute(
+                      builder: (context) => KaTWebView(title: titleList[index], url: urlList[index],))) ;
+                }
               } else {
-                Navigator.push(context, MaterialPageRoute(builder: (context) => const PrepaidPhonePage())) ;
+                Navigator.push(context, MaterialPageRoute(
+                    builder: (context) => const PrepaidPhonePage()));
               }
             },
           );
