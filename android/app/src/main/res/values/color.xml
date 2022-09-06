@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name = "mywhite">#FFFFFF</color>
+    <color name="mygrey">#bfbfbf</color>
+    <color name="myred">#ff2221</color>
+    <color name="myorange">#ff9e01</color>
+    <color name="mylightblue">#e8f4ff</color>
+    <color name="mylightblond">#e6cccc</color>
+    <color name="letterblond">#a40000</color>
+    <color name="letterblue">#0b80f5</color>
+    <color name="myyellow">#fae100</color>
+    <color name="mygreen">#009944</color>
+    <color name="lettergray">#9b9b9b</color>
+    <color name="myblue">#0473e1</color>
+</resources>

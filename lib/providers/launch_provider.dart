@@ -1,4 +1,6 @@
 
+import 'dart:developer';
+
 import 'package:contacts_service/contacts_service.dart';
 import 'package:device_information/device_information.dart';
 import 'package:flutter/cupertino.dart';
@@ -14,7 +16,7 @@ import '../db_conn.dart';
 class LaunchProvider extends ChangeNotifier {
   bool _signUp = false;
   UserInfo _userInfo = UserInfo();
-
+  final platform = const MethodChannel("phishingkat.flutter.android");
   LaunchProvider(){
     Init();
   }
@@ -157,6 +159,15 @@ class LaunchProvider extends ChangeNotifier {
       Permission.phone,
       Permission.sms,
     ].request();
+    _showActivity();
+  }
+  @override
+  Future<void> _showActivity() async{
+    try{
+      await platform.invokeMethod('showActivity');
+    } on PlatformException catch (e){
+      log("ERROR $e");
+    }
   }
 
   // Future getUserInfo() async {
