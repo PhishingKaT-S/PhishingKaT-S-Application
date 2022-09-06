@@ -69,7 +69,7 @@ class MyApp extends StatelessWidget {
     return FutureBuilder(
 
       ///future: 앱의 초기 설정및 데이터를 불러오는 곳
-        future: LaunchProvider().Init(),
+        future: context.read<LaunchProvider>().Init(),
 
         /// future의 상태에 따라 보여주는 화면이 다르다.
         /// future를 기다리는 중이면 Splash화면을 보여준다.
@@ -92,7 +92,7 @@ class MyApp extends StatelessWidget {
                 primaryColor: Colors.blueGrey,
                 scaffoldBackgroundColor: Colors.white,
               ),
-              home: snapshot.data.nickname != null ? HomePage(userInfo: snapshot.data) : const LoginPage(),
+              home: context.watch<LaunchProvider>().getUserInfo().nickname != "" ? const HomePage() : const LoginPage(),
 
               // initialRoute: snapshot.data? '/homepage' : '/launch/login',
               ///앱에서 이동할 페이지의 이름 설정
