@@ -111,7 +111,7 @@ class MyApp extends StatelessWidget {
                 '/launch/login': (BuildContext context) => const LoginPage(),
                 '/splash/test': (BuildContext context) => const TestPage(),
                 '/kat_pages/url_home': (BuildContext context) =>
-                InspectFeedback(),
+                    InspectFeedback(),
                 '/menu/menu_home': (BuildContext context) => const MenuHome(),
                 '/menu/service_center': (BuildContext context) =>
                 const ServiceCenter(),
@@ -119,7 +119,7 @@ class MyApp extends StatelessWidget {
                 const PhishingAlarmPage(),
                 '/menu/notice': (BuildContext context) => const NoticePage(),
                 '/menu/alarm/setting': (BuildContext context) =>
-                    const SettingPage(),
+                const SettingPage(),
                 '/menu/news': (BuildContext context) =>
                 const NewsWebView(),
               },
