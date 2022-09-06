@@ -4,7 +4,7 @@ import 'package:kakao_flutter_sdk/kakao_flutter_sdk.dart';
 import 'package:phishing_kat_pluss/kat_pages/attendance_page.dart';
 import 'package:phishing_kat_pluss/kat_pages/detect_load_page.dart';
 import 'package:phishing_kat_pluss/kat_pages/home_page.dart';
-import 'package:phishing_kat_pluss/menu/newsWebView.dart';
+import 'package:phishing_kat_pluss/menu/phishing_news.dart';
 import 'package:phishing_kat_pluss/menu/notice_page.dart';
 import 'package:phishing_kat_pluss/kat_pages/one_click_bank_page.dart';
 import 'package:phishing_kat_pluss/menu/phishing_alarm_page.dart';
@@ -39,13 +39,13 @@ void main() {
       MultiProvider(
         providers: [
           ChangeNotifierProvider(
-            create: (BuildContext context) => TestProvider(),
+            create: (_) => TestProvider(),
           ),
           ChangeNotifierProvider(
-            create: (BuildContext context) => LaunchProvider(),
+            create: (_) => LaunchProvider(),
           ),
           ChangeNotifierProvider(
-            create: (BuildContext context) => AttendanceProvider(),
+            create: (_) => AttendanceProvider(),
           ),
         ],
         child: const MyApp(),
@@ -88,13 +88,13 @@ class MyApp extends StatelessWidget {
                 primaryColor: Colors.blueGrey,
                 scaffoldBackgroundColor: Colors.white,
               ),
-              home: const HomePage(),//snapshot.data ? const HomePage() : const LoginPage(),
+              home: snapshot.data.nickname!="" ? HomePage(userInfo: snapshot.data) : const LoginPage(),
 
               // initialRoute: snapshot.data? '/homepage' : '/launch/login',
               ///앱에서 이동할 페이지의 이름 설정
               routes: {
                 //'/login': (BuildContext context) => const LoginPage(),
-                '/homepage': (BuildContext context) => const HomePage(),
+                //'/homepage': (BuildContext context) => const HomePage(),
                 '/splash_screen': (BuildContext context) =>
                 const SplashScreen(),
                 '/kat_pages/attendance': (BuildContext context) =>

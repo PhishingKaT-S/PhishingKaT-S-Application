@@ -738,7 +738,7 @@ class _InspectFeedbackState extends State<InspectFeedback> with SingleTickerProv
               future: _endFuture,
               builder: (BuildContext context, AsyncSnapshot snapshot) {
                   if(snapshot.hasData == false){
-                    return CircularProgressIndicator();
+                    return Container();
                   }
                   else if (snapshot.hasError) {
                     return Padding(

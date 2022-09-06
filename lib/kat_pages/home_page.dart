@@ -3,6 +3,7 @@
 /// 최종 작성자: 김진일
 
 import 'package:flutter/material.dart';
+import 'package:kakao_flutter_sdk/kakao_flutter_sdk.dart';
 import 'package:line_chart/charts/line-chart.widget.dart';
 import 'package:line_chart/model/line-chart.model.dart';
 import 'package:mysql1/mysql1.dart';
@@ -19,8 +20,9 @@ import 'package:flutter_svg/flutter_svg.dart';
 import '../providers/attendanceProvider.dart';
 
 class HomePage extends StatefulWidget {
-  const HomePage({Key? key, signUp}) : super(key: key);
+  const HomePage({Key? key, required this.userInfo}) : super(key: key);
 
+  final UserInfo userInfo;
   @override
   State<StatefulWidget> createState() => new _HomePage();
 }
@@ -703,20 +705,21 @@ class _HomePage extends State<HomePage> {
     );
   }
 
+  @override
   void initState() {
     super.initState();
     WidgetsBinding.instance?.addPostFrameCallback((_) async{
+      print("user id:: ${widget.userInfo.userId}");
       AttendanceProvider _attendProvider =
       Provider.of<AttendanceProvider>(context, listen: false);
-      LaunchProvider _userProvider = Provider.of<LaunchProvider>(context, listen: false);
 
-      bool _attendance = await _attendProvider.getRecentAttendance(_userProvider.getUserInfo().userId);
-      print(_attendance);
+      bool _attendance = await _attendProvider.getTodayAttendance(widget.userInfo.userId);
       if(!_attendance){
-        _attendProvider.setTodayAttendance(_userProvider.getUserInfo().userId);
+        _attendProvider.setTodayAttendance(widget.userInfo.userId);
         showDialog(
           context: context,
           builder: (context) => AlertDialog(
+            //title: const Text('출석 체크 이벤트', style: T,),
             content: const Text('출석체크'),
             actions: [
               TextButton(
