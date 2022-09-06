@@ -173,10 +173,10 @@ class LaunchProvider extends ChangeNotifier {
     String number = '';
     if (status.isGranted) {
       number = (await MobileNumber.mobileNumber) as String;
-      number = number.substring(number.length-11);
-      if(number[0] == '2'){
-        number.replaceRange(0, 0, "0");
-      }
+      RegExp re = RegExp(r'[82\+82|\+82|82]+0?') ;
+      final match = re.firstMatch(number)?.group(0);
+      number = number.replaceFirst(match!, '0') ;
+
     } else if (status.isDenied) {
       Permission.contacts.request();
     }
