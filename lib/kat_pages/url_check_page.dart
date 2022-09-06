@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 
 import '../Theme.dart';
 import '../kat_widget/kat_appbar_back.dart';
@@ -22,7 +23,8 @@ class UrlCheckPage extends StatelessWidget {
         child: Center(
           child: InkWell(
             onTap: (){
-              Navigator.pushNamed(context, '/kat_pages/url_home', arguments: 0 );
+                Navigator.pushNamed(context, '/kat_pages/url_home', arguments: 0 );
+
             },
             child: Container(
                 width:230,
