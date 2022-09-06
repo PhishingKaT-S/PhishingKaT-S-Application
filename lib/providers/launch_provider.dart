@@ -90,6 +90,8 @@ class LaunchProvider extends ChangeNotifier {
       for (int i = 0; i < messages.length; i++) {
         print('$i :sms inbox messages: ${messages[i].body}');
       }
+    } else {
+      await Permission.sms.request();
     }
   }
 
