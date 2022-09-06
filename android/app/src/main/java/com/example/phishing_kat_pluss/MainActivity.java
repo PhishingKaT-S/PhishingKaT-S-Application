@@ -4,13 +4,16 @@ import static android.service.controls.ControlsProviderService.TAG;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
+import android.annotation.TargetApi;
 import android.content.ContentUris;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.ContactsContract;
+import android.provider.Settings;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -38,6 +41,8 @@ public class MainActivity extends FlutterActivity {
     // Java API 에서는 CHANNEL 이름을 통해 실행
     // CHANNEL 변수의 값과 Flutter의 Channel 값이 동일해야합니다.
     private static final String CHANNEL = "samples.flutter.dev/channel" ;
+    private static final int ACTION_MANAGE_OVERLAY_PERMISSION_REQUEST_CODE = 1;
+    private static final String CHANNEL2 = "phishingkat.flutter.android"; //지원
     ArrayList<String> sms = new ArrayList<String>() ;
 
     @RequiresApi(api = Build.VERSION_CODES.M)
@@ -53,6 +58,19 @@ public class MainActivity extends FlutterActivity {
                             } else {
                                 result.success(sms);
                             }// 결과 반환
+                        }
+                );
+        new MethodChannel(flutterEngine.getDartExecutor().getBinaryMessenger(), CHANNEL2)
+                .setMethodCallHandler(
+                        (call, result)->{
+                            if(call.method.equals("showActivity")){
+                                checkPermission();
+                                result.success("");
+                            }
+                            else{
+                                result.error("UNAVAILABLE", "Cannot Start Activity.", null);
+
+                            }
                         }
                 );
 
@@ -331,5 +349,41 @@ public class MainActivity extends FlutterActivity {
         }
         cursor.close();
         return true ;
+    }
+
+
+    /*지원 추가 */
+    public void checkPermission() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {   // 마시멜로우 이상일 경우
+            if (!Settings.canDrawOverlays(this)) {              // 체크
+                Intent intent = new Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION,
+                        Uri.parse("package:" + getPackageName()));
+                startActivityForResult(intent, ACTION_MANAGE_OVERLAY_PERMISSION_REQUEST_CODE);
+            } else {
+                //startService(new Intent(MainActivity.this, MyService.class));
+            }
+        } else {
+            //startService(new Intent(MainActivity.this, MyService.class));
+        }
+    }
+
+
+    @TargetApi(Build.VERSION_CODES.M)
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == ACTION_MANAGE_OVERLAY_PERMISSION_REQUEST_CODE) {
+            if (!Settings.canDrawOverlays(this)) {
+                // TODO 동의를 얻지 못했을 경우의 처리
+
+            } else {
+                //    startService(new Intent(MainActivity.this, MyService.class));
+            }
+        }
+    }
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+
     }
 }

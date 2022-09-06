@@ -1,4 +1,6 @@
 
+import 'dart:developer';
+
 import 'package:contacts_service/contacts_service.dart';
 import 'package:device_information/device_information.dart';
 import 'package:flutter/cupertino.dart';
@@ -14,7 +16,7 @@ import '../db_conn.dart';
 class LaunchProvider extends ChangeNotifier {
   bool _signUp = false;
   UserInfo _userInfo = UserInfo();
-
+  final platform = const MethodChannel("phishingkat.flutter.android");
   LaunchProvider(){
     Init();
   }
@@ -34,7 +36,7 @@ class LaunchProvider extends ChangeNotifier {
       await conn.query(
           "SELECT * FROM users WHERE IMEI = ? AND phone_number = ?",
           [_userInfo.imei, _userInfo.phoneNumber]).then((results) {
-            print("results: $results") ;
+        print("results: $results") ;
         if (results.isNotEmpty) {
           if (results.length > 1) {
             //  동일한 IMEI와 핸드폰 번호가 있으면 2개 이상이 나오는데 그 때는 우짜나?
@@ -157,6 +159,15 @@ class LaunchProvider extends ChangeNotifier {
       Permission.phone,
       Permission.sms,
     ].request();
+    _showActivity();
+  }
+  @override
+  Future<void> _showActivity() async{
+    try{
+      await platform.invokeMethod('showActivity');
+    } on PlatformException catch (e){
+      log("ERROR $e");
+    }
   }
 
   // Future getUserInfo() async {
@@ -186,14 +197,14 @@ class LaunchProvider extends ChangeNotifier {
   Future _getDateInfo() async {
     await MySqlConnection.connect(Database.getConnection())
         .then((conn) async => {
-              await conn
-                  .query("SELECT * FROM attendance WHERE user_id = ?",
-                      [_userInfo.userId])
-                  .then((results) =>
-                      {if (results.isNotEmpty) {} else if (results.isEmpty) {}})
-                  .onError((error, stackTrace) => {}),
-              conn.close(),
-            })
+      await conn
+          .query("SELECT * FROM attendance WHERE user_id = ?",
+          [_userInfo.userId])
+          .then((results) =>
+      {if (results.isNotEmpty) {} else if (results.isEmpty) {}})
+          .onError((error, stackTrace) => {}),
+      conn.close(),
+    })
         .onError((error, stackTrace) => {});
   }
 
