@@ -39,7 +39,7 @@ bool _test() {
 
 class _AttendancePage extends State<AttendancePage> {
   var _now = DateTime.now() ;
-  var user_id = 2 ;
+  var user_id = 14 ;
 
   final _events = LinkedHashMap(
     equals: isSameDay,

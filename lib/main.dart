@@ -15,6 +15,7 @@ import 'package:phishing_kat_pluss/menu/menu_home.dart';
 import 'package:phishing_kat_pluss/menu/service_center.dart';
 import 'package:phishing_kat_pluss/providers/attendanceProvider.dart';
 import 'package:phishing_kat_pluss/providers/launch_provider.dart';
+import 'package:phishing_kat_pluss/providers/smsProvider.dart';
 import 'package:phishing_kat_pluss/providers/testProvider.dart';
 import 'package:phishing_kat_pluss/splash/splash_screen.dart';
 import 'package:provider/provider.dart';
@@ -38,14 +39,17 @@ void main() {
      */
       MultiProvider(
         providers: [
-          ChangeNotifierProvider(
+          ChangeNotifierProvider<TestProvider>(
             create: (_) => TestProvider(),
           ),
-          ChangeNotifierProvider(
+          ChangeNotifierProvider<LaunchProvider>(
             create: (_) => LaunchProvider(),
           ),
-          ChangeNotifierProvider(
+          ChangeNotifierProvider<AttendanceProvider>(
             create: (_) => AttendanceProvider(),
+          ),
+          ChangeNotifierProvider<SmsProvider>(
+            create: (_) => SmsProvider(),
           ),
         ],
         child: const MyApp(),
