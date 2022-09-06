@@ -447,11 +447,12 @@ class _InspectFeedbackState extends State<InspectFeedback> with SingleTickerProv
   } // 차단해제
 
   Future<bool> _getSmsInfo() async {
+    String? identifier = await UniqueIdentifier.serial;
     await MySqlConnection.connect(Database.getConnection())
         .then((conn) async  {
       await conn.query("select id, sms.user_ph, sms.text, sms.sender_ph, sms.type, sms.received_sms_date from sms ,"
           "(select user_ph, sender_ph, count(*) as cnt from sms group by sender_ph order by cnt DESC)"
-          "as b where sms.sender_ph = b.sender_ph and user_id = 2 order by b.cnt DESC") // 수정해야됨
+          "as b where sms.sender_ph = b.sender_ph and user_id = (select id from users where IMEI = ?) order by b.cnt DESC", [identifier]) // 수정해야됨
           .then((results)  {
 
         for(int i =0 ; i < results.length.ceil(); i++)
