@@ -703,19 +703,17 @@ class _HomePage extends State<HomePage> {
     );
   }
 
-  void initState() async{
+  void initState() {
     super.initState();
     WidgetsBinding.instance?.addPostFrameCallback((_) async{
       AttendanceProvider _attendProvider =
-      Provider.of<AttendanceProvider>(context);
-      LaunchProvider _userProvider = Provider.of<LaunchProvider>(context);
+      Provider.of<AttendanceProvider>(context, listen: false);
+      LaunchProvider _userProvider = Provider.of<LaunchProvider>(context, listen: false);
 
       bool _attendance = await _attendProvider.getRecentAttendance(_userProvider.getUserInfo().userId);
-      if(_attendance){
-
-      }
-      else{
-        _attendProvider.getTodayAttendance(_userProvider.getUserInfo().userId);
+      print(_attendance);
+      if(!_attendance){
+        _attendProvider.setTodayAttendance(_userProvider.getUserInfo().userId);
         showDialog(
           context: context,
           builder: (context) => AlertDialog(

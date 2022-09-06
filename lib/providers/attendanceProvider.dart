@@ -22,8 +22,8 @@ class AttendanceProvider extends ChangeNotifier {
     return _todayAttendance;
   }
 
-  void setTodayAttendance(){
-    _attendanceCheck();
+  void setTodayAttendance(int userId){
+    _attendanceCheck(userId);
     _todayAttendance = true;
   }
 
@@ -50,13 +50,13 @@ class AttendanceProvider extends ChangeNotifier {
 
   }
 
-  void _attendanceCheck() async{
+  void _attendanceCheck(int userId) async{
     if (!_todayAttendance) {
       await MySqlConnection.connect(Database.getConnection()).then((conn) async {
         await conn.query(
             "INSERT INTO attendance VALUE(?, ?)",
             [
-              LaunchProvider().getUserInfo().userId,DateFormat('yy-MM-dd').format(DateTime.now())
+              userId,DateFormat('yy-MM-dd').format(DateTime.now())
             ]).then((results) {
           if (results.isNotEmpty) {
           } else if (results.isEmpty) {
