@@ -16,13 +16,25 @@ class AttendanceProvider extends ChangeNotifier {
   // }
 
   bool _todayAttendance = false;
+  int _monthAttendance = 0;
+  List _month_attendance = [];
+  List<bool> _week_attendance = [false, false, false, false, false, false, false];
 
-  Future<bool> getTodayAttendance(int userId) async{
+  int getMonthAttendance(){
+    return _monthAttendance;
+  }
+
+  List<bool> getWeekAttendance(){
+    return _week_attendance;
+  }
+
+  Future<bool> getTodayAttendance(int userId) async {
     await getRecentAttendance(userId);
+    // await getMonthAttendance(userId);
     return _todayAttendance;
   }
 
-  void setTodayAttendance(int userId){
+  void setTodayAttendance(int userId) {
     _attendanceCheck(userId);
     _todayAttendance = true;
   }
@@ -30,13 +42,37 @@ class AttendanceProvider extends ChangeNotifier {
   Future getRecentAttendance(int userId) async {
     await MySqlConnection.connect(Database.getConnection()).then((conn) async {
       await conn.query(
-          "SELECT attendance FROM attendance WHERE user_id = ? AND attendance >= ?",
+          "SELECT attendance FROM attendance WHERE user_id = ? AND attendance >= ? ORDER BY attendance",
           [
             userId,
-            DateFormat('yy-MM-dd').format(DateTime.now())
+            DateFormat('yy-MM-dd').format(
+                DateTime.now().subtract(Duration(days: DateTime.now().day)))
           ]).then((results) {
         if (results.isNotEmpty) {
-          _todayAttendance = true;
+          if (results.last["attendance"].toString().split(" ").first ==
+              DateFormat('yyyy-MM-dd').format(DateTime.now())){
+            _todayAttendance = true;
+            _monthAttendance = results.length;
+          }
+          else{
+            _monthAttendance = results.length + 1;
+            _todayAttendance = false;
+          }
+          List temp = results.toList();
+          for(int i = 0 ; i < results.length ; i++){
+            _month_attendance.add(temp[i]["attendance"].toString().split(" ").first);
+          }
+
+          DateTime _nowDay = DateTime.now();
+          int _now_week = _nowDay.weekday;
+          DateTime _firstDay = DateTime.now().subtract(Duration(days: _now_week-1));
+          for(int i = 0 ; i < _now_week ; i++){
+            if(_month_attendance.contains(_firstDay.add(Duration(days: i)).toString().split(" ").first)){
+              _week_attendance[i] = true;
+            }
+          }
+
+
         } else if (results.isEmpty) {
           _todayAttendance = false;
         }
@@ -47,22 +83,44 @@ class AttendanceProvider extends ChangeNotifier {
     }).onError((error, stackTrace) {
       print("error2: $error");
     });
-
   }
 
-  void _attendanceCheck(int userId) async{
+  // Future getMonthAttendance(int userId) async {
+  //   await MySqlConnection.connect(Database.getConnection()).then((conn) async {
+  //     await conn.query(
+  //         "SELECT attendance FROM attendance WHERE user_id = ? AND attendance >= ? ORDER BY attendance",
+  //         [
+  //           userId,
+  //           DateFormat('yy-MM-dd').format(
+  //               DateTime.now().subtract(Duration(days: DateTime.now().day)))
+  //         ]).then((results) {
+  //       if (results.isNotEmpty) {
+  //         print(results.last["attendance"].toString().split(" ").first);
+  //         _month_attendance.addAll(results.toList());
+  //         print(_month_attendance[0]);
+  //       } else if (results.isEmpty) {
+  //         _month_attendance = [];
+  //       }
+  //     }).onError((error, stackTrace) {
+  //       print("error: $error");
+  //     });
+  //     conn.close();
+  //   }).onError((error, stackTrace) {
+  //     print("error2: $error");
+  //   });
+  // }
+
+  void _attendanceCheck(int userId) async {
     print("user ID: $userId");
     if (!_todayAttendance) {
-      await MySqlConnection.connect(Database.getConnection()).then((conn) async {
-        await conn.query(
-            "INSERT INTO attendance VALUES(?, ?)",
-            [
-              userId,
-              DateFormat('yy-MM-dd').format(DateTime.now())
-            ]).then((results) {
+      await MySqlConnection.connect(Database.getConnection())
+          .then((conn) async {
+        await conn.query("INSERT INTO attendance VALUES(?, ?)", [
+          userId,
+          DateFormat('yy-MM-dd').format(DateTime.now())
+        ]).then((results) {
           if (results.isNotEmpty) {
-          } else if (results.isEmpty) {
-          }
+          } else if (results.isEmpty) {}
         }).onError((error, stackTrace) {
           print("error: $error");
         });
