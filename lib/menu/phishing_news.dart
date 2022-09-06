@@ -5,10 +5,13 @@
  */
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:mysql1/mysql1.dart';
+import 'package:phishing_kat_pluss/kat_widget/kat_webview.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 import 'package:http/http.dart' as http;
 
 import '../Theme.dart';
+import '../db_conn.dart';
 import '../kat_widget/kat_appbar_back.dart';
 
 class NewsWebView extends StatefulWidget {
@@ -19,15 +22,55 @@ class NewsWebView extends StatefulWidget {
 }
 
 class _NewsWebViewState extends State<NewsWebView> {
-  String _headerTitle = "야간근무 전 은행 들렸다 보이스피싱범 잡은 경찰관" ;
-  List<String> _newsList = ['[관련기사] 야간근무 전 은행 들렀다 보이스피싱범 잡은 경찰관', '[관련기사] 신한은행, 금융권 최초 \'AI 이상행동탐지 ATM\' 도입', '[관련기사] 정부 지원 \'미끼\' 소상공인 노리는 문자'] ;
-  List<String> _contentList = ['A씨가 취업했다는 법률사무소 측은 사무실의 위치조차 알려주지 않았고, 메신저를 통해서만 업무 지시를 했으며, 하는 일이라고는 소송 의뢰인으로부터 사건 수임료를 받아오는 것이 전부였다고 한다. 근무 형태와 담당 업무 등에 의문을 품은 박씨는 인터넷 검색을 통해 해당 법률사무소가 통신판매업체로 등록된 사실을 알아채고 A씨에게 "뭔가 이상하다. 보이스피싱이 의심된다"고 말했다.',
-    'A씨가 취업했다는 법률사무소 측은 사무실의 위치조차 알려주지 않았고, 메신저를 통해서만 업무 지시를 했으며, 하는 일이라고는 소송 의뢰인으로부터 사건 수임료를 받아오는 것이 전부였다고 한다. 근무 형태와 담당 업무 등에 의문을 품은 박씨는 인터넷 검색을 통해 해당 법률사무소가 통신판매업체로 등록된 사실을 알아채고 A씨에게 "뭔가 이상하다. 보이스피싱이 의심된다"고 말했다.',
-    'A씨가 취업했다는 법률사무소 측은 사무실의 위치조차 알려주지 않았고, 메신저를 통해서만 업무 지시를 했으며, 하는 일이라고는 소송 의뢰인으로부터 사건 수임료를 받아오는 것이 전부였다고 한다. 근무 형태와 담당 업무 등에 의문을 품은 박씨는 인터넷 검색을 통해 해당 법률사무소가 통신판매업체로 등록된 사실을 알아채고 A씨에게 "뭔가 이상하다. 보이스피싱이 의심된다"고 말했다.'] ;
-  List<String> _dateList = ['2022.3.6', '2022.3.6', '2022.3.6'] ;
-  List<String> _numOfChatList = ['0', '1', '1'] ;
+  late List<News> _newsList = [];
 
   List<bool> _isSelected = [true, false, false] ;
+
+  @override
+  void initState() {
+    super.initState();
+    () async {
+      List<News> data = await _getNewsData() ;
+      if ( data == null ) {
+        print("Cannot get the data") ;
+      }
+
+      setState(() {
+        _newsList = data ;
+      });
+    } ();
+  }
+
+  Future<List<News>> _getNewsData() async {
+    List<News> _newsInfoList = [] ;
+    await MySqlConnection.connect(Database.getConnection())
+        .then((conn) async {
+      await conn.query("SELECT * FROM news ORDER BY news_date DESC LIMIT 3")
+          .then((results) {
+        if ( results.isNotEmpty ) {
+          for ( var res in results )  {
+            DateTime _date = res['news_date'] as DateTime ;
+            News _news = News(title: res['title'], content: res['content'],
+                              news_date: '${_date.year}.${_date.month}.${_date.day}',
+                              num_of_chat: res['num_of_chat'] as int,
+                              url: res['url']) ;
+
+            _newsInfoList.add(_news) ;
+          }
+        } else {
+          print("No data") ;
+          return null;
+        }
+      }).onError((error, stackTrace) {
+        return null ;
+      });
+      conn.close();
+    }).onError((error, stackTrace) {
+      /// 네트워크 에러 처리
+
+    });
+    return _newsInfoList ;
+  }
 
   Widget _headerView() {
 
@@ -53,7 +96,7 @@ class _NewsWebViewState extends State<NewsWebView> {
               children: [
                 Container(
                   width: MediaQuery.of(context).size.width * 0.5,
-                  child: Text(_headerTitle, style: const TextStyle(fontSize: 17, color: AppTheme.white, fontWeight: FontWeight.bold)),
+                  child: Text((_newsList.isNotEmpty) ? _newsList[0].title : '', style: const TextStyle(fontSize: 17, color: AppTheme.white, fontWeight: FontWeight.bold)),
                 ),
                 SizedBox(
                   width: MediaQuery.of(context).size.width * 0.2,
@@ -168,50 +211,55 @@ class _NewsWebViewState extends State<NewsWebView> {
 
   Widget _newsInfoList() {
     return Container(
-      padding: EdgeInsets.only(top: 5),
+      padding: const EdgeInsets.only(top: 5),
       child: Column(
         children: List.generate(_newsList.length, (index) {
-          return Container(
-            padding: EdgeInsets.symmetric(vertical: 5, horizontal: MediaQuery.of(context).size.width * 0.05),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Container(
-                  height: 50,
-                  child: Text(_newsList[index], style: AppTheme.subtitle, overflow: TextOverflow.clip,),
-                ),
-
-                Container(
-                  height: 50,
-                  child: Text(_contentList[index], overflow: TextOverflow.clip,),
-                ),
-
-                Container(
-                  padding: const EdgeInsets.only(top: 5),
-                  height: 20,
-                  child: Text(_dateList[index], style: AppTheme.caption, overflow: TextOverflow.ellipsis,),
-                ),
-
-                Container(
-                  height: 20,
-                  child: Row(
+          return InkWell(
+            onTap: () {
+              Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => KaTWebView(title: '피싱 뉴스', url: _newsList[index].url))) ;
+            },
+            child: Container(
+                padding: EdgeInsets.symmetric(vertical: 5, horizontal: MediaQuery.of(context).size.width * 0.05),
+                child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Icon(Icons.chat, size: 15,),
-                      Padding(padding: EdgeInsets.only(left: 5),),
-                      Text(_numOfChatList[index], style: AppTheme.caption,),
-                    ],
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.only(top: 10),
-                ),
+                      Container(
+                        height: 50,
+                        child: Text(_newsList[index].title, style: AppTheme.subtitle, overflow: TextOverflow.clip,),
+                      ),
 
-                Container(
-                  width: MediaQuery.of(context).size.width,
-                  height: 2,
-                  color: AppTheme.whiteGrey,
+                      Container(
+                        height: 50,
+                        child: Text(_newsList[index].content, overflow: TextOverflow.clip,),
+                      ),
+
+                      Container(
+                        padding: const EdgeInsets.only(top: 5),
+                        height: 20,
+                        child: Text(_newsList[index].news_date, style: AppTheme.caption, overflow: TextOverflow.ellipsis,),
+                      ),
+
+                      Container(
+                        height: 20,
+                        child: Row(
+                          children: [
+                            Icon(Icons.chat, size: 15,),
+                            Padding(padding: EdgeInsets.only(left: 5),),
+                            Text(_newsList[index].num_of_chat.toString(), style: AppTheme.caption,),
+                          ],
+                        ),
+                      ),
+                      const Padding(
+                        padding: EdgeInsets.only(top: 10),
+                      ),
+
+                      Container(
+                        width: MediaQuery.of(context).size.width,
+                        height: 2,
+                        color: AppTheme.whiteGrey,
+                      )
+                    ]
                 )
-              ]
             )
           );
         })
@@ -235,4 +283,14 @@ class _NewsWebViewState extends State<NewsWebView> {
         )
     );
   }
+}
+
+class News {
+  String title = "" ;
+  String content = "" ;
+  String news_date = "" ;
+  int num_of_chat = 0 ;
+  String url ;
+
+  News({required this.title, required this.content, required this.news_date, required this.num_of_chat, required this.url}) ;
 }
