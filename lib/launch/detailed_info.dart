@@ -304,13 +304,16 @@ class _detailed_infoState extends State<DetailInfo> {
         'insert into users (phone_number, IMEI, nickname, year, gender, profession) select ?, ?, ?,?, ?, ? where not exists (select * from users where phone_number like (?))', [user.phone, user.IMEI, user.nickname, user.year, user.gender, user.type, user.phone]);
 
     conn.close();
-    Provider.of<LaunchProvider>(context, listen: false).set_userinfo(user.nickname, user.year, user.gender, user.type);
+    Provider.of<LaunchProvider>(context, listen: false).set_userinfo(user.nickname, user.year, user.gender, user.type.toString());
     if(register.isNotEmpty){
       print('회원 추가 완료');
-
+      Provider.of<LaunchProvider>(context, listen: false).setSignUp(true);
       return register.first[0];
     }
-    else return 0;
+    else{
+      print("register: ${register}");
+      return 0;
+    }
   }
 
   @override

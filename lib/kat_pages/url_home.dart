@@ -141,6 +141,7 @@ class _InspectFeedbackState extends State<InspectFeedback> with SingleTickerProv
   late var _endFuture; //for the getsms
   int _type =0; // 나중에 type 수정을 위함, 카테고리 분류 변수
   smsInBox _smsinbox = smsInBox() ; // sms 관리
+  String? identifier;
 
   void buttonInit(int num){
     _type = _tabController.index==0? _smsinbox.freqmessagess[_isSelected].type :(_tabController.index==1 ? _smsinbox.messagess[_isSelected].type: _smsinbox.recentmessage[_isSelected].type);
@@ -330,7 +331,7 @@ class _InspectFeedbackState extends State<InspectFeedback> with SingleTickerProv
                               if(toggleSelected[1] == true)
                               {
                                 //print( _tabController.index.toString() + ' ' + _isSelected.toString() + ' ' + _type.toString()); 테스트용
-                                print(_type);
+                                //print(_type);
                                   _smsinbox.update(_tabController.index, _private, _type);
                                   _smsinbox._getupdateInfo(_private, _type);
 
@@ -447,7 +448,7 @@ class _InspectFeedbackState extends State<InspectFeedback> with SingleTickerProv
   } // 차단해제
 
   Future<bool> _getSmsInfo() async {
-    String? identifier = await UniqueIdentifier.serial;
+    identifier = await UniqueIdentifier.serial;
     await MySqlConnection.connect(Database.getConnection())
         .then((conn) async  {
       await conn.query("select id, sms.user_ph, sms.text, sms.sender_ph, sms.type, sms.received_sms_date from sms ,"

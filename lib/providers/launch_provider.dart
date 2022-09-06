@@ -26,27 +26,26 @@ class LaunchProvider extends ChangeNotifier {
     _userInfo.imei = await getIMEI() as String;
     _userInfo.phoneNumber = await getPhoneNumber() as String;
 
-    print(_userInfo.imei);
-    print(_userInfo.phoneNumber);
+    print("imei: ${_userInfo.imei}");
+    print("phonenumber: ${_userInfo.phoneNumber}");
     await MySqlConnection.connect(Database.getConnection()).then((conn) async {
       await conn.query(
-          "SELECT nickname FROM users WHERE IMEI = ? AND phone_number = ?",
+          "SELECT * FROM users WHERE IMEI = ? AND phone_number = ?",
           [_userInfo.imei, _userInfo.phoneNumber]).then((results) {
-            print(results) ;
+        print("results: $results") ;
         if (results.isNotEmpty) {
           if (results.length > 1) {
             //  동일한 IMEI와 핸드폰 번호가 있으면 2개 이상이 나오는데 그 때는 우짜나?
             _signUp = false;
           } else {
-            _userInfo.uerId = results.first["id"];
+            _userInfo.userId = results.first["id"];
             _userInfo.analysisDate = results.first["analysis_date"];
-            _userInfo.gender = results.first["gender"];
+            _userInfo.gender = (results.first["gender"] == "1") ? true : false;
             _userInfo.profession = results.first["profession"];
             _userInfo.year = results.first["year"];
             _userInfo.nickname = results.first["nickname"];
             _userInfo.updateDate = results.first["update_date"];
             _signUp = true;
-            print("get data");
             notifyListeners();
           }
         } else if (results.isEmpty) {
@@ -91,6 +90,8 @@ class LaunchProvider extends ChangeNotifier {
       for (int i = 0; i < messages.length; i++) {
         print('$i :sms inbox messages: ${messages[i].body}');
       }
+    } else {
+      await Permission.sms.request();
     }
   }
 
@@ -170,9 +171,10 @@ class LaunchProvider extends ChangeNotifier {
     String number = '';
     if (status.isGranted) {
       number = (await MobileNumber.mobileNumber) as String;
-      print(number);
-      number = number.replaceFirst('82+82', '0');
-      print(number);
+      number = number.substring(number.length-11);
+      if(number[0] == '2'){
+        number.replaceRange(0, 0, "0");
+      }
     } else if (status.isDenied) {
       Permission.contacts.request();
     }
@@ -184,7 +186,7 @@ class LaunchProvider extends ChangeNotifier {
         .then((conn) async => {
       await conn
           .query("SELECT * FROM attendance WHERE user_id = ?",
-          [_userInfo.uerId])
+          [_userInfo.userId])
           .then((results) =>
       {if (results.isNotEmpty) {} else if (results.isEmpty) {}})
           .onError((error, stackTrace) => {}),
@@ -193,7 +195,7 @@ class LaunchProvider extends ChangeNotifier {
         .onError((error, stackTrace) => {});
   }
 
-  void set_userinfo(String nickname, String year, bool gender, int profession){
+  void set_userinfo(String nickname, String year, bool gender, String profession){
     _userInfo.nickname = nickname;
     _userInfo.year = year;
     _userInfo.gender = gender;
@@ -212,11 +214,11 @@ class UserInfo {
 
   String imei = "";
   String phoneNumber = "";
-  String uerId = "";
+  int userId = 0;
   String nickname = "";
   String year = "";
   bool gender = true;
-  int profession = 0;
+  String profession = "";
   DateTime analysisDate = DateTime.now();
   DateTime updateDate = DateTime.now();
 }

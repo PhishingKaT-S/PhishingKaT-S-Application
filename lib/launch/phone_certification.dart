@@ -43,6 +43,13 @@ class _Phone_CRTState extends State<PhoneCRT> {
   String banner = "피싱 피해를 막기 위해\n휴대폰 본인 인증이 필요해요";
   int original = 300;
 
+  //cellphone is correct?
+  bool _correctCellphone=false; //휴대폰 형식 전화번호
+  final cellphoneREG = RegExp(r'^(010)?(\d{4})(\d{4})$');
+  
+  //button pushed?
+  bool _pushedBtn=false;
+  
   //시간
   bool flag = false; // flag of certification.
   bool timeover = false; // end of the 5 minute.
@@ -66,25 +73,26 @@ class _Phone_CRTState extends State<PhoneCRT> {
         }
       });
     });
-  }
+  } //시간 시작
 
   void _clickPlayButton() {
     _timer?.cancel();
     _start();
-  }
+  }//시간 시작
 
   void _clickResend() {
     _timer?.cancel();
     _start();
-  }
+  }//다시 보내기
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap:(){
-
         textFocus.unfocus();
+
         setState((){
+          _correctCellphone = cellphoneREG.hasMatch(_textEditingController.text);
           if (_certificationController.text ==
               verification) {
             _timer?.cancel();
@@ -161,33 +169,23 @@ class _Phone_CRTState extends State<PhoneCRT> {
                                 keyboardType: TextInputType.number,
                                 decoration: InputDecoration(
                                   border: InputBorder.none,
-                                  labelText: '휴대폰 번호 입력',
+                                  labelText: '휴대폰 번호 입력(-제외)',
                                   labelStyle: AppTheme.caption,
                                 ),
                               ),
                             ),
-                            InkWell(
-                                  onTap: () async {
-                                    _phoneNumber = _textEditingController.text;
-                                    verification =
-                                        await PhoneVerificationController()
-                                            .sendSMS(_textEditingController.text);
-                                    time = original;
-                                    _timer?.cancel();
-                                    _clickPlayButton();
-                                  },
-                              child: Container(
+                            Container(
                                 width: 50,
                                 height: 60,
                                 decoration: BoxDecoration(
                                     image: DecorationImage(
                                         scale: 8,
-                                        image:AssetImage('assets/images/joinFeedback2.png',)
+                                        image:_correctCellphone ? AssetImage('assets/images/joinFeedback2.png') : AssetImage('assets/images/joinFeedback1.png') // 휴대폰 번호 형식이 맞으면 넘어감
                                     )
                                 ),
                               ),
 
-                                )
+
                           ],
                         ), //국가 번호, 휴대폰번호, 아이콘이 flexible 1, 8, 1 비율로 있음
                       ), //border
@@ -261,16 +259,37 @@ class _Phone_CRTState extends State<PhoneCRT> {
                         //인증번호 다시 받기
                         alignment: Alignment.bottomRight,
                         child: TextButton(
-                          child: Text('인증번호 다시받기', style: AppTheme.certicationResend),
+                          child: _pushedBtn ? Text('인증번호 다시받기', style: AppTheme.certicationResend) : Text('인증번호 받기', style: AppTheme.certicationResend),
                           onPressed: () async {
+                            if(_correctCellphone){
+                              if(_pushedBtn){ // 한번 눌릴 상태
+
                             verification = await PhoneVerificationController()
                                 .sendSMS(_textEditingController.text);
                             _timer?.cancel();
                             setState((){
-                              flag= false;
+                              _pushedBtn = true; //버튼 눌렀으므로 인증번호 다시받기로 바꿈
+                              flag= false;    //certification 초기화
                             });
                             time = original;
-                            _clickResend();
+                            _clickResend();}
+                              else{ //처음 눌릴 상태
+                                _phoneNumber = _textEditingController.text;
+                                verification =
+                                await PhoneVerificationController()
+                                    .sendSMS(_textEditingController.text);
+                                time = original;
+                                _timer?.cancel();
+                                _clickPlayButton();
+                                setState((){
+                                  _pushedBtn = true;
+                                  flag=false;
+                                });
+                              }
+                            }
+                            else{
+                              ;
+                            }
                           },
                         ),
                       ) //인증번호 받기 받기

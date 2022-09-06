@@ -43,9 +43,6 @@ public class MainActivity extends FlutterActivity {
     @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
     public void configureFlutterEngine(@NonNull FlutterEngine flutterEngine)  {
-//        this.readSMS(sms);
-//        this.readMMS(sms);
-
         GeneratedPluginRegistrant.registerWith(flutterEngine);
         new MethodChannel(flutterEngine.getDartExecutor().getBinaryMessenger(), CHANNEL)
                 .setMethodCallHandler(
@@ -59,28 +56,17 @@ public class MainActivity extends FlutterActivity {
                         }
                 );
 
-        int sms_permission = ContextCompat.checkSelfPermission(this, Manifest.permission.READ_SMS) ;
-        int contact_permission = ContextCompat.checkSelfPermission(this, Manifest.permission.READ_CONTACTS) ;
-        int contact_state_permission = ContextCompat.checkSelfPermission(this, Manifest.permission.READ_PHONE_STATE) ;
-
-        if ( sms_permission == PackageManager.PERMISSION_DENIED ||
-                contact_permission == PackageManager.PERMISSION_DENIED ||
-                contact_state_permission == PackageManager.PERMISSION_DENIED) {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-
-                if (this.readSMS(sms) && this.readMMS(sms)) {
-                    for (int i = 0; i < sms.size(); i++) {
-                        String[] __sms = sms.get(i).split("[sms_text]");
-                        Log.i(TAG, __sms[0] + " " + __sms[1] + " " + __sms[2] + " " + __sms[3]);
-                    }
-                }
-
-                for (int i = 0; i < sms.size(); i++) {
-                    String[] __sms = sms.get(i).split("[sms_text]");
-                    Log.i(TAG, __sms[0] + " " + __sms[1] + " " + __sms[2] + " " + __sms[3]);
-                }
-            }
-        }
+//        int sms_permission = ContextCompat.checkSelfPermission(this, Manifest.permission.READ_SMS) ;
+//        int contact_permission = ContextCompat.checkSelfPermission(this, Manifest.permission.READ_CONTACTS) ;
+//        int contact_state_permission = ContextCompat.checkSelfPermission(this, Manifest.permission.READ_PHONE_STATE) ;
+//
+//        if ( sms_permission == PackageManager.PERMISSION_DENIED ||
+//                contact_permission == PackageManager.PERMISSION_DENIED ||
+//                contact_state_permission == PackageManager.PERMISSION_DENIED) {
+//            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+//                requestPermissions(new String[] { Manifest.permission.READ_SMS, Manifest.permission.READ_CONTACTS, Manifest.permission.READ_PHONE_STATE }, PERMISSION_REQUEST_READ_SMS) ;
+//            }
+//        }
     }
 
     @RequiresApi(api = Build.VERSION_CODES.M)

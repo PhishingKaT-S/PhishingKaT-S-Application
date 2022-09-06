@@ -11,7 +11,9 @@ class noSmishing extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             Container(
-              child: Icon(Icons.sentiment_very_satisfied, color: Colors.grey, size: 20),
+              width: 100,
+              height:100,
+              child: Image.asset('assets/images/no_smish_data.png'),
             ),
             Text('해당하는 스미싱 의심 기록이 없어요', style: AppTheme.menu_list)
           ],
