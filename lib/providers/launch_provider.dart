@@ -13,6 +13,8 @@ import '../db_conn.dart';
 
 class LaunchProvider extends ChangeNotifier {
   bool _signUp = false;
+  UserInfo _userInfo = UserInfo();
+
   LaunchProvider(){
     Init();
   }
@@ -45,6 +47,7 @@ class LaunchProvider extends ChangeNotifier {
             _userInfo.year = results.first["year"];
             _userInfo.nickname = results.first["nickname"];
             _userInfo.updateDate = results.first["update_date"];
+            _userInfo.score = results.first["score"] ;
             _signUp = true;
             notifyListeners();
           }
@@ -63,7 +66,6 @@ class LaunchProvider extends ChangeNotifier {
     return _signUp ;
   }
 
-  UserInfo _userInfo = UserInfo();
   UserInfo getUserInfo(){
     return _userInfo;
   }
@@ -221,4 +223,5 @@ class UserInfo {
   String profession = "";
   DateTime analysisDate = DateTime.now();
   DateTime updateDate = DateTime.now();
+  int score = -1;
 }
