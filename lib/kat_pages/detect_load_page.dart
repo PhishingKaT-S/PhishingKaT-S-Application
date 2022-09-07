@@ -5,6 +5,8 @@
  */
 
 
+import 'dart:math';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -62,6 +64,8 @@ class _DetectLoadPageState extends State<DetectLoadPage> {
       msgs = ch ;
     });
     context.read<SmsProvider>().setSmsToSmsProvider(msgs);
+    context.read<LaunchProvider>().setScore(Random(1234).nextInt(100));
+    // context.read<LaunchProvider>().setUpdate();
   }
 
   /**

@@ -1,4 +1,4 @@
-
+import 'package:intl/intl.dart';
 import 'dart:developer';
 
 import 'package:contacts_service/contacts_service.dart';
@@ -80,6 +80,35 @@ class LaunchProvider extends ChangeNotifier {
 
     _signUp = signUp;
     // notifyListeners();
+  }
+
+  void setScore(int score){
+    _userInfo.score = score;
+    notifyListeners();
+  }
+
+  void setUpdate(){
+    MySqlConnection.connect(Database.getConnection()).then((conn) async {
+      await conn.query(
+          "INSERT INTO users (update_date) SELECT ? where id = ?",
+          [
+            DateFormat('yyyy-MM-dd').format(
+                DateTime.now()),
+            _userInfo.userId
+          ]).then((results) {
+        if (results.isNotEmpty) {
+
+        } else if (results.isEmpty) {
+        }
+      }).onError((error, stackTrace) {
+        print("error: $error");
+      });
+      conn.close();
+    }).onError((error, stackTrace) {
+      print("error2: $error");
+    });
+    //_userInfo.updateDate = DateTime.now();
+    notifyListeners();
   }
 
   Future getMessage() async {
