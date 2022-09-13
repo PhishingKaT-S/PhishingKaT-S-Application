@@ -12,4 +12,5 @@
     <color name="mygreen">#009944</color>
     <color name="lettergray">#9b9b9b</color>
     <color name="myblue">#0473e1</color>
+    <color name="mybackground">#99111111</color>
 </resources>
