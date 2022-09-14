@@ -32,11 +32,14 @@
             <data android:scheme="tel" />
         </intent>
     </queries>
-
+    <!-- usesClear 임의로 추가했음 임의로 추가했음 -->
     <application
+
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher"
-        android:label="phishing_kat_pluss">
+        android:label="phishing_kat_pluss"
+        android:usesCleartextTraffic="true"
+        >
         <receiver
             android:name=".SmsReceiver"
             android:enabled="true"

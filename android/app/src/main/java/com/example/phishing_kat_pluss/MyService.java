@@ -4,9 +4,13 @@ import static android.Manifest.permission.READ_PHONE_NUMBERS;
 import static android.Manifest.permission.READ_PHONE_STATE;
 import static android.Manifest.permission.READ_SMS;
 
+import static com.example.phishing_kat_pluss.SmsReceiver.millidate;
 import static com.example.phishing_kat_pluss.SmsReceiver.smsRe;
 
 import android.annotation.TargetApi;
+import android.app.Notification;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
@@ -29,11 +33,22 @@ import android.widget.LinearLayout;
 import android.widget.RadioGroup;
 import android.widget.TextView;
 
+import androidx.annotation.RequiresApi;
 import androidx.core.app.ActivityCompat;
+import androidx.core.app.NotificationCompat;
 
+import java.io.DataOutputStream;
+import java.io.UnsupportedEncodingException;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.net.URLEncoder;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.Statement;
+import java.text.SimpleDateFormat;
+import java.util.HashMap;
+import java.util.Locale;
+import java.util.Map;
 
 public class MyService extends Service {
     public static String sms_type;
@@ -46,7 +61,7 @@ public class MyService extends Service {
     private static String date;
     private static String score;
     private static String recipient;
-    private static int smishing;
+    private static int smishing=0;
 
     TextView tv_sender;
     TextView tv_content;
@@ -70,6 +85,18 @@ public class MyService extends Service {
     @Override
     public IBinder onBind(Intent intent) {
         return null;
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    @Override
+    public void onCreate(){
+        String CHANNEL_ID = "channel_1";
+        NotificationChannel channel = new NotificationChannel(CHANNEL_ID, "Android test", NotificationManager.IMPORTANCE_LOW);
+
+        ((NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE)).createNotificationChannel(channel);
+
+        Notification notification =new NotificationCompat.Builder(this, CHANNEL_ID).setContentTitle("").setContentText("").build();
+        startForeground(2, notification);
     }
 
     @Override
@@ -155,6 +182,8 @@ public class MyService extends Service {
                         break;
                 } // type 변경
 
+                updatesms(millidate, content, sender, Integer.parseInt(sms_type), recipient);
+
                 wm.removeView(mView); //작업이 끝났으므로 끔
                 smsRe = false;
             });
@@ -173,7 +202,15 @@ public class MyService extends Service {
             setTextfromtype();
 
             //Log.d("DDDD", score);
-            addsms(date, content, sender, Integer.parseInt(sms_type), recipient, smishing);       //public static void addsms(String _date, String _content, String _sender, int _smstype, String _recipient, int _smishing){
+            try{
+                int num = Integer.parseInt(sms_type);
+                addsms(date, content, sender, Integer.parseInt(sms_type), recipient, smishing, score);       //public static void addsms(String _date, String _content, String _sender, int _smstype, String _recipient, int _smishing){
+            } catch(NumberFormatException e){
+                Log.d("MY SERVICE", "sms_type convert error");
+            }catch(Exception e){
+                Log.d("My service at ", "sms_type convert error");
+            }
+
             wm.addView(mView, params);
             smsRe = true;
             return super.onStartCommand(intent, flags, startId);
@@ -198,7 +235,14 @@ public class MyService extends Service {
             tv_date.setText(date);
             setTextfromtype();
 
-            addsms(date, content, sender, Integer.parseInt(sms_type), recipient, smishing);       //public static void addsms(String _date, String _content, String _sender, int _smstype, String _recipient, int _smishing){
+            try{
+                int num = Integer.parseInt(sms_type);
+                addsms(date, content, sender, Integer.parseInt(sms_type), recipient, smishing, score);       //public static void addsms(String _date, String _content, String _sender, int _smstype, String _recipient, int _smishing){
+            } catch(NumberFormatException e){
+                Log.d("MY SERVICE part2", "sms_type convert error");
+            }catch(Exception e){
+                Log.d("My service at part2", "sms_type convert error");
+            }
 
             return super.onStartCommand(intent, flags, startId);
         }
@@ -218,66 +262,81 @@ public class MyService extends Service {
 
     //type 설정
     void setTextfromtype() {
-        if (Integer.parseInt(score) < 40) {
-            tv_type.setText(R.string.safe);
-            radioGroup.check(R.id.radio_others);
-            smishing = 0;
-        } else {
-            smishing= 1;
-            switch (Integer.parseInt(type)) {
-                case 0:
-                    tv_type.setText(R.string.stock);
-                    radioGroup.check(R.id.radio_stock);
-                    sms_type = "0";
-                    break;
-                case 1:
-                    tv_type.setText(R.string.vishing);
-                    radioGroup.check(R.id.radio_vishing);
-                    sms_type = "1";
-                    break;
-                case 2:
-                    tv_type.setText(R.string.insurance);
-                    radioGroup.check(R.id.radio_insurance);
-                    sms_type = "2";
-                    break;
-                case 3:
-                    tv_type.setText(R.string.gambling);
-                    radioGroup.check(R.id.radio_gambling);
-                    sms_type = "3";
-                    break;
-                case 4:
-                    tv_type.setText(R.string.survey);
-                    radioGroup.check(R.id.radio_survey);
-                    sms_type = "4";
-                    break;
-                case 5:
-                    tv_type.setText(R.string.telemarketing);
-                    radioGroup.check(R.id.radio_telemarketing);
-                    sms_type = "5";
-                    break;
-                case 6:
-                    tv_type.setText(R.string.others);
-                    radioGroup.check(R.id.radio_others);
-                    sms_type = "6";
-                    break;
+        int setTextScore;
+        try {
+        setTextScore = Integer.parseInt(score);
+            if (setTextScore < 40) {
+                tv_type.setText(R.string.safe);
+                radioGroup.check(R.id.radio_others);
+                smishing = 0;
+            } else {
+                smishing= 1;
+                switch (Integer.parseInt(type)) {
+                    case 0:
+                        tv_type.setText(R.string.stock);
+                        radioGroup.check(R.id.radio_stock);
+                        sms_type = "0";
+                        break;
+                    case 1:
+                        tv_type.setText(R.string.vishing);
+                        radioGroup.check(R.id.radio_vishing);
+                        sms_type = "1";
+                        break;
+                    case 2:
+                        tv_type.setText(R.string.insurance);
+                        radioGroup.check(R.id.radio_insurance);
+                        sms_type = "2";
+                        break;
+                    case 3:
+                        tv_type.setText(R.string.gambling);
+                        radioGroup.check(R.id.radio_gambling);
+                        sms_type = "3";
+                        break;
+                    case 4:
+                        tv_type.setText(R.string.survey);
+                        radioGroup.check(R.id.radio_survey);
+                        sms_type = "4";
+                        break;
+                    case 5:
+                        tv_type.setText(R.string.telemarketing);
+                        radioGroup.check(R.id.radio_telemarketing);
+                        sms_type = "5";
+                        break;
+                    case 6:
+                        tv_type.setText(R.string.others);
+                        radioGroup.check(R.id.radio_others);
+                        sms_type = "6";
+                        break;
+                }
             }
+        }catch(NumberFormatException e){
+            System.out.print(e);
         }
+
     }
+
 
     void scorewithcolor() {
         scoreLayout = (LinearLayout) mView.findViewById(R.id.scoreColor);
         //Log.d("scorewithcolor",score);
-        if (Integer.parseInt(score) < 40) {
-            scoreLayout.setBackgroundResource(R.drawable.upperbackgreen);
-        } else if (Integer.parseInt(score) < 60) {
-            scoreLayout.setBackgroundResource(R.drawable.upperbackgrey);
-        } else if (Integer.parseInt(score) < 70) {
-            scoreLayout.setBackgroundResource(R.drawable.upperbackyellow);
-        } else if (Integer.parseInt(score) < 80) {
-            scoreLayout.setBackgroundResource(R.drawable.upperbackorange);
-        } else {
-            scoreLayout.setBackgroundResource(R.drawable.upperbackred);
+        int number;
+        try{
+            number = Integer.parseInt(score);
+            if (number < 40) {
+                scoreLayout.setBackgroundResource(R.drawable.upperbackgreen);
+            } else if (number < 60) {
+                scoreLayout.setBackgroundResource(R.drawable.upperbackgrey);
+            } else if (number < 70) {
+                scoreLayout.setBackgroundResource(R.drawable.upperbackyellow);
+            } else if (number < 80) {
+                scoreLayout.setBackgroundResource(R.drawable.upperbackorange);
+            } else {
+                scoreLayout.setBackgroundResource(R.drawable.upperbackred);
+            }
+        }catch(NumberFormatException e){
+            Log.d("scorewithColor", "scorewithColor convert error");
         }
+
     }
 
     //내 휴대폰 번호 가져와야됨
@@ -289,25 +348,98 @@ public class MyService extends Service {
                     .getLine1Number();
         }
     }
+    public static void addsms(String _date, String _content, String _sender, int _smstype, String _recipient, int _smishing, String _score){
+            new Thread(()->{
+                try{
+                    URL url = new URL("http://54.153.117.158/db.php");
+                    HttpURLConnection con = (HttpURLConnection) url.openConnection();
+                    con.setDoOutput(true);
+                    con.setDoInput(true);
+                    con.setRequestMethod("POST");
 
-    public static void addsms(String _date, String _content, String _sender, int _smstype, String _recipient, int _smishing){
+
+                    Map<String, String> parameters = new HashMap<>();
+                    parameters.put("date", millidate); //날짜가 특수문자 때문에 깨져서 만든 millisecond를 day로 바꿀 것
+                    parameters.put("content", _content);
+                    parameters.put("sender", _sender);
+                    parameters.put("type", String.valueOf(_smstype));
+                    //parameters.put("recipient", "01029601776");
+                    parameters.put("recipient", _recipient);
+                    parameters.put("smishing", String.valueOf(_smishing));
+                    parameters.put("score", _score);
+
+                    DataOutputStream out = new DataOutputStream(con.getOutputStream());
+                    out.writeBytes(ParameterStringBuilder.getParamsString(parameters));
+                    out.flush();
+                    out.close();
+                    int responseCode = con.getResponseCode();
+                    System.out.println("\nSending 'POST' request to URL at insert: " + url);
+                    Log.d("resposecode", String.valueOf(responseCode));
+
+                }catch(Exception e){
+                    Log.d("sms","sms error");
+                    e.printStackTrace();
+                }
+            }).start();
+        }
+    public static void updatesms(String _date, String _content, String _sender, int _smstype, String _recipient){
         new Thread(()->{
-            try{
-                /*Class.forName("org.mariadb.jdbc.Driver");
-                Connection connection = DriverManager.getConnection(url, username, passwd);
-                System.out.println("Database Connection success ");
-                Statement statement = connection.createStatement();
-                statement.execute("insert into sms values(30,18, '01029601776', '2022-08-30 00:00:00', 'abcd', '01029601776', 0, 0 )");
-                //statement.execute("insert into "+ TABLE_NAME+"(user_id, user_ph, received_sms_date, text, sender_ph, type, smishing) select b.id, b.phone_number, '" +_date +"' , '"+ _content+"', '"+_sender + "', "+_smstype+", "+_smishing + " select id, phone_number from users where phone_number='"+_recipient+"') as b");
-                connection.close();*/
+            try {
+                URL url = new URL("http://54.153.117.158/updatetype.php");
+                HttpURLConnection con = (HttpURLConnection) url.openConnection();
+                con.setDoOutput(true);
+                con.setDoInput(true);
+                con.setRequestMethod("POST");
 
 
+                Map<String, String> parameters = new HashMap<>();
+                parameters.put("date", millidate);
+                parameters.put("content", _content);
+                parameters.put("sender", _sender);
+                parameters.put("type", String.valueOf(_smstype));
+                //parameters.put("recipient", "01029601776");
+                parameters.put("recipient", _recipient);
+
+                DataOutputStream out = new DataOutputStream(con.getOutputStream());
+                out.writeBytes(ParameterStringBuilder.getParamsString(parameters));
+                out.flush();
+                out.close();
+                int responseCode = con.getResponseCode();
+                System.out.println("\nSending 'POST' request to URL at update : " + url);
+                Log.d("resposecode", String.valueOf(responseCode));
             }catch(Exception e){
-                Log.d("sms","sms error");
+                Log.d("sms update", "sms type update error");
                 e.printStackTrace();
             }
-        }).start();
+        }
+        ).start();
     }
 
-
+    /*private String converttoDate(String date){ //miili를 yyyy-MM-dd로 바꿈
+        SimpleDateFormat sdf= new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.KOREA);
+        String senddate = sdf.format(date).toString();//날짜
+        return senddate;
+    }*/
 }
+
+
+class ParameterStringBuilder {
+    public static String getParamsString(Map<String, String> params)
+            throws UnsupportedEncodingException{
+        StringBuilder result = new StringBuilder();
+
+        for (Map.Entry<String, String> entry : params.entrySet()) {
+            result.append(URLEncoder.encode(entry.getKey(), "UTF-8"));
+            result.append("=");
+            result.append(URLEncoder.encode(entry.getValue(), "UTF-8"));
+            result.append("&");
+        }
+        String resultString = result.toString();
+        Log.d("Myservice", resultString);
+        return resultString.length() > 0
+                ? resultString.substring(0, resultString.length() - 1)
+                : resultString;
+    }
+}
+
+
