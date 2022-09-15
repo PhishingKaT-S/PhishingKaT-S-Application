@@ -16,15 +16,20 @@ class KatBottomBar extends StatefulWidget {
 class _KatBottomBar extends State<KatBottomBar> {
   int _selectedIndex = 0;
 
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+  }
+
   void _onItemTapped(int index) {
     setState(() {
-      _selectedIndex = index;
 
-      if ( _selectedIndex == 0 ) {
+      if ( index == 0 ) {
         Navigator.pushNamed(context, '/kat_pages/home') ;
-      } else if ( _selectedIndex == 1 ) {
+      } else if ( index == 1 ) {
         Navigator.pushNamed(context, '/kat_pages/url_home', arguments: 1 );
-      } else if ( _selectedIndex == 2 ) {
+      } else if ( index == 2 ) {
         Navigator.pushNamed(context, '/menu/menu_home') ;
       }
     });

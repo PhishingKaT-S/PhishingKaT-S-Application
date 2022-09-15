@@ -28,13 +28,15 @@
         <!-- If your app checks for call support -->
         <intent>
             <action android:name="android.intent.action.VIEW" />
+            <data android:scheme="tel" />
+        </intent>
+    </queries>
 
             <data android:scheme="tel" />
         </intent>
     </queries>
     <!-- usesClear 임의로 추가했음 임의로 추가했음 -->
     <application
-
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher"
         android:label="phishing_kat_pluss"

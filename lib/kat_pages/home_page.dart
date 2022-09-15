@@ -10,6 +10,7 @@ import 'package:mysql1/mysql1.dart';
 import 'package:phishing_kat_pluss/kat_widget/kat_appbar.dart';
 import 'package:phishing_kat_pluss/kat_widget/kat_bottombar.dart';
 import 'package:phishing_kat_pluss/providers/launch_provider.dart';
+import 'package:phishing_kat_pluss/providers/smsProvider.dart';
 import 'package:phishing_kat_pluss/theme.dart';
 import 'package:provider/provider.dart';
 import '../db_conn.dart';
@@ -20,20 +21,108 @@ import 'package:flutter_svg/flutter_svg.dart';
 import '../providers/attendanceProvider.dart';
 
 class HomePage extends StatefulWidget {
-  const HomePage({Key? key, required this.userInfo}) : super(key: key);
+  const HomePage({Key? key,}) : super(key: key);
 
-  final UserInfo userInfo;
   @override
   State<StatefulWidget> createState() => new _HomePage();
 }
 
 class _HomePage extends State<HomePage> {
+  List<bool> _weekAttendance = [false, false, false, false, false, false, false];
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance?.addPostFrameCallback((_) async {
+      int _userId = Provider.of<LaunchProvider>(context, listen: false).getUserInfo().userId;
+      print("user id:: $_userId");
+      _attendanceProvider =
+          Provider.of<AttendanceProvider>(context, listen: false);
+
+      bool _attendance =
+      await _attendanceProvider.getTodayAttendance(_userId);
+      if (!_attendance) {
+        _attendanceProvider.setTodayAttendance(_userId);
+        showDialog(
+          context: context,
+          builder: (context) => AlertDialog(
+            contentPadding: EdgeInsets.zero,
+            titlePadding: const EdgeInsets.only(top: 10.0),
+            shape: const RoundedRectangleBorder(
+                borderRadius: BorderRadius.all(Radius.circular(15.0))),
+            title: const Center(
+                child: Text(
+                  '출석 체크 이벤트',
+                  style: TextStyle(fontSize: 15, fontWeight: FontWeight.w800),
+                )),
+            content: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                const Divider(),
+                const Text(
+                  '\n이번 달 출석 목표 : 25회',
+                  style: TextStyle(fontWeight: FontWeight.w300),
+                ),
+                Text(
+                  '현재 출석 달성 : ${_attendanceProvider.getMonthAttendance()}회',
+                  style: const TextStyle(fontWeight: FontWeight.w300),
+                ),
+                Text(
+                  '\n목표 달성하려면 ${25-_attendanceProvider.getMonthAttendance()}회 남았어요!\n',
+                  style: const TextStyle(fontWeight: FontWeight.w300),
+                ),
+                Container(
+                  padding: EdgeInsets.zero,
+                  // height: 40,
+                  decoration: const BoxDecoration(
+                    borderRadius: BorderRadius.only(
+                        bottomLeft: Radius.circular(15.0),
+                        bottomRight: Radius.circular(15.0)),
+                    color: Colors.blue,
+
+                  ),
+                  width: MediaQuery.of(context).size.width * 0.8,
+                  //color: Colors.blue,
+                  child: TextButton(
+                    style: ButtonStyle(
+                      backgroundColor:
+                      MaterialStateProperty.all<Color>(Colors.blue),
+                    ),
+                    onPressed: () => Navigator.pop(context),
+                    child: const Text(
+                      '확인',
+                      style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 16,
+                          fontWeight: FontWeight.w800),
+                    ),
+                  ),
+                ),
+              ],
+              mainAxisSize: MainAxisSize.min,
+            ),
+          ),
+        );
+      }
+      setState(() {
+        _weekAttendance = _attendanceProvider.getWeekAttendance();
+        smish_detect_flag = Provider.of<LaunchProvider>(context, listen: false).getUserInfo().score == -1 ? false : true;
+        if(smish_detect_flag){
+          score = Provider.of<LaunchProvider>(context, listen: false).getUserInfo().score.toDouble();
+
+        }
+      });
+    });
+  }
+  late AttendanceProvider _attendanceProvider;
+
   final GlobalKey<AnimatedCircularChartState> _chartKey =
       new GlobalKey<AnimatedCircularChartState>();
   double dividingLine = 250;
 
   double SCORE_WIDTH_RANGE = 110;
-  bool smish_detect_flag = true; // provider ?
+  double score = 0.0;
+  bool smish_detect_flag = false; // provider ?
 
   Widget _getCircularChart(double score) {
     return AnimatedCircularChart(
@@ -76,7 +165,7 @@ class _HomePage extends State<HomePage> {
   }
 
   Widget _mainScoreView() {
-    double score = 69;
+
 
     /**
      * _mainScoreView
@@ -299,16 +388,18 @@ class _HomePage extends State<HomePage> {
             width: MediaQuery.of(context).size.width * 0.3,
             child: Row(
               mainAxisAlignment: MainAxisAlignment.end,
-              children: (smish_detect_flag)
-                  ? [
-                      Text(num, style: TextStyle(color: color)),
+              children:
+              // (smish_detect_flag)
+              //     ?
+                  [
+                      Text(context.watch<SmsProvider>().getSmsLength().toString(), style: TextStyle(color: color)),
                       const Text(' 건'),
                     ]
-                  : [
-                      const Icon(Icons.arrow_right, color: AppTheme.greyText),
-                      const Text('피싱 분석 필요',
-                          style: TextStyle(color: AppTheme.greyText)),
-                    ],
+              //     : [
+              //         const Icon(Icons.arrow_right, color: AppTheme.greyText),
+              //         const Text('피싱 분석 필요',
+              //             style: TextStyle(color: AppTheme.greyText)),
+              //       ],
             ))
       ],
     ));
@@ -399,15 +490,7 @@ class _HomePage extends State<HomePage> {
 
   Widget _attendanceCheck() {
     List<String> dayList = <String>['월', '화', '수', '목', '금', '토', '일'];
-    List<bool> dayCheckList = <bool>[
-      false,
-      false,
-      false,
-      true,
-      false,
-      false,
-      true
-    ];
+    List<bool> dayCheckList = _weekAttendance;
 
     /**
      * _attendanceCheck
@@ -705,60 +788,27 @@ class _HomePage extends State<HomePage> {
     );
   }
 
-  @override
-  void initState() {
-    super.initState();
-    WidgetsBinding.instance?.addPostFrameCallback((_) async{
-      print("user id:: ${widget.userInfo.userId}");
-      AttendanceProvider _attendProvider =
-      Provider.of<AttendanceProvider>(context, listen: false);
 
-      bool _attendance = await _attendProvider.getTodayAttendance(widget.userInfo.userId);
-      if(!_attendance){
-        _attendProvider.setTodayAttendance(widget.userInfo.userId);
-        showDialog(
-          context: context,
-          builder: (context) => AlertDialog(
-            //title: const Text('출석 체크 이벤트', style: T,),
-            content: const Text('출석체크'),
-            actions: [
-              TextButton(
-                onPressed: () {
-
-                  Navigator.pop(context);
-                },
-                child: const Text('ok'),
-              ),
-            ],
-          ),
-        );
-      }
-    });
-  }
 
   @override
   Widget build(BuildContext context) {
-    LaunchProvider _userProvider = Provider.of<LaunchProvider>(context);
-    AttendanceProvider _attendProvider =
-        Provider.of<AttendanceProvider>(context);
-    print(_userProvider.getUserInfo().userId);
-      return Scaffold(
-        appBar: const KaTAppBar(),
-        // drawer: KaTDrawer(),
-        bottomNavigationBar: const KatBottomBar(),
-        body: SingleChildScrollView(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: [
-              _mainScoreView(),
-              _smishingDataAnalysisView(),
-              _attendanceCheck(),
-              _additionalFuctions(),
-              _dailyReport(),
-            ],
-          ),
+    return Scaffold(
+      appBar: const KaTAppBar(),
+      // drawer: KaTDrawer(),
+      bottomNavigationBar: const KatBottomBar(),
+      body: SingleChildScrollView(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: [
+            _mainScoreView(),
+            _smishingDataAnalysisView(),
+            _attendanceCheck(),
+            _additionalFuctions(),
+            _dailyReport(),
+          ],
         ),
-      );
+      ),
+    );
   }
 }

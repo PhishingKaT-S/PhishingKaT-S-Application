@@ -9,6 +9,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_circular_chart_two/flutter_circular_chart_two.dart';
+import 'package:phishing_kat_pluss/providers/smsProvider.dart';
+import 'package:provider/provider.dart';
 
 import '../Theme.dart';
 import '../providers/launch_provider.dart';
@@ -35,6 +37,7 @@ class _DetectLoadPageState extends State<DetectLoadPage> {
     Future.microtask(() async {
       await _get_sms_from_channel() ;
     });
+
   }
 
   Future<void> _get_sms_from_channel() async {
@@ -58,6 +61,7 @@ class _DetectLoadPageState extends State<DetectLoadPage> {
     setState(() {
       msgs = ch ;
     });
+    context.read<SmsProvider>().setSmsToSmsProvider(msgs);
   }
 
   /**
@@ -184,6 +188,7 @@ class _DetectLoadPageState extends State<DetectLoadPage> {
                     _percentage(),
                     _progress(),
                     _notice(),
+
                   ],
                 )
             )
