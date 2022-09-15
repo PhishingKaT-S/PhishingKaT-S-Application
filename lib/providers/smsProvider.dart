@@ -11,6 +11,8 @@ class SmsProvider with ChangeNotifier{
     if(smsList[0] == "Error"){
       return ;
     }
+    _smsList.clear();
+
     for(int i = 0 ; i < smsList.length ; i++){
       List temp = smsList[i].toString().split("[sms_text]");
       _smsList.add(SmsInfo(name: temp[0], phone: temp[1], date: temp[2], body: temp[3]));

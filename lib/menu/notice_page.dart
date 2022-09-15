@@ -82,22 +82,24 @@ class _NoticePageState extends State<NoticePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBarBack(title: '공지사항'),
-      body: FutureBuilder(
-        future: _getNoticeData(),
-        builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
-          if ( snapshot.hasError ) {
-            return const Text('데이터를 불러 올 수 없습니다.') ;
-          } else if ( snapshot.hasData ) {
-            return Column(
-              children: List.generate(_title.length, (index) {
-                return _expansionTile(index) ;
-              }),
-            );
-          } else {
-            return Container();
-          }
-        },
-      )
+      body: SingleChildScrollView(
+        child: FutureBuilder(
+          future: _getNoticeData(),
+          builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
+            if ( snapshot.hasError ) {
+              return const Text('데이터를 불러 올 수 없습니다.') ;
+            } else if ( snapshot.hasData ) {
+              return Column(
+                children: List.generate(_title.length, (index) {
+                  return _expansionTile(index) ;
+                }),
+              );
+            } else {
+              return Container();
+            }
+          },
+        )
+      ),
     );
   }
 }
