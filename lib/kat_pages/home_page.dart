@@ -172,7 +172,6 @@ class _HomePage extends State<HomePage> {
   }
 
   Widget _mainScoreView() {
-
     print("2 : ${context.watch<LaunchProvider>().getUserInfo().score}");
     /**
      * _mainScoreView

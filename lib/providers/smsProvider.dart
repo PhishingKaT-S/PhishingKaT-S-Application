@@ -26,7 +26,6 @@ class SmsProvider with ChangeNotifier{
   int getSmsLength(){
     return _smsList.length;
   }
-
 }
 
 class SmsInfo{

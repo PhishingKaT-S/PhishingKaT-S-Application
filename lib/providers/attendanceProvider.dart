@@ -119,6 +119,7 @@ class AttendanceProvider extends ChangeNotifier {
         await conn.query("INSERT INTO attendance VALUES(?, ?)", [
           userId,
           DateFormat('yyyy-MM-dd').format(DateTime.now())
+
         ]).then((results) {
           if (results.isNotEmpty) {
           } else if (results.isEmpty) {}
