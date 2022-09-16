@@ -15,6 +15,7 @@ import 'package:phishing_kat_pluss/menu/menu_home.dart';
 import 'package:phishing_kat_pluss/menu/service_center.dart';
 import 'package:phishing_kat_pluss/providers/attendanceProvider.dart';
 import 'package:phishing_kat_pluss/providers/launch_provider.dart';
+import 'package:phishing_kat_pluss/providers/smsProvider.dart';
 import 'package:phishing_kat_pluss/providers/testProvider.dart';
 import 'package:phishing_kat_pluss/splash/splash_screen.dart';
 import 'package:provider/provider.dart';
@@ -38,14 +39,17 @@ void main() {
      */
       MultiProvider(
         providers: [
-          ChangeNotifierProvider(
+          ChangeNotifierProvider<TestProvider>(
             create: (_) => TestProvider(),
           ),
-          ChangeNotifierProvider(
+          ChangeNotifierProvider<LaunchProvider>(
             create: (_) => LaunchProvider(),
           ),
-          ChangeNotifierProvider(
+          ChangeNotifierProvider<AttendanceProvider>(
             create: (_) => AttendanceProvider(),
+          ),
+          ChangeNotifierProvider<SmsProvider>(
+            create: (_) => SmsProvider(),
           ),
         ],
         child: const MyApp(),
@@ -65,7 +69,7 @@ class MyApp extends StatelessWidget {
     return FutureBuilder(
 
       ///future: 앱의 초기 설정및 데이터를 불러오는 곳
-        future: LaunchProvider().Init(),
+        future: context.read<LaunchProvider>().Init(),
 
         /// future의 상태에 따라 보여주는 화면이 다르다.
         /// future를 기다리는 중이면 Splash화면을 보여준다.
@@ -88,7 +92,7 @@ class MyApp extends StatelessWidget {
                 primaryColor: Colors.blueGrey,
                 scaffoldBackgroundColor: Colors.white,
               ),
-              home: snapshot.data.nickname!="" ? HomePage(userInfo: snapshot.data) : const LoginPage(),
+              home: context.watch<LaunchProvider>().getUserInfo().nickname != "" ? const HomePage() : const LoginPage(),
 
               // initialRoute: snapshot.data? '/homepage' : '/launch/login',
               ///앱에서 이동할 페이지의 이름 설정

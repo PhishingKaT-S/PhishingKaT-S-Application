@@ -301,10 +301,11 @@ class _detailed_infoState extends State<DetailInfo> {
     final conn = await MySqlConnection.connect(Database.getConnection());
 
     var register = await conn.query(
-        'insert into users (phone_number, IMEI, nickname, year, gender, profession) select ?, ?, ?,?, ?, ? where not exists (select * from users where phone_number like (?))', [user.phone, user.IMEI, user.nickname, user.year, user.gender, user.type, user.phone]);
+        'insert into users (phone_number, IMEI, nickname, year, gender, profession, score) select ?, ?, ?,?, ?, ?, ? where not exists (select * from users where phone_number like (?))', [user.phone, user.IMEI, user.nickname, user.year, user.gender, user.type, -1, user.phone]);
 
     conn.close();
     Provider.of<LaunchProvider>(context, listen: false).set_userinfo(user.nickname, user.year, user.gender, user.type.toString());
+    context.read<LaunchProvider>().Init();
     if(register.isNotEmpty){
       print('회원 추가 완료');
       Provider.of<LaunchProvider>(context, listen: false).setSignUp(true);
@@ -353,20 +354,20 @@ class _detailed_infoState extends State<DetailInfo> {
                 _birth_gender(),
 
 
-                SizedBox(height: 10,),
+                const SizedBox(height: 10,),
 
                 _over_fourteen(), //14세 이상 안내글
 
-                SizedBox(height: 10,),
+                const SizedBox(height: 10,),
 
                 //별명
                 _nickname(),
 
-                SizedBox(height:20),
+                const SizedBox(height:20),
 
-                Align(alignment: Alignment.bottomLeft,child: Text('나의 유형', style: AppTheme.title,),),
+                const Align(alignment: Alignment.bottomLeft,child: Text('나의 유형', style: AppTheme.title,),),
 
-                SizedBox(height: 10,),
+                const SizedBox(height: 10,),
 
                 //유형 중 하나만 선택할 수 있게 해야됨
                 _category_button()

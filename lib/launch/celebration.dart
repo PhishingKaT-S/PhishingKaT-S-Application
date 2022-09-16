@@ -21,11 +21,9 @@ class CeleBration extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    LaunchProvider _userProvider = Provider.of<LaunchProvider>(context);
     Future.delayed(const Duration(milliseconds: 3000))
         .then((value) => Navigator.pushAndRemoveUntil(context, MaterialPageRoute(
-        builder: (BuildContext context) =>
-            HomePage(userInfo: _userProvider.getUserInfo())), (route) => false));
+        builder: (BuildContext context) =>  const HomePage()), (route) => false));
     return SingleChildScrollView(
       child: DefaultTextStyle(
         style: Theme.of(context).textTheme.headline1!,
