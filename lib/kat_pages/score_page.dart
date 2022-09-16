@@ -29,7 +29,7 @@ class _ScorePage extends State<ScorePage> {
   List<int> num_of_sms_of_ranks = [0] ;
 
   Future _get_rank_of_phishing_analysis() async {
-    var user_id = 2;
+    var user_id = context.watch<LaunchProvider>().getUserInfo().userId;
 
     await MySqlConnection.connect(Database.getConnection())
         .then((conn) async {

@@ -21,6 +21,18 @@ import 'package:http/http.dart' as http;
 import '../Theme.dart';
 import '../providers/launch_provider.dart';
 
+class SmsData {
+  double prediction = 0.0;
+
+  SmsData({required this.prediction}) ;
+
+  factory SmsData.fromJson(Map<String, dynamic> json)  {
+    return SmsData(
+      prediction: double.parse(json['prediction'][0].toString()), // double
+    );
+  }
+}
+
 class DetectLoadPage extends StatefulWidget {
   const DetectLoadPage({Key? key}) : super(key: key);
 
@@ -30,9 +42,13 @@ class DetectLoadPage extends StatefulWidget {
 
 class _DetectLoadPageState extends State<DetectLoadPage> {
   final GlobalKey<AnimatedCircularChartState> _chartKey = GlobalKey<AnimatedCircularChartState>();
+  final double threshold = 0.5 ;
+
   int num_of_completed_sms = 0 ;
   int num_of_total_sms = 0 ;
+  int num_of_smishing_sms = 0 ;
 
+  List<SmsData> smsList = [] ;
   static const platform = MethodChannel('samples.flutter.dev/channel') ;
 
   List<String> msgs = [] ;
@@ -44,7 +60,6 @@ class _DetectLoadPageState extends State<DetectLoadPage> {
       await _getSmsFromChannel() ;
       await _detectionSms() ;
     });
-
   }
 
   Future<void> _getSmsFromChannel() async {
@@ -58,7 +73,7 @@ class _DetectLoadPageState extends State<DetectLoadPage> {
       {
         for ( var sms in ch ) {
           List<String> s = sms.split("[sms_text]") ;
-          print(s[0] + " " + s[1] + " " + s[2] + " " + s[3]) ;
+          // print(s[0] + " " + s[1] + " " + s[2] + " " + s[3]) ;
         }
       }
     } on PlatformException catch (e) {
@@ -92,6 +107,15 @@ class _DetectLoadPageState extends State<DetectLoadPage> {
 
       print(response.body) ;
 
+      SmsData _sms = SmsData.fromJson(json.decode(response.body)) ;
+
+      // 0.5 이상 Smishing Data로 간주
+      if ( _sms.prediction >= threshold ) {
+        num_of_smishing_sms++;
+      }
+
+      smsList.add(_sms) ;
+
       setState(() {
         num_of_completed_sms++;
       });
@@ -102,6 +126,7 @@ class _DetectLoadPageState extends State<DetectLoadPage> {
         // 연결이 끊어졌습니다.
       }
     }
+    print("SMISH: " + num_of_smishing_sms.toString()) ;
 
     if ( num_of_completed_sms == num_of_total_sms ) {
       Navigator.pop(context);
@@ -241,3 +266,4 @@ class _DetectLoadPageState extends State<DetectLoadPage> {
     );
   }
 }
+

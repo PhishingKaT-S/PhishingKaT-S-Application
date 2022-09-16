@@ -29,13 +29,15 @@ class _SettingPageState extends State<SettingPage> {
   List<bool> _status = [false, false, false, false] ;
   List<bool> _settingStatus = [false, false, false, false] ;
   List<String> settingNames = ['피싱관련 뉴스 알림', '이벤트 알림', '알림 미리보기', '푸시알림'] ;
+  late int user_id ;
 
   @override
   void initState() {
     super.initState() ;
 
     () async {
-      await _getSettingStatus(context.watch<LaunchProvider>().getUserInfo().userId) ;
+      user_id = Provider.of<LaunchProvider>(context, listen: false).getUserInfo().userId ;
+      await _getSettingStatus(user_id) ;
       setState(() {
         for (int i = 0 ; i < _status.length ;i++) {
           _status[i] = _settingStatus[i] ;
@@ -47,7 +49,7 @@ class _SettingPageState extends State<SettingPage> {
   @override
   void dispose() {
     super.dispose() ;
-    _saveStatus(context.watch<LaunchProvider>().getUserInfo().userId) ;
+    _saveStatus(user_id) ;
   }
 
   Future<bool> _getSettingStatus(int user_id) async {
