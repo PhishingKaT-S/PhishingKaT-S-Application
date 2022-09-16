@@ -19,6 +19,7 @@ import 'package:flutter_circular_chart_two/flutter_circular_chart_two.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
 import '../providers/attendanceProvider.dart';
+import 'package:intl/intl.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key,}) : super(key: key);
@@ -109,7 +110,6 @@ class _HomePage extends State<HomePage> {
         smish_detect_flag = Provider.of<LaunchProvider>(context, listen: false).getUserInfo().score == -1 ? false : true;
         if(smish_detect_flag){
           score = Provider.of<LaunchProvider>(context, listen: false).getUserInfo().score.toDouble();
-
         }
       });
     });
@@ -125,12 +125,19 @@ class _HomePage extends State<HomePage> {
   bool smish_detect_flag = false; // provider ?
 
   Widget _getCircularChart(double score) {
+
+    setState(() {
+      smish_detect_flag = (context.watch<LaunchProvider>().getUserInfo().score != -1) ? true : false;
+    });
+    score = context.watch<LaunchProvider>().getUserInfo().score.toDouble();
+    smish_detect_flag = (context.watch<LaunchProvider>().getUserInfo().score != -1) ? true : false;
+    print(smish_detect_flag);
     return AnimatedCircularChart(
       key: _chartKey,
       size: Size(SCORE_WIDTH_RANGE + 30, SCORE_WIDTH_RANGE + 30),
       initialChartData: <CircularStackEntry>[
         CircularStackEntry(
-          (smish_detect_flag)
+          ((context.watch<LaunchProvider>().getUserInfo().score != -1) ? true : false)
               ? (<CircularSegmentEntry>[
                   CircularSegmentEntry(
                     score,
@@ -149,9 +156,9 @@ class _HomePage extends State<HomePage> {
                     AppTheme.blueText,
                     rankKey: 'completed',
                   ),
-                  const CircularSegmentEntry(
+                  CircularSegmentEntry(
                     100,
-                    AppTheme.pinkBackground,
+                    Colors.blueGrey[600],
                     rankKey: 'remaining',
                   ),
                 ]),
@@ -165,8 +172,7 @@ class _HomePage extends State<HomePage> {
   }
 
   Widget _mainScoreView() {
-
-
+    print("2 : ${context.watch<LaunchProvider>().getUserInfo().score}");
     /**
      * _mainScoreView
      * 피싱 캣 로고와 안심 점수 및 최근 업데이트 날짜 표시
@@ -174,6 +180,8 @@ class _HomePage extends State<HomePage> {
      * [수정해야할 사항]
      * 1. 점수 로직 구현 및 점수 표시
      * */
+    score = context.watch<LaunchProvider>().getUserInfo().score.toDouble();
+    smish_detect_flag = (context.watch<LaunchProvider>().getUserInfo().score != -1) ? true : false;
     return Stack(
       children: <Widget>[
         Column(
@@ -300,9 +308,9 @@ class _HomePage extends State<HomePage> {
                                         child: Row(
                                       mainAxisAlignment:
                                           MainAxisAlignment.spaceBetween,
-                                      children: const [
-                                        Text('최근 검사', style: AppTheme.caption),
-                                        Text('2022-07-05',
+                                      children:  [
+                                        const Text('최근 검사', style: AppTheme.caption),
+                                        Text(DateFormat('yyyy-MM-dd').format(DateTime.now()),
                                             style: AppTheme.caption),
                                       ],
                                     )),
@@ -310,10 +318,10 @@ class _HomePage extends State<HomePage> {
                                         child: Row(
                                       mainAxisAlignment:
                                           MainAxisAlignment.spaceBetween,
-                                      children: const [
+                                      children:  const [
                                         Text('최근 업데이트',
                                             style: AppTheme.caption),
-                                        Text('2022-07-05',
+                                        Text('2022-09-05',
                                             style: AppTheme.caption),
                                       ],
                                     )),
@@ -367,6 +375,7 @@ class _HomePage extends State<HomePage> {
   }
 
   Widget _smishingData(String bullet, String name, String num, Color color) {
+
     /**
      * _smishingData
      * _smishingDataAnalysisView 에서 사용하고 있음
