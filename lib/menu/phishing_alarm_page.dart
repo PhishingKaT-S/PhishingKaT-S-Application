@@ -28,7 +28,7 @@ class _PhishingAlarmPageState extends State<PhishingAlarmPage> {
   List<String> _contents = [] ;
   List<bool> _isReadList = [] ;
 
-  int user_id = 2 ;
+  int user_id = 24 ;
 
   Future<bool> _getPhishingAlarmData() async {
 
@@ -39,10 +39,11 @@ class _PhishingAlarmPageState extends State<PhishingAlarmPage> {
             .then((results) {
           if ( results.isNotEmpty ) {
             for (var res in results )  {
+              print(res['alarm_date']);
               DateTime _date = res['alarm_date'] as DateTime ;
 
               String _month = (_date.month < 10) ? '0${_date.month}' : '${_date.month}';
-              String _day = (_date.month < 10) ? '0${_date.day}' : '${_date.day}';
+              String _day = (_date.day < 10) ? '0${_date.day}' : '${_date.day}';
 
               _id.add(res['id']) ;
               print(res['id']);
@@ -189,12 +190,14 @@ class _PhishingAlarmPageState extends State<PhishingAlarmPage> {
       ),
       body: SingleChildScrollView(
         /// dateList.length != 0
+
         child: FutureBuilder(
           future: _getPhishingAlarmData(),
           builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
             if ( snapshot.hasError ) {
               return const Text('데이터를 불러 올 수 없습니다.') ;
             } else if ( snapshot.hasData ) {
+              print(_dateList.length);
               return Container(
                   padding: EdgeInsets.only(top: 30, left: MediaQuery.of(context).size.width * 0.1,
                                                     right: MediaQuery.of(context).size.width * 0.1),
@@ -202,7 +205,7 @@ class _PhishingAlarmPageState extends State<PhishingAlarmPage> {
                     children: [
                       Container(
                         margin: EdgeInsets.only(top: MediaQuery.of(context).size.height * 0.015),
-                        height: MediaQuery.of(context).size.height * 0.1 * (_dateList.length - 1),
+                        height: MediaQuery.of(context).size.height * 0.1 *  ((_dateList.isNotEmpty) ? _dateList.length - 1 : 0),
                         child: _vertical_divider(),
                       ),
                       Container(

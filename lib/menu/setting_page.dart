@@ -27,7 +27,7 @@ class _SettingPageState extends State<SettingPage> {
   List<bool> _status = [false, false, false, false] ;
   List<bool> _settingStatus = [false, false, false, false] ;
   List<String> settingNames = ['피싱관련 뉴스 알림', '이벤트 알림', '알림 미리보기', '푸시알림'] ;
-  int user_id = 2;
+  int user_id = 24;
 
   @override
   void initState() {

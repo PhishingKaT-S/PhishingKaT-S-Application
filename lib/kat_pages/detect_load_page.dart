@@ -7,6 +7,7 @@
 
 import 'dart:convert';
 import 'dart:io';
+import 'dart:math';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -28,7 +29,7 @@ class DetectLoadPage extends StatefulWidget {
 
 class _DetectLoadPageState extends State<DetectLoadPage> {
   final GlobalKey<AnimatedCircularChartState> _chartKey = GlobalKey<AnimatedCircularChartState>();
-  int num_of_completed_sms = 1 ;
+  int num_of_completed_sms = 0 ;
   int num_of_total_sms = 0 ;
 
   static const platform = MethodChannel('samples.flutter.dev/channel') ;
@@ -69,12 +70,14 @@ class _DetectLoadPageState extends State<DetectLoadPage> {
     });
 
     context.read<SmsProvider>().setSmsToSmsProvider(msgs);
+    context.read<LaunchProvider>().setScore(Random(1234).nextInt(100));
   }
 
   Future<void> _detectionSms() async {
     final url = Uri.parse('http://52.53.168.246:5000/api') ;
     for (int i = 0 ; i < num_of_total_sms ; i++) {
       List<String> text = msgs[i].split("[sms_text]");
+
       var response = await http.post(
         url,
         headers: {
@@ -88,11 +91,13 @@ class _DetectLoadPageState extends State<DetectLoadPage> {
 
       print(response.body) ;
 
+      setState(() {
+        num_of_completed_sms++;
+      });
+
       if ( response.statusCode == 200 ) {
-        setState(() {
-          num_of_completed_sms++;
-        });
-      } else if ( response.statusCode == 400 ) {
+      } else {
+        print("Error\n" + text[3]) ;
         // 연결이 끊어졌습니다.
       }
     }
