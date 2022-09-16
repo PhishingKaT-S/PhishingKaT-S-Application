@@ -245,7 +245,7 @@ class _OneClickPageState extends State<OneClickPage> {
             title: const Text('현재 서비스 이용시간이 아닙니다.'),
             content: const Text('서비스 이용 시간\n매일 09:00~22:00'),
             actions: <Widget>[
-              FlatButton(
+              TextButton(
                 child: const Text('닫기'),
                 onPressed: () {
                   Navigator.of(context).pop();

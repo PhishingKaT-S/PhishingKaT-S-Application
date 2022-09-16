@@ -6,6 +6,8 @@
 
 
 import 'dart:math';
+import 'dart:convert';
+import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -13,6 +15,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_circular_chart_two/flutter_circular_chart_two.dart';
 import 'package:phishing_kat_pluss/providers/smsProvider.dart';
 import 'package:provider/provider.dart';
+import 'package:http/http.dart' as http;
 
 import '../Theme.dart';
 import '../providers/launch_provider.dart';
@@ -26,8 +29,8 @@ class DetectLoadPage extends StatefulWidget {
 
 class _DetectLoadPageState extends State<DetectLoadPage> {
   final GlobalKey<AnimatedCircularChartState> _chartKey = GlobalKey<AnimatedCircularChartState>();
-  int num_of_completed_sms = 124 ;
-  int num_of_total_sms = 223 ;
+  int num_of_completed_sms = 1 ;
+  int num_of_total_sms = 0 ;
 
   static const platform = MethodChannel('samples.flutter.dev/channel') ;
 
@@ -37,18 +40,19 @@ class _DetectLoadPageState extends State<DetectLoadPage> {
   void initState() {
     super.initState() ;
     Future.microtask(() async {
-      await _get_sms_from_channel() ;
+      await _getSmsFromChannel() ;
+      await _detectionSms() ;
     });
 
   }
 
-  Future<void> _get_sms_from_channel() async {
+  Future<void> _getSmsFromChannel() async {
     List<String> ch = [];
     try{
       var res = await platform.invokeMethod('getResult');
       ch = res.cast<String>() ;
 
-      if ( ch.length == 1 ) print("Error") ;
+      if ( ch.length == 1 ) print("No data") ;
       else
       {
         for ( var sms in ch ) {
@@ -62,10 +66,43 @@ class _DetectLoadPageState extends State<DetectLoadPage> {
 
     setState(() {
       msgs = ch ;
+      num_of_total_sms = ch.length ;
     });
+
     context.read<SmsProvider>().setSmsToSmsProvider(msgs);
     context.read<LaunchProvider>().setScore(Random(1234).nextInt(100));
     // context.read<LaunchProvider>().setUpdate();
+  }
+
+  Future<void> _detectionSms() async {
+    final url = Uri.parse('http://52.53.168.246:5000/api') ;
+    for (int i = 0 ; i < num_of_total_sms ; i++) {
+      List<String> text = msgs[i].split("[sms_text]");
+      var response = await http.post(
+        url,
+        headers: {
+          HttpHeaders.contentTypeHeader: "application/json",
+        },
+        body: json.encode({
+          'exp' : text[3]
+        }),
+        encoding: Encoding.getByName('utf-8'),
+      );
+
+      print(response.body) ;
+
+      if ( response.statusCode == 200 ) {
+        setState(() {
+          num_of_completed_sms++;
+        });
+      } else if ( response.statusCode == 400 ) {
+        // 연결이 끊어졌습니다.
+      }
+    }
+
+    if ( num_of_completed_sms == num_of_total_sms ) {
+      Navigator.pop(context);
+    }
   }
 
   /**
@@ -100,7 +137,9 @@ class _DetectLoadPageState extends State<DetectLoadPage> {
   }
 
   Widget _percentage() {
-    double score = num_of_completed_sms / num_of_total_sms * 100;
+    double score = 0;
+    if (num_of_total_sms == 0) { score = 0 ;}
+    else { score = num_of_completed_sms / num_of_total_sms * 100; }
     print(score);
     /**
      * _percentage
@@ -192,7 +231,6 @@ class _DetectLoadPageState extends State<DetectLoadPage> {
                     _percentage(),
                     _progress(),
                     _notice(),
-
                   ],
                 )
             )
