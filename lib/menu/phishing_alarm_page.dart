@@ -10,10 +10,12 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:mysql1/mysql1.dart';
+import 'package:provider/provider.dart';
 
 import '../Theme.dart';
 import '../db_conn.dart';
 import '../kat_widget/kat_appbar_back.dart';
+import '../providers/launch_provider.dart';
 
 class PhishingAlarmPage extends StatefulWidget {
   const PhishingAlarmPage({Key? key}) : super(key: key);
@@ -28,9 +30,7 @@ class _PhishingAlarmPageState extends State<PhishingAlarmPage> {
   List<String> _contents = [] ;
   List<bool> _isReadList = [] ;
 
-  int user_id = 24 ;
-
-  Future<bool> _getPhishingAlarmData() async {
+  Future<bool> _getPhishingAlarmData(int user_id) async {
 
     if ( _id.isEmpty && _dateList.isEmpty && _contents.isEmpty && _isReadList.isEmpty ) {
       await MySqlConnection.connect(Database.getConnection())
@@ -192,7 +192,7 @@ class _PhishingAlarmPageState extends State<PhishingAlarmPage> {
         /// dateList.length != 0
 
         child: FutureBuilder(
-          future: _getPhishingAlarmData(),
+          future: _getPhishingAlarmData(context.watch<LaunchProvider>().getUserInfo().userId),
           builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
             if ( snapshot.hasError ) {
               return const Text('데이터를 불러 올 수 없습니다.') ;

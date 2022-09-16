@@ -8,6 +8,18 @@ import '../theme.dart';
 class ServiceCenter extends StatelessWidget {
   const ServiceCenter({Key? key}) : super(key: key);
 
+  Future<void> _channelButtonPressed() async{
+    // 연결 페이지 URL 구하기
+    Uri url = await TalkApi.instance.addChannelUrl('_nvExoxb');
+
+// 연결 페이지 URL을 브라우저에서 열기
+    try {
+      await launchBrowserTab(url);
+    } catch (error) {
+      print('카카오톡 채널 추가 실패 $error');
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -44,30 +56,7 @@ class ServiceCenter extends StatelessWidget {
           SizedBox(
             width: MediaQuery.of(context).size.width - 80,
             child: OutlinedButton(
-              onPressed: ()async{
-
-                Uri url = await TalkApi.instance.addChannelUrl('_vwdxfb');
-                //await TalkApi.instance.channelChatUrl('_ZeUTxl');
-
-                // 연결 페이지 URL을 브라우저에서 열기
-                try {
-                  await launchBrowserTab(url);
-                } catch (error) {
-                  print('카카오톡 채널 추가 실패 $error');
-                }
-                // try {
-                //   await launchBrowserTab(url);
-                // } catch (error) {
-                //   print('카카오톡 채널 채팅 실패 $error');
-                // }
-                // SafeArea(
-                //     child: WebView(
-                //     initialUrl: 'https://open.kakao.com/o/s1wI6J0d',
-                //     javascriptMode: JavascriptMode.unrestricted,
-                //     gestureNavigationEnabled: true,
-                //     userAgent: "random",
-                // ));
-              },
+              onPressed:_channelButtonPressed,
               child: const Text('카카오톡 1:1 문의하기', style: TextStyle(color: Color(0xFF381e1f)),),
               style: OutlinedButton.styleFrom(
                 backgroundColor: const Color(0xFFffdc00),

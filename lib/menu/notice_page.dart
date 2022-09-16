@@ -98,8 +98,8 @@ class _NoticePageState extends State<NoticePage> {
               return Container();
             }
           },
-        )
-      ),
+        ),
+      )
     );
   }
 }

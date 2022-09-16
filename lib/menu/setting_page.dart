@@ -11,10 +11,12 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_switch/flutter_switch.dart';
 import 'package:mysql1/mysql1.dart';
+import 'package:provider/provider.dart';
 
 import '../Theme.dart';
 import '../db_conn.dart';
 import '../kat_widget/kat_appbar_back.dart';
+import '../providers/launch_provider.dart';
 
 class SettingPage extends StatefulWidget {
   const SettingPage({Key? key}) : super(key: key);
@@ -27,14 +29,13 @@ class _SettingPageState extends State<SettingPage> {
   List<bool> _status = [false, false, false, false] ;
   List<bool> _settingStatus = [false, false, false, false] ;
   List<String> settingNames = ['피싱관련 뉴스 알림', '이벤트 알림', '알림 미리보기', '푸시알림'] ;
-  int user_id = 24;
 
   @override
   void initState() {
     super.initState() ;
 
     () async {
-      await _getSettingStatus() ;
+      await _getSettingStatus(context.watch<LaunchProvider>().getUserInfo().userId) ;
       setState(() {
         for (int i = 0 ; i < _status.length ;i++) {
           _status[i] = _settingStatus[i] ;
@@ -46,10 +47,10 @@ class _SettingPageState extends State<SettingPage> {
   @override
   void dispose() {
     super.dispose() ;
-    _saveStatus() ;
+    _saveStatus(context.watch<LaunchProvider>().getUserInfo().userId) ;
   }
 
-  Future<bool> _getSettingStatus() async {
+  Future<bool> _getSettingStatus(int user_id) async {
     const List<String> alarm_cols = ['news_alarm', 'events_alarm', 'preview_alarm', 'push_alarm'] ;
 
     await MySqlConnection.connect(Database.getConnection())
@@ -78,7 +79,7 @@ class _SettingPageState extends State<SettingPage> {
     return true ;
   }
 
-  Future _saveStatus() async {
+  Future _saveStatus(int user_id) async {
     await MySqlConnection.connect(Database.getConnection())
         .then((conn) async {
       await conn.query("UPDATE alarm_setting SET news_alarm = ?, events_alarm = ?, preview_alarm = ?, push_alarm = ? WHERE user_id = ?",
