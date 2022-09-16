@@ -10,8 +10,10 @@ import 'package:flutter/painting.dart';
 import 'package:mysql1/mysql1.dart';
 import 'package:phishing_kat_pluss/db_conn.dart';
 import 'package:phishing_kat_pluss/kat_widget/kat_appbar_back.dart';
+import 'package:phishing_kat_pluss/providers/launch_provider.dart';
 
 import '../theme.dart';
+import 'package:provider/provider.dart';
 
 class ScorePage extends StatefulWidget {
   const ScorePage({Key? key}) : super(key: key);
@@ -27,7 +29,7 @@ class _ScorePage extends State<ScorePage> {
   List<int> num_of_sms_of_ranks = [0] ;
 
   Future _get_rank_of_phishing_analysis() async {
-    var user_id = 2;
+    var user_id = context.watch<LaunchProvider>().getUserInfo().userId;
 
     await MySqlConnection.connect(Database.getConnection())
         .then((conn) async {
@@ -66,7 +68,7 @@ class _ScorePage extends State<ScorePage> {
   }
 
   Widget _star_background() {
-    if (score >= 0.8) {
+    if (context.watch<LaunchProvider>().getUserInfo().score.toDouble() * 0.01 >= 0.8) {
       print(1);
       return Container(
         width: MediaQuery.of(context).size.width * 0.2,
@@ -80,7 +82,7 @@ class _ScorePage extends State<ScorePage> {
   }
 
   Widget _score() {
-
+    score = context.watch<LaunchProvider>().getUserInfo().score.toDouble() * 0.01;
     double average = 0.89;
     double SCORE_HEIGHT = 40 ;
 
@@ -111,7 +113,7 @@ class _ScorePage extends State<ScorePage> {
 
           /// 현재 안심 점수
           Container(
-            width: MediaQuery.of(context).size.width * 0.8 * score, // 현재 69점
+            width: MediaQuery.of(context).size.width * 0.8 * context.watch<LaunchProvider>().getUserInfo().score.toDouble() * 0.01, // 현재 69점
             height: SCORE_HEIGHT,
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(25),
@@ -160,6 +162,7 @@ class _ScorePage extends State<ScorePage> {
   }
 
   Widget _my_score() {
+    score = context.watch<LaunchProvider>().getUserInfo().score.toDouble() * 0.01;
     return Container(
       padding: EdgeInsets.symmetric(
           horizontal: MediaQuery.of(context).size.width * 0.1,

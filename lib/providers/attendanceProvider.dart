@@ -69,6 +69,7 @@ class AttendanceProvider extends ChangeNotifier {
           for(int i = 0 ; i < _now_week ; i++){
             if(_month_attendance.contains(_firstDay.add(Duration(days: i)).toString().split(" ").first)){
               _week_attendance[i] = true;
+              notifyListeners();
             }
           }
 
@@ -118,7 +119,6 @@ class AttendanceProvider extends ChangeNotifier {
           .then((conn) async {
         await conn.query("INSERT INTO attendance VALUES(?, ?)", [
           userId,
-
           DateFormat('yyyy-MM-dd').format(DateTime.now())
 
         ]).then((results) {
@@ -131,6 +131,8 @@ class AttendanceProvider extends ChangeNotifier {
       }).onError((error, stackTrace) {
         print("error2: $error");
       });
+
+      getRecentAttendance(userId);
     }
   }
 }
