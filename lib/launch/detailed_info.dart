@@ -9,7 +9,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:mysql1/mysql1.dart';
 import 'package:provider/provider.dart';
-import 'package:unique_identifier/unique_identifier.dart';
+import 'package:device_information/device_information.dart';
 import '../db_conn.dart';
 import '../kat_widget/launch_appbar.dart';
 import '../providers/launch_provider.dart';
@@ -87,7 +87,7 @@ class _detailed_infoState extends State<DetailInfo> {
   Future<void> initUniqueIdentifierState() async {
     String? identifier ;
     try {
-      identifier = await UniqueIdentifier.serial;
+      identifier = await DeviceInformation.deviceIMEINumber;
     } on PlatformException {
       identifier = 'Failed to get Unique Identifier';
     }

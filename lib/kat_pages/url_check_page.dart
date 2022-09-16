@@ -8,19 +8,16 @@ import '../kat_widget/kat_appbar_back.dart';
 class UrlCheckPage extends StatelessWidget {
   const UrlCheckPage({Key? key}) : super(key: key);
   Widget belowImage() {
-    return Expanded(flex:4,
-      child:
+    return
       Container(child:
-      Image.asset('assets/images/launch_end.png', fit: BoxFit.fill),
+      Image.asset('assets/images/launch_end.png', fit: BoxFit.fitWidth),
         width: double.infinity,
-      ),
-    );
+
+      );
   }
 
   Widget inspectButton(BuildContext context) {
-    return Expanded(
-        flex: 1,
-        child: Center(
+    return Center(
           child: InkWell(
             onTap: (){
                 Navigator.pushNamed(context, '/kat_pages/url_home', arguments: 0 );
@@ -51,33 +48,33 @@ class UrlCheckPage extends StatelessWidget {
             ),
           ),
 
-        ));
+        );
   }
 
   Widget guideText() {
-    return Expanded(
-        flex: 1,
-        child: Padding(
+    return Padding(
             padding: EdgeInsets.fromLTRB(20, 20, 37, 10),
             child:
             Text('문자 내에 위험 요소를 검사하여 스미싱 피해를 방지합니다.(최대 100개)', style: AppTheme.urlInspect)
-        )
     );
   }
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-        appBar: AppBarBack(title: 'Url 검사'),
-        body:
-        Column(
-          children: <Widget>[
-            guideText(), //문자 내에~~
-            Expanded(flex:1,child: SizedBox(height: 1,)), // 간격 유지
-            inspectButton(context),
-            belowImage()
-          ],
+    return  Scaffold(
+          appBar: AppBarBack(title: 'Url 검사'),
+          body:
+          SingleChildScrollView(
+            child: Column(
+              children: <Widget>[
+                guideText(), //문자 내에~~
+                SizedBox(height: 80), // 간격 유지
+               inspectButton(context),
+                SizedBox(height:30),
+                belowImage()
+              ],
 
-        )
-    );
+            ),
+          )
+      );
   }
 }
