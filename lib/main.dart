@@ -27,6 +27,7 @@ import 'kat_pages/url_check_page.dart';
 import 'kat_pages/detect_load_page.dart';
 import 'launch/celebration.dart';
 import 'launch/login_page.dart';
+import 'menu/sns_webview.dart';
 import 'splash/test.dart';
 
 void main() {
@@ -126,6 +127,8 @@ class MyApp extends StatelessWidget {
                 const SettingPage(),
                 '/menu/news': (BuildContext context) =>
                 const NewsWebView(),
+                '/menu/sns': (BuildContext context) =>
+                const SnsWebView(url: '',),
               },
             );
           } else //(snapshot.connectionState == ConnectionState.waiting) {

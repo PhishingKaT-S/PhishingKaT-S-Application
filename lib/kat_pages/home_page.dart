@@ -499,7 +499,7 @@ class _HomePage extends State<HomePage> {
 
   Widget _attendanceCheck() {
     List<String> dayList = <String>['월', '화', '수', '목', '금', '토', '일'];
-    List<bool> dayCheckList = _weekAttendance;
+    List<bool> dayCheckList = Provider.of<AttendanceProvider>(context, listen: true).getWeekAttendance();
 
     /**
      * _attendanceCheck
@@ -798,10 +798,12 @@ class _HomePage extends State<HomePage> {
   }
 
 
+  final _scaffoldKey = GlobalKey<ScaffoldState>();
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      key: _scaffoldKey,
       appBar: const KaTAppBar(),
       // drawer: KaTDrawer(),
       bottomNavigationBar: const KatBottomBar(),
