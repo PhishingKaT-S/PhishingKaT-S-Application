@@ -5,6 +5,7 @@
 *   7/30: modifying the category of the jobs and outline was changed
 * */
 
+import 'package:device_information/device_information.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:mysql1/mysql1.dart';
@@ -87,7 +88,7 @@ class _detailed_infoState extends State<DetailInfo> {
   Future<void> initUniqueIdentifierState() async {
     String? identifier ;
     try {
-      identifier = await UniqueIdentifier.serial;
+      identifier = await DeviceInformation.deviceIMEINumber;
     } on PlatformException {
       identifier = 'Failed to get Unique Identifier';
     }

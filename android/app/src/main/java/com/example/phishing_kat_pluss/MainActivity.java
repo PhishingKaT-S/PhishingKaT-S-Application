@@ -35,19 +35,20 @@ import io.flutter.plugin.common.MethodChannel;
 import io.flutter.plugins.GeneratedPluginRegistrant;
 
 public class MainActivity extends FlutterActivity {
-    static final int PERMISSION_REQUEST_READ_SMS = 0x000001 ;
-    String myPhoneNum = "01041609587" ;
+    static final int PERMISSION_REQUEST_READ_SMS = 0x000001;
+    String myPhoneNum = "01041609587";
 
     // Java API 에서는 CHANNEL 이름을 통해 실행
     // CHANNEL 변수의 값과 Flutter의 Channel 값이 동일해야합니다.
-    private static final String CHANNEL = "samples.flutter.dev/channel" ;
+    private static final String CHANNEL = "samples.flutter.dev/channel";
     private static final int ACTION_MANAGE_OVERLAY_PERMISSION_REQUEST_CODE = 1;
     private static final String CHANNEL2 = "phishingkat.flutter.android"; //지원
-    ArrayList<String> sms = new ArrayList<String>() ;
+    private static final String CHANNEL3 = "onestore";
+    ArrayList<String> sms = new ArrayList<String>();
 
     @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
-    public void configureFlutterEngine(@NonNull FlutterEngine flutterEngine)  {
+    public void configureFlutterEngine(@NonNull FlutterEngine flutterEngine) {
         GeneratedPluginRegistrant.registerWith(flutterEngine);
         new MethodChannel(flutterEngine.getDartExecutor().getBinaryMessenger(), CHANNEL)
                 .setMethodCallHandler(
@@ -62,17 +63,24 @@ public class MainActivity extends FlutterActivity {
                 );
         new MethodChannel(flutterEngine.getDartExecutor().getBinaryMessenger(), CHANNEL2)
                 .setMethodCallHandler(
-                        (call, result)->{
-                            if(call.method.equals("showActivity")){
+                        (call, result) -> {
+                            if (call.method.equals("showActivity")) {
                                 checkPermission();
                                 result.success("");
-                            }
-                            else{
+                            } else {
                                 result.error("UNAVAILABLE", "Cannot Start Activity.", null);
 
                             }
                         }
                 );
+        new MethodChannel(flutterEngine.getDartExecutor().getBinaryMessenger(), CHANNEL3)
+                .setMethodCallHandler((call, result) -> {
+            if (call.method.equals("browseOneStore")) {
+                final String url = call.argument("url");
+                Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
+                startActivity(intent);
+            }
+        });
 
 //        int sms_permission = ContextCompat.checkSelfPermission(this, Manifest.permission.READ_SMS) ;
 //        int contact_permission = ContextCompat.checkSelfPermission(this, Manifest.permission.READ_CONTACTS) ;
@@ -93,11 +101,11 @@ public class MainActivity extends FlutterActivity {
         super.onCreate(savedInstanceState);
         OnCheckPermission();
 
-        int sms_permission = ContextCompat.checkSelfPermission(this, Manifest.permission.READ_SMS) ;
-        int contact_permission = ContextCompat.checkSelfPermission(this, Manifest.permission.READ_CONTACTS) ;
-        int contact_state_permission = ContextCompat.checkSelfPermission(this, Manifest.permission.READ_PHONE_STATE) ;
+        int sms_permission = ContextCompat.checkSelfPermission(this, Manifest.permission.READ_SMS);
+        int contact_permission = ContextCompat.checkSelfPermission(this, Manifest.permission.READ_CONTACTS);
+        int contact_state_permission = ContextCompat.checkSelfPermission(this, Manifest.permission.READ_PHONE_STATE);
 
-        if ( sms_permission == PackageManager.PERMISSION_GRANTED &&
+        if (sms_permission == PackageManager.PERMISSION_GRANTED &&
                 contact_permission == PackageManager.PERMISSION_GRANTED &&
                 contact_state_permission == PackageManager.PERMISSION_GRANTED) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
@@ -119,17 +127,17 @@ public class MainActivity extends FlutterActivity {
 
     @RequiresApi(api = Build.VERSION_CODES.M)
     public void OnCheckPermission() {
-        int sms_permission = ContextCompat.checkSelfPermission(this, Manifest.permission.READ_SMS) ;
-        int contact_permission = ContextCompat.checkSelfPermission(this, Manifest.permission.READ_CONTACTS) ;
-        int contact_state_permission = ContextCompat.checkSelfPermission(this, Manifest.permission.READ_PHONE_STATE) ;
+        int sms_permission = ContextCompat.checkSelfPermission(this, Manifest.permission.READ_SMS);
+        int contact_permission = ContextCompat.checkSelfPermission(this, Manifest.permission.READ_CONTACTS);
+        int contact_state_permission = ContextCompat.checkSelfPermission(this, Manifest.permission.READ_PHONE_STATE);
 
-        if ( sms_permission == PackageManager.PERMISSION_DENIED ||
+        if (sms_permission == PackageManager.PERMISSION_DENIED ||
                 contact_permission == PackageManager.PERMISSION_DENIED ||
                 contact_state_permission == PackageManager.PERMISSION_DENIED) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                requestPermissions(new String[] { Manifest.permission.READ_SMS, Manifest.permission.READ_CONTACTS, Manifest.permission.READ_PHONE_STATE }, PERMISSION_REQUEST_READ_SMS) ;
+                requestPermissions(new String[]{Manifest.permission.READ_SMS, Manifest.permission.READ_CONTACTS, Manifest.permission.READ_PHONE_STATE}, PERMISSION_REQUEST_READ_SMS);
             }
-            return ;
+            return;
         }
     }
 
@@ -142,17 +150,17 @@ public class MainActivity extends FlutterActivity {
                 boolean check_result = true;
 
                 for (int result : grantResults) {
-                    if ( result != PackageManager.PERMISSION_GRANTED ) {
+                    if (result != PackageManager.PERMISSION_GRANTED) {
                         check_result = false;
-                        break ;
+                        break;
                     }
                 }
 
-                if ( check_result ) {
+                if (check_result) {
                     Toast.makeText(this, "앱 실행을 위한 권한이 설정되었습니다.", Toast.LENGTH_LONG).show();
                 } else {
                     Toast.makeText(this, "앱 실행을 위한 권한이 취소되었습니다.", Toast.LENGTH_LONG).show();
-                    finish() ;
+                    finish();
                 }
 
                 break;
@@ -167,24 +175,28 @@ public class MainActivity extends FlutterActivity {
         Uri uri = Uri.withAppendedPath(ContactsContract.PhoneLookup.CONTENT_FILTER_URI, Uri.encode(phoneNumber));
         Cursor cursor = this.getContentResolver().query(uri, new String[]{ContactsContract.PhoneLookup.DISPLAY_NAME}, null, null, null);
 
-        if (cursor == null) { return null; }
+        if (cursor == null) {
+            return null;
+        }
 
-        String name = "("+phoneNumber+")";
+        String name = "(" + phoneNumber + ")";
 
-        if(((Cursor) cursor).moveToFirst()) {
+        if (((Cursor) cursor).moveToFirst()) {
             name = cursor.getString(cursor.getColumnIndex(ContactsContract.PhoneLookup.DISPLAY_NAME));
         }
 
-        if(cursor != null && !cursor.isClosed()) { cursor.close(); }
+        if (cursor != null && !cursor.isClosed()) {
+            cursor.close();
+        }
 
         return name;
     }
 
     public boolean readSMS(ArrayList<String> _sms) {
-        Uri sms_uri = Uri.parse("content://sms/") ;
+        Uri sms_uri = Uri.parse("content://sms/");
         Cursor cursor = this.getContentResolver().query(sms_uri, null, null, null, "date DESC");
         int count = cursor.getCount();
-        Log.i(TAG, "SMS Count = " +count) ;
+        Log.i(TAG, "SMS Count = " + count);
 //        ArrayList<MessageInfo> al_sms = new ArrayList<MessageInfo>();
 
         while (cursor.moveToNext()) {
@@ -193,17 +205,17 @@ public class MainActivity extends FlutterActivity {
             }
             @SuppressLint("Range") String body = cursor.getString(cursor.getColumnIndex("body"));
             // 내용 없는 메시지 제외
-            if (! body.trim().isEmpty()) {
+            if (!body.trim().isEmpty()) {
                 @SuppressLint("Range") String phone = cursor.getString(cursor.getColumnIndex("address"));
                 String name = phoneToName_sms(phone);
                 @SuppressLint("Range") long date = cursor.getLong(cursor.getColumnIndex("date"));
                 if (date < 10000000000L) date = date * 1000;
 //                al_sms.add(new MessageInfo(name, phone, date, body));
-                _sms.add(name + "[sms_text]" + phone + "[sms_text]" + Long.toString(date) + "[sms_text]" + body) ;
+                _sms.add(name + "[sms_text]" + phone + "[sms_text]" + Long.toString(date) + "[sms_text]" + body);
             }
         }
         cursor.close();
-        return true ;
+        return true;
     }
 
     ////////////////////////////////////       MMS       ////////////////////////////////////////////////
@@ -217,8 +229,7 @@ public class MainActivity extends FlutterActivity {
             if (cursor.moveToFirst()) {
                 phone = cursor.getString(0);
             }
-        }
-        finally {
+        } finally {
             cursor.close();
         }
 
@@ -229,7 +240,7 @@ public class MainActivity extends FlutterActivity {
     @SuppressLint("Range")
     public String phoneToName_mms(String phoneNumber) {
         Uri uri = Uri.withAppendedPath(ContactsContract.PhoneLookup.CONTENT_FILTER_URI, Uri.encode(phoneNumber));
-        String[] projection = {ContactsContract.PhoneLookup.DISPLAY_NAME, ContactsContract.PhoneLookup.NORMALIZED_NUMBER };
+        String[] projection = {ContactsContract.PhoneLookup.DISPLAY_NAME, ContactsContract.PhoneLookup.NORMALIZED_NUMBER};
         Cursor cursor = this.getContentResolver().query(uri, projection, null, null, null);
 
         String name = null;
@@ -238,15 +249,15 @@ public class MainActivity extends FlutterActivity {
                 phoneNumber = cursor.getString(cursor.getColumnIndex(ContactsContract.PhoneLookup.NORMALIZED_NUMBER));
                 name = cursor.getString(cursor.getColumnIndex(ContactsContract.PhoneLookup.DISPLAY_NAME));
             }
-        }
-        finally {
+        } finally {
             cursor.close();
         }
         // if there is a display name, then return that
-        if(name != null){ return name;  }
-        else{
+        if (name != null) {
+            return name;
+        } else {
             if (phoneNumber.equals(myPhoneNum)) return "나";
-            return "("+phoneNumber+")"; // if there is not a display name, then return just phone number
+            return "(" + phoneNumber + ")"; // if there is not a display name, then return just phone number
         }
     }
 
@@ -262,8 +273,7 @@ public class MainActivity extends FlutterActivity {
             if (cursor.moveToFirst()) {
                 name = phoneToName_mms(cursor.getString(0));
             }
-        }
-        finally {
+        } finally {
             cursor.close();
         }
 
@@ -287,11 +297,13 @@ public class MainActivity extends FlutterActivity {
                     temp = reader.readLine();
                 }
             }
-        } catch (IOException e) {} finally {
+        } catch (IOException e) {
+        } finally {
             if (is != null) {
                 try {
                     is.close();
-                } catch (IOException e) {}
+                } catch (IOException e) {
+                }
             }
         }
         return sb.toString().trim();
@@ -313,28 +325,33 @@ public class MainActivity extends FlutterActivity {
                 if ("text/plain".equals(type)) {
                     @SuppressLint("Range") String data = cursor.getString(cursor.getColumnIndex("_data"));
 
-                    if (! messageBody.isEmpty()) messageBody += "\n";
-                    if (data != null) { messageBody += getMmsText(partId); }
-                    else { messageBody += cursor.getString(cursor.getColumnIndex("text")); }
+                    if (!messageBody.isEmpty()) messageBody += "\n";
+                    if (data != null) {
+                        messageBody += getMmsText(partId);
+                    } else {
+                        messageBody += cursor.getString(cursor.getColumnIndex("text"));
+                    }
                 }
-            } while( cursor.moveToNext() );
+            } while (cursor.moveToNext());
             cursor.close();
         }
-        if(cursor != null && !cursor.isClosed()) { cursor.close(); }
+        if (cursor != null && !cursor.isClosed()) {
+            cursor.close();
+        }
 
         return messageBody;
     }
 
     public boolean readMMS(ArrayList<String> _mms) {
         Cursor cursor = this.getContentResolver().query(Uri.parse("content://mms"),
-                new String[] { "_id", "thread_id", "date", "read" },
+                new String[]{"_id", "thread_id", "date", "read"},
                 null, null,
                 "date DESC");
 
         while (cursor.moveToNext()) {
             @SuppressLint("Range") String body = messageFromMms(cursor.getString(cursor.getColumnIndex("_id")));
             // 내용 없는 메시지 제외
-            if (! body.trim().isEmpty()) {
+            if (!body.trim().isEmpty()) {
                 // thread_id > 상대방 이름(전화번호)
                 long thread_id = cursor.getLong(cursor.getColumnIndexOrThrow("thread_id"));
                 String phone = getPhoneByTheadId(thread_id);
@@ -348,7 +365,7 @@ public class MainActivity extends FlutterActivity {
             }
         }
         cursor.close();
-        return true ;
+        return true;
     }
 
 
@@ -381,9 +398,23 @@ public class MainActivity extends FlutterActivity {
             }
         }
     }
+
     @Override
     protected void onDestroy() {
         super.onDestroy();
 
     }
+
+    //////////////////////////////////////////////////////////////////////////////////
+//    @Override
+//    public void configureFlutterEngine(@NonNull FlutterEngin flutterEngine){
+//        super.configureFlutterEngine(flutterEngine);
+//        new MethodChannel(flutterEngine.getDartExecutor().getBinaryMessenger(), CHANNEL3).setMethodCallHandler((call, result) -> {
+//            if(call.method.equals("browseOneStore")){
+//                Intent intent  = new Intent(Intent.ACTION_VIEW, Uri.parse("https://m.onestore.co.kr/mobilepoc/apps/appsDetail.omp?prodId=0000758242"));
+//                startActivity(intent);
+//            }
+//        });
+//    }
+
 }

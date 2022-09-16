@@ -131,7 +131,7 @@ class LaunchProvider extends ChangeNotifier {
   Future getIMEI() async {
     var phone_permission = await Permission.phone.status;
     if (phone_permission.isGranted) {
-      String? identifier = await UniqueIdentifier.serial;
+      String? identifier = await DeviceInformation.deviceIMEINumber;
       return identifier;
     } else {
       await Permission.phone.request();

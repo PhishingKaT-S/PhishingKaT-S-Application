@@ -4,16 +4,23 @@
  * description: 메뉴 홈 페이지
  */
 
+import 'dart:io';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_switch/flutter_switch.dart';
 import 'package:phishing_kat_pluss/theme.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:webview_flutter/platform_interface.dart';
+import 'package:webview_flutter/webview_flutter.dart';
 
 import '../providers/launch_provider.dart';
 import 'package:flutter_share/flutter_share.dart';
+
+import 'sns_webview.dart';
 
 class MenuHome extends StatefulWidget {
   const MenuHome({Key? key}) : super(key: key);
@@ -28,6 +35,8 @@ class _MenuHomeState extends State<MenuHome> {
   bool setting_tap = false;
   DateTime? _setting_contact_sync = null;
   bool auto_update = false ;
+
+  static const platform = MethodChannel('onestore');
 
   ListTile menu_list_tile_nevigation(String tileTitle, IconData leadingIcon, String page) {
     return ListTile(
@@ -53,10 +62,12 @@ class _MenuHomeState extends State<MenuHome> {
     );
   }
 
-  GestureDetector family_app(String image, String app_name, String url) {
+
+  GestureDetector family_app(String image, String app_name, String t_url) {
+
     return GestureDetector(
-      onTap: (){
-        launchUrl(Uri.parse(url));
+      onTap: () async{
+        await platform.invokeMethod("browseOneStore", <String, String>{"url": t_url});
       },
       child: Column(
         children: [
@@ -314,7 +325,14 @@ class _MenuHomeState extends State<MenuHome> {
                               '- 인스타그램',
                               style: AppTheme.menu_news2,
                             ),
-                            onTap: () {},
+                            onTap: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => const SnsWebView(url: "https://www.instagram.com/phishingkat/"),
+                                ),
+                              );
+                            },
                           ),
                           const SizedBox(
                             height: 10,
@@ -324,7 +342,14 @@ class _MenuHomeState extends State<MenuHome> {
                               '- 네이버블로그',
                               style: AppTheme.menu_news2,
                             ),
-                            onTap: () {},
+                            onTap: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => const SnsWebView(url: "https://blog.naver.com/jubileeline21"),
+                                ),
+                              );
+                            },
                           ),
                         ],
                       ),
