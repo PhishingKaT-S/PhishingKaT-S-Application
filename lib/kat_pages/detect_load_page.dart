@@ -88,7 +88,6 @@ class _DetectLoadPageState extends State<DetectLoadPage> {
     context.read<SmsProvider>().setSmsToSmsProvider(msgs);
     context.read<LaunchProvider>().setScore(Random(1234).nextInt(100));
     // context.read<LaunchProvider>().setUpdate();
-
   }
 
   Future<void> _detectionSms() async {

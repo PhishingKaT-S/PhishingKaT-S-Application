@@ -194,21 +194,28 @@ class _MenuHomeState extends State<MenuHome> {
                               height: MediaQuery.of(context).size.height * 0.01,
                             ),
                             Row(
-                              children: const [
-                                Text(
+                              children: [
+                                const Text(
                                   '안심점수',
                                   style: TextStyle(
                                       fontSize: 15,
                                       fontWeight: FontWeight.w100,
                                       color: Color(0xFF0b80f5)),
                                 ),
-                                Text(
-                                  ' 69점',
+                                Provider.of<LaunchProvider>(context).getUserInfo().score == -1 ?
+                                const Text(
+                                  '--',
                                   style: TextStyle(
                                       fontSize: 15,
                                       fontWeight: FontWeight.w900,
                                       color: Color(0xFF0b80f5)),
-                                ),
+                                ) : Text(
+    ' ${Provider.of<LaunchProvider>(context).getUserInfo().score}점',
+    style: const TextStyle(
+        fontSize: 15,
+        fontWeight: FontWeight.w900,
+        color: Color(0xFF0b80f5)),
+    ),
                               ],
                             )
                           ],
