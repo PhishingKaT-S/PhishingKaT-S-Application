@@ -10,8 +10,10 @@
 
 import 'dart:math';
 
+import 'package:device_information/device_information.dart';
 import 'package:flutter/material.dart';
 import 'package:mysql1/mysql1.dart';
+import 'package:phishing_kat_pluss/providers/launch_provider.dart';
 import 'package:unique_identifier/unique_identifier.dart';
 
 import '../Theme.dart';
@@ -448,14 +450,14 @@ class _InspectFeedbackState extends State<InspectFeedback> with SingleTickerProv
   } // 차단해제
 
   Future<bool> _getSmsInfo() async {
-    identifier = await UniqueIdentifier.serial;
+    identifier = await LaunchProvider().getPhoneNumber();
     await MySqlConnection.connect(Database.getConnection())
         .then((conn) async  {
       await conn.query("select id, sms.user_ph, sms.text, sms.sender_ph, sms.type, sms.received_sms_date from sms ,"
           "(select user_ph, sender_ph, count(*) as cnt from sms group by sender_ph order by cnt DESC)"
-          "as b where sms.sender_ph = b.sender_ph and user_id = (select id from users where IMEI = ?) order by b.cnt DESC", [identifier]) // 수정해야됨
+          "as b where sms.sender_ph = b.sender_ph and user_id in (select id from users where phone_number = ?) order by b.cnt DESC", [identifier]) // 수정해야됨
           .then((results)  {
-
+        print("identifier:" +  identifier!);
         for(int i =0 ; i < results.length.ceil(); i++)
         {
           var _temp = results.elementAt(i);
@@ -533,33 +535,35 @@ class _InspectFeedbackState extends State<InspectFeedback> with SingleTickerProv
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     Container(
-
                                       height: 30,
                                       child: Row(
                                           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                                           children:[
                                             Container(
-                                                width: 120,
+
                                                 margin: EdgeInsets.fromLTRB(8, 0, MediaQuery.of(context).size.width*0.02, 0),
-                                                child: Text((type==1)?_smsinbox.freqmessagess[index].sender_ph.padRight(11):(type==2? _smsinbox.messagess[index].sender_ph.padRight(20):_smsinbox.recentmessage[index].sender_ph), style: _isVisible[index]?  AppTheme.smsPhone: AppTheme.subtitle)), // 휴대폰 번호
+                                                child: Text((type==1)?_smsinbox.freqmessagess[index].sender_ph.padRight(11):(type==2? _smsinbox.messagess[index].sender_ph.padRight(11):_smsinbox.recentmessage[index].sender_ph), style: _isVisible[index]?  AppTheme.smsPhone: AppTheme.subtitle)), // 휴대폰 번호
                                             Container(
                                               margin: EdgeInsets.fromLTRB(MediaQuery.of(context).size.width * 0.02, 0,0, 0),
                                               child: Text((type==1)?(_smsinbox.freqmessagess[index].received_date.substring(0, 19)) : (type==2?_smsinbox.messagess[index].received_date.substring(0, 19):_smsinbox.recentmessage[index].received_date.substring(0, 19)), style: _isVisible[index]?  AppTheme.selectDate:AppTheme.unseletDate),), //받은 날짜
-                                            Container(
-                                              width: 15,
-                                              height:20,
-                                              child: IconButton(
-                                                icon: Icon(
-                                                    Icons.arrow_drop_down,
-                                                    size: 10),
-                                                onPressed: (){
-                                                  setState((){
-                                                    buttonInit(index);
-                                                    _isSelected = index;
-                                                    _isVisible[index] = !_isVisible[index];
-                                                    if(_isVisible[index]==false) {_isSelected=0;}
-                                                  });
-                                                },
+                                            Expanded(
+                                              child: Container(
+                                                alignment: Alignment.topCenter,
+                                                height:40,
+                                                child:
+                                                IconButton(
+                                                  icon: Icon(
+                                                      Icons.arrow_drop_down,
+                                                      size: 10),
+                                                  onPressed: (){
+                                                    setState((){
+                                                      buttonInit(index);
+                                                      _isSelected = index;
+                                                      _isVisible[index] = !_isVisible[index];
+                                                      if(_isVisible[index]==false) {_isSelected=0;}
+                                                    });
+                                                  },
+                                                ),
                                               ),
                                             ), //밑으로 내리는 버튼
 
@@ -569,7 +573,7 @@ class _InspectFeedbackState extends State<InspectFeedback> with SingleTickerProv
                                     Container(
                                         height: 30,
                                         margin: EdgeInsets.fromLTRB(8, 0, 2, 0),
-                                        child: Text(msgList[type==1?_smsinbox.freqmessagess[index].type-1 : (type==2? _smsinbox.messagess[index].type-1 : _smsinbox.recentmessage[index].type-1)], style: _isVisible[index]?  AppTheme.checksmsContent: AppTheme.unchecksmsContent)), //문자 타입별 보여주는 글
+                                        child: Text(msgList[type==1?_smsinbox.freqmessagess[index].type : (type==2? _smsinbox.messagess[index].type : _smsinbox.recentmessage[index].type)], style: _isVisible[index]?  AppTheme.checksmsContent: AppTheme.unchecksmsContent)), //문자 타입별 보여주는 글
                                   ],
                                 )
                             ),
