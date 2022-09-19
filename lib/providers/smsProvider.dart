@@ -38,7 +38,6 @@ class SmsProvider with ChangeNotifier {
     //_makeScore();
   }
 
-
   Future<void> insertScore(int userId) async {
     await MySqlConnection.connect(Database.getConnection()).then((conn) async {
       await conn.query(
@@ -61,7 +60,6 @@ class SmsProvider with ChangeNotifier {
     });
   }
 
-
   // Future<int> _makeScore() async{
   //   if(await getContacts()){
   //     for(int i = 0; i < _smsList.length ; i++){
@@ -71,8 +69,7 @@ class SmsProvider with ChangeNotifier {
   //
   // }
 
-
-  int getSmsLength(){
+  int getSmsLength() {
     return _smsList.length;
   }
 
@@ -84,10 +81,6 @@ class SmsProvider with ChangeNotifier {
         if(temp[i].phones!.isNotEmpty){
           _user_contact.add(temp[i].phones!.first.value.toString());
         }
-      var temp = await ContactsService.getContacts();
-      for (int i = 0; i < temp.length; i++) {
-        print("phone number: ");
-        _user_contact.add(temp[i].phones!.first.value.toString());
       }
       return true;
     } else if (status.isDenied) {
@@ -129,7 +122,7 @@ class SmsProvider with ChangeNotifier {
               dayList.add("${date_temp.month}/${date_temp.day}");
               data.add(LineChartModel(
                   amount:
-                      double.parse(temp[results_length]["score"].toString()),
+                  double.parse(temp[results_length]["score"].toString()),
                   date: DateTime(
                       date_temp.year, date_temp.month, date_temp.day)));
               results_length--;
@@ -150,9 +143,9 @@ class SmsProvider with ChangeNotifier {
 class SmsInfo {
   SmsInfo(
       {required this.name,
-      required this.phone,
-      required this.date,
-      required this.body});
+        required this.phone,
+        required this.date,
+        required this.body});
 
   String name;
   String phone;
