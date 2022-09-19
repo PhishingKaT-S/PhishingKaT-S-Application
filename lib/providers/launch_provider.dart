@@ -1,6 +1,5 @@
 import 'package:intl/intl.dart';
 import 'dart:developer';
-
 import 'package:contacts_service/contacts_service.dart';
 import 'package:device_information/device_information.dart';
 import 'package:flutter/cupertino.dart';
@@ -18,7 +17,7 @@ class LaunchProvider extends ChangeNotifier {
   UserInfo _userInfo = UserInfo();
   final platform = const MethodChannel("phishingkat.flutter.android");
   LaunchProvider(){
-    Init();
+    //Init();
   }
 
   Future Init() async {
@@ -36,7 +35,6 @@ class LaunchProvider extends ChangeNotifier {
       await conn.query(
           "SELECT * FROM users WHERE IMEI = ? AND phone_number = ?",
           [_userInfo.imei, _userInfo.phoneNumber]).then((results) {
-        print("results: $results") ;
         if (results.isNotEmpty) {
           if (results.length > 1) {
             //  동일한 IMEI와 핸드폰 번호가 있으면 2개 이상이 나오는데 그 때는 우짜나?
@@ -80,9 +78,29 @@ class LaunchProvider extends ChangeNotifier {
 
     _signUp = signUp;
     // notifyListeners();
+
+
   }
 
   void setScore(int score){
+    MySqlConnection.connect(Database.getConnection()).then((conn) async {
+      await conn.query(
+          "INSERT INTO users (score) SELECT ? where id = ?",
+          [
+            score,
+            _userInfo.userId
+          ]).then((results) {
+        if (results.isNotEmpty) {
+
+        } else if (results.isEmpty) {
+        }
+      }).onError((error, stackTrace) {
+        print("error: $error");
+      });
+      conn.close();
+    }).onError((error, stackTrace) {
+      print("error2: $error");
+    });
     _userInfo.score = score;
     notifyListeners();
   }

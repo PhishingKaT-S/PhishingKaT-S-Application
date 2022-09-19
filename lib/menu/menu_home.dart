@@ -10,9 +10,11 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_switch/flutter_switch.dart';
+import 'package:phishing_kat_pluss/providers/news_provider.dart';
 import 'package:phishing_kat_pluss/theme.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:provider/provider.dart';
+import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:webview_flutter/platform_interface.dart';
 import 'package:webview_flutter/webview_flutter.dart';
@@ -107,10 +109,10 @@ class _MenuHomeState extends State<MenuHome> {
 
   Future<void> share() async {
     await FlutterShare.share(
-        title: 'Example share',
-        text: 'Example share text',
-        linkUrl: 'https://flutter.dev/',
-        chooserTitle: 'Example Chooser Title'
+        title: 'PhishingKaT-S+',
+        text: 'phishingkat-s',
+        linkUrl: 'app url',
+        chooserTitle: 'PhishingKaT-s+'
     );
   }
 
@@ -234,10 +236,10 @@ class _MenuHomeState extends State<MenuHome> {
                         //padding: const EdgeInsets.all(20.0),
                         // alignment: Alignment.topLeft,
                         decoration: BoxDecoration(
-                            color: Color(0xFFabe7ff),
-                            border: Border.all(color: Color(0xFFabe7ff)),
+                            color: const Color(0xFFabe7ff),
+                            border: Border.all(color: const Color(0xFFabe7ff)),
                             borderRadius: BorderRadius.circular(15.0)),
-                        padding: EdgeInsets.only(left: 10, right: 10),
+                        padding: const EdgeInsets.only(left: 10, right: 10),
                         child: Column(
                           mainAxisAlignment: MainAxisAlignment.center,
                           crossAxisAlignment: CrossAxisAlignment.start,
@@ -248,16 +250,30 @@ class _MenuHomeState extends State<MenuHome> {
                               textAlign: TextAlign.left,
                             ),
                             Row(
-                              children: const [
-                                Text(
+                              children: [
+                                const Text(
                                   '[관련기사] ',
                                   style: AppTheme.menu_news,
                                   textAlign: TextAlign.left,
                                 ),
                                 // row안에 text overflow를 적용하려면 flexible을 사용해야함.
                                 Flexible(
+                                  // child: DefaultTextStyle(
+                                  //   style: AppTheme.menu_news2,
+                                  //   overflow: TextOverflow.ellipsis,
+                                  //   maxLines: 1,
+                                  //   softWrap: true,
+                                  //   child: AnimatedTextKit(
+                                  //     repeatForever: true,
+                                  //     animatedTexts: [
+                                  //       RotateAnimatedText(context.watch<NewsProvider>().getNewsContent()[0]),
+                                  //       RotateAnimatedText(context.watch<NewsProvider>().getNewsContent()[0]),
+                                  //       RotateAnimatedText(context.watch<NewsProvider>().getNewsContent()[0]),
+                                  //     ],
+                                  //   ),
+                                  // ),
                                   child: Text(
-                                    '야간근무 전 은행 들렀다 보이스피싱범 잡은 경찰이 어쩌고 저쩌고 일단 길게 쓰고',
+                                    context.watch<NewsProvider>().getNewsContent()[0],
                                     style: AppTheme.menu_news2,
                                     overflow: TextOverflow.ellipsis,
                                     maxLines: 1,

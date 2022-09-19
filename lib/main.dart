@@ -15,6 +15,7 @@ import 'package:phishing_kat_pluss/menu/menu_home.dart';
 import 'package:phishing_kat_pluss/menu/service_center.dart';
 import 'package:phishing_kat_pluss/providers/attendanceProvider.dart';
 import 'package:phishing_kat_pluss/providers/launch_provider.dart';
+import 'package:phishing_kat_pluss/providers/news_provider.dart';
 import 'package:phishing_kat_pluss/providers/smsProvider.dart';
 import 'package:phishing_kat_pluss/providers/testProvider.dart';
 import 'package:phishing_kat_pluss/splash/splash_screen.dart';
@@ -51,6 +52,9 @@ void main() {
           ),
           ChangeNotifierProvider<SmsProvider>(
             create: (_) => SmsProvider(),
+          ),
+          ChangeNotifierProvider<NewsProvider>(
+            create: (_) => NewsProvider(),
           ),
         ],
         child: const MyApp(),
