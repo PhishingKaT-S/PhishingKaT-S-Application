@@ -60,6 +60,24 @@ class SmsProvider with ChangeNotifier {
     });
   }
 
+  Future<void> updateScore(int userId) async {
+    await MySqlConnection.connect(Database.getConnection()).then((conn) async {
+      await conn.query(
+          "UPDATE users SET score = ? WHERE id = ?", [
+        80,
+        userId,
+      ]).then((results) {
+        if (results.isNotEmpty) {
+        } else if (results.isEmpty) {}
+      }).onError((error, stackTrace) {
+        print("error: $error");
+      });
+      conn.close();
+    }).onError((error, stackTrace) {
+      print("error2: $error");
+    });
+  }
+
   // Future<int> _makeScore() async{
   //   if(await getContacts()){
   //     for(int i = 0; i < _smsList.length ; i++){

@@ -87,7 +87,6 @@ class _DetectLoadPageState extends State<DetectLoadPage> {
 
     context.read<SmsProvider>().setSmsToSmsProvider(msgs);
     context.read<LaunchProvider>().setScore(Random(1234).nextInt(100));
-    context.read<SmsProvider>().insertScore(context.read<LaunchProvider>().getUserInfo().userId);
     // context.read<LaunchProvider>().setUpdate();
   }
 
@@ -128,9 +127,14 @@ class _DetectLoadPageState extends State<DetectLoadPage> {
         // 연결이 끊어졌습니다.
       }
     }
+
     print("SMISH: " + num_of_smishing_sms.toString()) ;
 
     if ( num_of_completed_sms == num_of_total_sms ) {
+
+      context.read<SmsProvider>().insertScore(context.read<LaunchProvider>().getUserInfo().userId);
+      context.read<SmsProvider>().updateScore(context.read<LaunchProvider>().getUserInfo().userId);
+
       Navigator.pop(context);
     }
   }

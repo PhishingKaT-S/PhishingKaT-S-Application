@@ -157,9 +157,9 @@ class _HomePage extends State<HomePage> {
               AppTheme.blueText,
               rankKey: 'completed',
             ),
-            CircularSegmentEntry(
+            const CircularSegmentEntry(
               100,
-              Colors.blueGrey[600],
+              Color(0xFFF0C9D5),
               rankKey: 'remaining',
             ),
           ]),
@@ -252,7 +252,7 @@ class _HomePage extends State<HomePage> {
                                   height: SCORE_WIDTH_RANGE,
                                   decoration: const BoxDecoration(
                                     shape: BoxShape.circle,
-                                    color: AppTheme.whiteGrey,
+                                    color: Colors.white,
                                   ),
                                   child: Stack(
                                     children: [
@@ -637,6 +637,17 @@ class _HomePage extends State<HomePage> {
     );
   }
 
+  Widget _scoreInChart(double? _score, int index) {
+    return Container(
+      width: MediaQuery.of(context).size.width * 0.08,
+      margin: EdgeInsets.only(top: 1.35 * (100 - _score!), right: (index < 5) ? MediaQuery.of(context).size.width * 0.08 : 0),
+      height: 20,
+      child: Center(
+        child: Text(_score!.toInt().toString())
+      ),
+    );
+  }
+
   Widget _currentLine() {
     return Container(
         width: MediaQuery.of(context).size.width,
@@ -665,6 +676,8 @@ class _HomePage extends State<HomePage> {
         ));
   }
 
+
+
   Widget _dailyChart() {
     List<String> dayList = context.watch<SmsProvider>().dayList;
     List<LineChartModel> data = context.watch<SmsProvider>().data;
@@ -682,6 +695,7 @@ class _HomePage extends State<HomePage> {
         height: 300,
         child: Stack(
           children: [
+            /// 막대
             Container(
               padding: EdgeInsets.only(
                 top: 10,
@@ -690,25 +704,35 @@ class _HomePage extends State<HomePage> {
               ),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  _verticalDivider(),
-                  _verticalDivider(),
-                  _verticalDivider(),
-                  _verticalDivider(),
-                  _verticalDivider(),
-                  _verticalDivider(),
-                ],
+                children: List.generate(data.length, (index) {
+                  return _verticalDivider();
+                })
+              ),
+            ),
+
+            Container(
+              padding: EdgeInsets.only(
+                left: MediaQuery.of(context).size.width * 0.06,
+                right: MediaQuery.of(context).size.width * 0.06,
+              ),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: List.generate(data.length, (index) {
+                  return _scoreInChart(data[index].amount, index) ;
+                })
               ),
             ),
 
             Container(
               width: MediaQuery.of(context).size.width,
-              height: 150,
+              height: 200,
               padding: EdgeInsets.only(
+                top: 30,
                 left: MediaQuery.of(context).size.width * 0.08,
                 right: MediaQuery.of(context).size.width * 0.08,
               ),
-              child: LineChart(
+              child: (smish_detect_flag) ? LineChart(
                 width: MediaQuery.of(context).size.width * 0.95,
                 height: 100,
                 data: data,
@@ -725,7 +749,7 @@ class _HomePage extends State<HomePage> {
                   print('onDropPointer');
                 },
                 insidePadding: 15,
-              ),
+              ) : Container(),
             ),
 
             // _currentLine(),
