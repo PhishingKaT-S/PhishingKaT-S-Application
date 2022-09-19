@@ -36,6 +36,7 @@ class _HomePage extends State<HomePage> {
     super.initState();
     WidgetsBinding.instance?.addPostFrameCallback((_) async {
       int _userId = Provider.of<LaunchProvider>(context, listen: false).getUserInfo().userId;
+      Provider.of<SmsProvider>(context, listen: false).getReportDate(_userId);
       print("user id:: $_userId");
       _attendanceProvider =
           Provider.of<AttendanceProvider>(context, listen: false);
@@ -398,17 +399,17 @@ class _HomePage extends State<HomePage> {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.end,
               children:
-              // (smish_detect_flag)
-              //     ?
+              (context.watch<LaunchProvider>().getUserInfo().score != -1)
+                  ?
                   [
                       Text(context.watch<SmsProvider>().getSmsLength().toString(), style: TextStyle(color: color)),
                       const Text(' 건'),
                     ]
-              //     : [
-              //         const Icon(Icons.arrow_right, color: AppTheme.greyText),
-              //         const Text('피싱 분석 필요',
-              //             style: TextStyle(color: AppTheme.greyText)),
-              //       ],
+                  : [
+                      const Icon(Icons.arrow_right, color: AppTheme.greyText),
+                      const Text('피싱 분석 필요',
+                          style: TextStyle(color: AppTheme.greyText)),
+                    ],
             ))
       ],
     ));
@@ -665,16 +666,8 @@ class _HomePage extends State<HomePage> {
   }
 
   Widget _dailyChart() {
-    List<String> dayList = ['1/24', '1/25', '2/20', '2/27', '2/28', '3/30'];
-
-    List<LineChartModel> data = [
-      LineChartModel(amount: 77, date: DateTime(2020, 1, 1)),
-      LineChartModel(amount: 76, date: DateTime(2020, 1, 2)),
-      LineChartModel(amount: 75, date: DateTime(2020, 1, 3)),
-      LineChartModel(amount: 85, date: DateTime(2020, 1, 4)),
-      LineChartModel(amount: 78, date: DateTime(2020, 1, 5)),
-      LineChartModel(amount: 100, date: DateTime(2020, 1, 6)),
-    ];
+    List<String> dayList = context.watch<SmsProvider>().dayList;
+    List<LineChartModel> data = context.watch<SmsProvider>().data;
 
     Paint circlePaint = Paint()..color = AppTheme.blueLineChart;
     Paint linePaint = Paint()
