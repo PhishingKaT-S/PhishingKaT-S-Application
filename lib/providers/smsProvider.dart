@@ -122,7 +122,7 @@ class SmsProvider with ChangeNotifier {
               dayList.add("${date_temp.month}/${date_temp.day}");
               data.add(LineChartModel(
                   amount:
-                      double.parse(temp[results_length]["score"].toString()),
+                  double.parse(temp[results_length]["score"].toString()),
                   date: DateTime(
                       date_temp.year, date_temp.month, date_temp.day)));
               results_length--;
@@ -143,9 +143,9 @@ class SmsProvider with ChangeNotifier {
 class SmsInfo {
   SmsInfo(
       {required this.name,
-      required this.phone,
-      required this.date,
-      required this.body});
+        required this.phone,
+        required this.date,
+        required this.body});
 
   String name;
   String phone;
