@@ -11,12 +11,34 @@ import 'launch_provider.dart';
 class SmsProvider with ChangeNotifier {
   late List<SmsInfo> _smsList;
   List<String> _user_contact = [];
+  int _total_sms = 0;
   int _unknown_number = 0;
   int _danger_sms = 0;
 
   SmsProvider() {
     _smsList = [];
     getContacts();
+  }
+
+  Future<void> getInitialInfo(int userId) async{
+    await MySqlConnection.connect(Database.getConnection()).then((conn) async {
+      await conn.query(
+          "SELECT * FROM analysis_reports WHERE user_id = ? ORDER BY date DESC LIMIT 1;", [
+        userId,
+      ]).then((results) {
+        if (results.isNotEmpty) {
+          _total_sms = results.first["received_sms"];
+          _danger_sms = results.first["phishing_suspected_sms"];
+          _unknown_number = results.first["unknown_phone_sms"];
+        } else if (results.isEmpty) {}
+      }).onError((error, stackTrace) {
+        print("error: $error");
+      });
+      conn.close();
+    }).onError((error, stackTrace) {
+      print("error2: $error");
+    });
+    notifyListeners();
   }
 
   void setSmsToSmsProvider(List smsList) {
@@ -48,6 +70,25 @@ class SmsProvider with ChangeNotifier {
         _smsList.length,
         _unknown_number,
         _danger_sms
+      ]).then((results) {
+        if (results.isNotEmpty) {
+        } else if (results.isEmpty) {}
+      }).onError((error, stackTrace) {
+        print("error: $error");
+      });
+      conn.close();
+    }).onError((error, stackTrace) {
+      print("error2: $error");
+    });
+  }
+
+
+  Future<void> updateScore(int userId) async {
+    await MySqlConnection.connect(Database.getConnection()).then((conn) async {
+      await conn.query(
+          "UPDATE users SET score = ? WHERE id = ?", [
+        80,
+        userId,
       ]).then((results) {
         if (results.isNotEmpty) {
         } else if (results.isEmpty) {}

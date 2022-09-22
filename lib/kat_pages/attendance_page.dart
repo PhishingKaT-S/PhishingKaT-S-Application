@@ -15,10 +15,12 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:mysql1/mysql1.dart';
 import 'package:phishing_kat_pluss/db_conn.dart';
+import 'package:provider/provider.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
 import 'package:table_calendar/table_calendar.dart';
 
 import '../kat_widget/kat_appbar_back.dart';
+import '../providers/launch_provider.dart';
 import '../theme.dart';
 
 class Event {
@@ -39,7 +41,14 @@ bool _test() {
 
 class _AttendancePage extends State<AttendancePage> {
   var _now = DateTime.now() ;
-  var user_id = 14 ;
+  var user_id = 0 ;
+  var total_attendance = 0 ;
+
+  @override
+  void initState() {
+    super.initState();
+    user_id = Provider.of<LaunchProvider>(context, listen: false).getUserInfo().userId ;
+  }
 
   final _events = LinkedHashMap(
     equals: isSameDay,
@@ -69,6 +78,11 @@ class _AttendancePage extends State<AttendancePage> {
           /// 네트워크 에러 처리
         });
     print(_events) ;
+
+    setState(() {
+      total_attendance = _events.length;
+    });
+
     return _events ;
   }
 
@@ -126,11 +140,11 @@ class _AttendancePage extends State<AttendancePage> {
             width: MediaQuery.of(context).size.width * 0.7,
               padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width * 0.08),
             child: Row(
-              crossAxisAlignment: CrossAxisAlignment.end,
+              crossAxisAlignment: CrossAxisAlignment.center,
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
                 const Text('이번달 출석일수 '),
-                Text(_events.length.toString(), style: TextStyle(color: AppTheme.blueText)),
+                Text(total_attendance.toString(), style: const TextStyle(color: AppTheme.blueText, fontSize: 16, fontWeight: FontWeight.bold,), textAlign: TextAlign.center,),
                 const Text('일'),
               ],
             )
@@ -212,7 +226,7 @@ class _AttendancePage extends State<AttendancePage> {
                   if ( isSameDay(date, _events[date] )) {
                     return Container(
                         width: MediaQuery.of(context).size.width * 0.11,
-                        padding: const EdgeInsets.only(bottom: 5),
+                        padding: const EdgeInsets.only(bottom: 7),
                         child: Image.asset('assets/images/attendance.png',));
                   }
                 },
