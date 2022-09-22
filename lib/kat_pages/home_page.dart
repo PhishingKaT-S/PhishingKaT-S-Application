@@ -15,7 +15,7 @@ import 'package:phishing_kat_pluss/theme.dart';
 import 'package:provider/provider.dart';
 import '../db_conn.dart';
 import '../kat_widget/kat_drawer.dart';
-import 'package:flutter_circular_chart_two/flutter_circular_chart_two.dart';
+import 'package:awesome_circular_chart/awesome_circular_chart.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
 import '../providers/attendanceProvider.dart';
@@ -37,6 +37,7 @@ class _HomePage extends State<HomePage> {
     WidgetsBinding.instance?.addPostFrameCallback((_) async {
       int _userId = Provider.of<LaunchProvider>(context, listen: false).getUserInfo().userId;
       Provider.of<SmsProvider>(context, listen: false).getReportDate(_userId);
+      Provider.of<SmsProvider>(context, listen: false).getInitialInfo(_userId);
       print("user id:: $_userId");
       _attendanceProvider =
           Provider.of<AttendanceProvider>(context, listen: false);
@@ -108,10 +109,10 @@ class _HomePage extends State<HomePage> {
       }
       setState(() {
         _weekAttendance = _attendanceProvider.getWeekAttendance();
-        smish_detect_flag = Provider.of<LaunchProvider>(context, listen: false).getUserInfo().score == -1 ? false : true;
-        if(smish_detect_flag){
-          score = Provider.of<LaunchProvider>(context, listen: false).getUserInfo().score.toDouble();
-        }
+        // smish_detect_flag = Provider.of<LaunchProvider>(context, listen: false).getUserInfo().score == -1 ? false : true;
+        // if(smish_detect_flag){
+        //   score = Provider.of<LaunchProvider>(context, listen: false).getUserInfo().score.toDouble();
+        // }
       });
     });
   }
@@ -643,7 +644,7 @@ class _HomePage extends State<HomePage> {
       margin: EdgeInsets.only(top: 1.35 * (100 - _score!), right: (index < 5) ? MediaQuery.of(context).size.width * 0.08 : 0),
       height: 20,
       child: Center(
-        child: Text(_score!.toInt().toString())
+        child: Text(_score.round().toString())
       ),
     );
   }

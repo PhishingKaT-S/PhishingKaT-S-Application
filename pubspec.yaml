@@ -57,6 +57,7 @@ dependencies:
   contacts_service: ^0.6.3
   mobile_number: ^1.0.4
   flutter_share: ^2.0.0
+  awesome_circular_chart: ^1.0.0
 #  device_info_plus: ^4.1.2
 
 dev_dependencies:
