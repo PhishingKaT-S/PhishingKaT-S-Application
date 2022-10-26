@@ -13,7 +13,7 @@ import 'dart:math';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_circular_chart_two/flutter_circular_chart_two.dart';
+import 'package:awesome_circular_chart/awesome_circular_chart.dart';
 import 'package:phishing_kat_pluss/providers/smsProvider.dart';
 import 'package:provider/provider.dart';
 import 'package:http/http.dart' as http;
@@ -92,6 +92,7 @@ class _DetectLoadPageState extends State<DetectLoadPage> {
 
   Future<void> _detectionSms() async {
     final url = Uri.parse('http://52.53.168.246:5000/api') ;
+
     for (int i = 0 ; i < num_of_total_sms ; i++) {
       List<String> text = msgs[i].split("[sms_text]");
 
@@ -127,6 +128,8 @@ class _DetectLoadPageState extends State<DetectLoadPage> {
         // 연결이 끊어졌습니다.
       }
     }
+
+    context.read<SmsProvider>().setDangerSms(num_of_smishing_sms);
 
     print("SMISH: " + num_of_smishing_sms.toString()) ;
 

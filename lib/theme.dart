@@ -217,6 +217,7 @@ class AppTheme {
     fontSize: 19,
     letterSpacing: 0.2,
     color: blueText,
+    height: 1
   );
 
   static const TextStyle blue_normal = TextStyle(
@@ -241,7 +242,10 @@ class AppTheme {
       fontSize: 10,
       letterSpacing: 0.2,
       color: whiteText,
-      decoration: TextDecoration.underline);
+      // decoration: TextDecoration.underline,
+      // decorationThickness: 4,
+      // decorationStyle: TextDecorationStyle.solid
+  );
 
   static const TextStyle unseleted = TextStyle(
       fontFamily: 'applegothicRegular',
@@ -482,6 +486,7 @@ class AppTheme {
     letterSpacing: 0.2,
     color: Colors.black,
     fontWeight: FontWeight.w100,
+    overflow: TextOverflow.ellipsis
   );
 
   static const TextStyle menu_list = TextStyle(
