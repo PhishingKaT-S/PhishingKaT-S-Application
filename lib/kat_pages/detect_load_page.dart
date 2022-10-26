@@ -275,4 +275,3 @@ class _DetectLoadPageState extends State<DetectLoadPage> {
     );
   }
 }
-
