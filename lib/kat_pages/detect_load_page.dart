@@ -10,10 +10,10 @@ import 'dart:convert';
 import 'dart:io';
 import 'dart:math';
 
+import 'package:awesome_circular_chart/awesome_circular_chart.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_circular_chart_two/flutter_circular_chart_two.dart';
 import 'package:phishing_kat_pluss/providers/smsProvider.dart';
 import 'package:provider/provider.dart';
 import 'package:http/http.dart' as http;
@@ -88,7 +88,6 @@ class _DetectLoadPageState extends State<DetectLoadPage> {
     context.read<SmsProvider>().setSmsToSmsProvider(msgs);
     context.read<LaunchProvider>().setScore(Random(1234).nextInt(100));
     // context.read<LaunchProvider>().setUpdate();
-
   }
 
   Future<void> _detectionSms() async {
@@ -128,9 +127,14 @@ class _DetectLoadPageState extends State<DetectLoadPage> {
         // 연결이 끊어졌습니다.
       }
     }
+
     print("SMISH: " + num_of_smishing_sms.toString()) ;
 
     if ( num_of_completed_sms == num_of_total_sms ) {
+
+      context.read<SmsProvider>().insertScore(context.read<LaunchProvider>().getUserInfo().userId);
+      context.read<SmsProvider>().updateScore(context.read<LaunchProvider>().getUserInfo().userId);
+
       Navigator.pop(context);
     }
   }
