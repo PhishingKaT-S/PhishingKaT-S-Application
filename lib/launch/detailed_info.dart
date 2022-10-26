@@ -106,14 +106,17 @@ class _detailed_infoState extends State<DetailInfo> {
       context: context,
       builder: (context) {
         return AlertDialog(
+          shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(20.0)),
           title: Text(
             '출생년도를 입력하세요',
             textAlign: TextAlign.center,
+            style:AppTheme.birthday,
           ),
           content: Container(
-            height: MediaQuery.of(context).size.height / 4.0,
-            width: MediaQuery.of(context).size.width,
-            color: Colors.grey[200],
+            height: MediaQuery.of(context).size.height / 3.0,
+            width: MediaQuery.of(context).size.width*0.5,
+            color: Colors.white,
             child: YearPicker(
               selectedDate: DateTime(year),
               firstDate: DateTime(year - 100),
@@ -179,12 +182,20 @@ class _detailed_infoState extends State<DetailInfo> {
                   ],
                   controller: nicknameController,
                   decoration: InputDecoration(
+                    enabledBorder: OutlineInputBorder(
+                        borderSide: BorderSide( //테두리
+                            color:Colors.blue,
+                            width:1
+                        )
+                    ),
                     fillColor: Colors.white,
-                    labelText: '별명 (최대 6자)',
+                    hintText: '별명 (최대 6자)',
+                    hintStyle: AppTheme.serviceCaption,
                     border: OutlineInputBorder(
-                      borderSide: BorderSide(color:Colors.blue, width:0.0),
+                      borderSide: BorderSide(color:Colors.blue, width:1.0),
                     ),
                     filled: true,
+
                   ),
                 ),
               );
@@ -217,10 +228,11 @@ class _detailed_infoState extends State<DetailInfo> {
                                 enabledBorder: OutlineInputBorder(
                                   borderSide: BorderSide(
                                     color:Colors.blue,
-                                    width:2
+                                    width:1
                                   )
                                 ), //border 아웃라인
-                                labelText: '출생년도',
+                                hintText: '출생년도',
+                                hintStyle: AppTheme.serviceCaption,
                                 border: OutlineInputBorder(
                                   borderSide: BorderSide(color:Colors.blue, width:0.0),
                                 ),
@@ -271,7 +283,7 @@ class _detailed_infoState extends State<DetailInfo> {
                                     height: double.infinity,
                                   decoration: BoxDecoration(
                                     color: _isSelected[index] ? AppTheme.startBackground: Colors.white,
-                                    border: Border.all(color: Colors.blue, width: 2.0),
+                                    border: Border.all(color: AppTheme.startBackground, width: 1.0),
                                     borderRadius: BorderRadius.circular(5) ),
                                     alignment: Alignment.center,
                                   child:Text(

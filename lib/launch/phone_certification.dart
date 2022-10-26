@@ -144,7 +144,7 @@ class _Phone_CRTState extends State<PhoneCRT> {
                         //입력창을 담는 컨테이너 height 70임
                         decoration: BoxDecoration(
                           //박스 데코:블루, width:3 circular10
-                          border: Border.all(color: Colors.blue, width: 3),
+                          border: Border.all(color: Colors.blue, width: 2),
                           borderRadius: BorderRadius.circular(10),
                         ),
                         width: double.infinity,
@@ -153,9 +153,9 @@ class _Phone_CRTState extends State<PhoneCRT> {
                           children: <Widget>[
                             Container(
                                 padding: EdgeInsets.only(left:10),
-                                width: 60,
+                                width: 65,
                                 child: Center(
-                                    child: Text('+082 ', style: AppTheme.nationalNumber))),
+                                    child: Text('+82 ', style: AppTheme.nationalNumber))),
                             Expanded(
                               child: TextField(
                                 onSubmitted: (value) async { // 확인 눌렀을 때
@@ -169,8 +169,8 @@ class _Phone_CRTState extends State<PhoneCRT> {
                                 keyboardType: TextInputType.number,
                                 decoration: InputDecoration(
                                   border: InputBorder.none,
-                                  labelText: '휴대폰 번호 입력(-제외)',
-                                  labelStyle: AppTheme.caption,
+                                  hintText: '휴대폰 번호 입력(-제외)',
+                                  hintStyle: AppTheme.serviceCaption,
                                 ),
                               ),
                             ),
@@ -196,7 +196,7 @@ class _Phone_CRTState extends State<PhoneCRT> {
 
                       Container(
                         decoration: BoxDecoration(
-                          border: Border.all(color: Colors.blue, width: 3),
+                          border: Border.all(color: Colors.blue, width: 2),
                           borderRadius: BorderRadius.circular(10),
                         ),
                         width: double.infinity,
@@ -205,9 +205,9 @@ class _Phone_CRTState extends State<PhoneCRT> {
                           children: <Widget>[
                             Container(
                                 padding: EdgeInsets.only(left:10),
-                                width: 60,
+                                width: 65,
                                 child: Center(
-                                    child: Text("${time ~/ 60} : ${time % 60}",
+                                    child: Text("0${(time ~/ 60)} : "+"${(time % 60).toString().length==2?(time % 60).toString():"0"+(time % 60).toString()}",
                                         style: AppTheme.timer))),
                             Expanded(
                               child: TextField(
@@ -225,8 +225,8 @@ class _Phone_CRTState extends State<PhoneCRT> {
                                 keyboardType: TextInputType.number,
                                 decoration: InputDecoration(
                                   border: InputBorder.none,
-                                  labelText: '인증번호 입력',
-                                  labelStyle: AppTheme.caption,
+                                  hintText: '인증번호 입력',
+                                  hintStyle: AppTheme.serviceCaption,
                                 ),
                               ),
                             ),
