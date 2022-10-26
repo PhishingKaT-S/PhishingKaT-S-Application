@@ -421,7 +421,7 @@ class _HomePage extends State<HomePage> {
     const double BUTTON_HEIGHT = 30;
     const double PADDING_SIZE = 10;
 
-    final _isSelected = [false, false, false];
+    final _isSelected = [false, false, true];
     List<String> dayList = ['1개월', '3개월', '전체'];
 
     return Row(
@@ -703,7 +703,7 @@ class _HomePage extends State<HomePage> {
                 left: MediaQuery.of(context).size.width * 0.1,
                 right: MediaQuery.of(context).size.width * 0.1,
               ),
-              child: Row(
+              child:Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: List.generate(data.length, (index) {
                   return _verticalDivider();
@@ -716,13 +716,13 @@ class _HomePage extends State<HomePage> {
                 left: MediaQuery.of(context).size.width * 0.06,
                 right: MediaQuery.of(context).size.width * 0.06,
               ),
-              child: Row(
+              child: (smish_detect_flag) ? Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: List.generate(data.length, (index) {
                   return _scoreInChart(data[index].amount, index) ;
                 })
-              ),
+              ) : Container(),
             ),
 
             Container(
@@ -761,7 +761,7 @@ class _HomePage extends State<HomePage> {
                     left: MediaQuery.of(context).size.width * 0.06,
                     right: MediaQuery.of(context).size.width * 0.06),
                 margin: EdgeInsets.only(top: 170),
-                child: Row(
+                child: (smish_detect_flag) ? Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: List.generate(dayList.length, (index) {
                       return Text(dayList[index]);
@@ -776,7 +776,7 @@ class _HomePage extends State<HomePage> {
                       //     ),
                       //     child: Center(child: Text(dayList[index], textAlign: TextAlign.center, style: const TextStyle(color: AppTheme.white))),
                       //   );
-                    }))),
+                    })): Container())
           ],
         ));
   }

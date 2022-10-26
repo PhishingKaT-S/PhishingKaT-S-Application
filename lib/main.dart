@@ -18,7 +18,10 @@ import 'package:phishing_kat_pluss/providers/launch_provider.dart';
 import 'package:phishing_kat_pluss/providers/news_provider.dart';
 import 'package:phishing_kat_pluss/providers/smsProvider.dart';
 import 'package:phishing_kat_pluss/providers/testProvider.dart';
+import 'package:phishing_kat_pluss/splash/404_error.dart';
+import 'package:phishing_kat_pluss/splash/network_error.dart';
 import 'package:phishing_kat_pluss/splash/splash_screen.dart';
+import 'package:phishing_kat_pluss/splash/update_page.dart';
 import 'package:provider/provider.dart';
 
 
@@ -29,7 +32,7 @@ import 'kat_pages/detect_load_page.dart';
 import 'launch/celebration.dart';
 import 'launch/login_page.dart';
 import 'menu/sns_webview.dart';
-import 'splash/test.dart';
+import 'splash/splash_test.dart';
 
 void main() {
   KakaoSdk.init(nativeAppKey: '2c174d14857608bc5b5be9a32c0b2a31');
@@ -57,7 +60,7 @@ void main() {
             create: (_) => NewsProvider(),
           ),
         ],
-        child: const MyApp(),
+        child:  const MyApp(),
       ));
 }
 
@@ -106,6 +109,9 @@ class MyApp extends StatelessWidget {
                 //'/homepage': (BuildContext context) => const HomePage(),
                 '/splash_screen': (BuildContext context) =>
                 const SplashScreen(),
+                '/splash/404_error' : (BuildContext context) => const Error404(),
+                '/splash/network_error' : (BuildContext context) => const NetworkError(),
+                '/splash/update_page' : (BuildContext context) => const UpdateSplashPage(),
                 '/kat_pages/attendance': (BuildContext context) =>
                 const AttendancePage(),
                 '/kat_pages/score': (BuildContext context) => const ScorePage(),
@@ -118,7 +124,7 @@ class MyApp extends StatelessWidget {
                 '/kat_pages/detect_load': (BuildContext context) =>
                 const DetectLoadPage(),
                 '/launch/login': (BuildContext context) => const LoginPage(),
-                '/splash/test': (BuildContext context) => const TestPage(),
+                '/splash/test': (BuildContext context) => const SplashTest(),
                 '/kat_pages/url_home': (BuildContext context) =>
                     InspectFeedback(),
                 '/menu/menu_home': (BuildContext context) => const MenuHome(),
