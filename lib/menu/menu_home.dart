@@ -276,50 +276,44 @@ class _MenuHomeState extends State<MenuHome> {
                                   textAlign: TextAlign.left,
                                 ),
                                 context
-                                    .watch<NewsProvider>()
-                                    .getNewsContent()[0] == " "?
-                                    const Text(""):
-
-                                // row안에 text overflow를 적용하려면 flexible을 사용해야함.
-                                Container(
-                                    width: MediaQuery.of(context).size.width *
-                                        0.65,
-                                    child:
-                                    AnimatedTextKit(
-                                      repeatForever: true,
-                                      animatedTexts: [
-                                        FadeAnimatedText(
-                                          context
-                                              .watch<NewsProvider>()
-                                              .getNewsContent()[0],
-                                          textStyle: TextStyle(overflow: TextOverflow.ellipsis),
-                                            duration: const Duration(seconds: 5)
-
-                                        ),
-                                        FadeAnimatedText(context
                                             .watch<NewsProvider>()
-                                            .getNewsContent()[1],
-                                          textStyle: TextStyle(overflow: TextOverflow.ellipsis),
-                                            duration: const Duration(seconds: 5)
+                                            .getNewsContent()[0] ==
+                                        " "
+                                    ? const Text("")
+                                    :
 
+                                    // row안에 text overflow를 적용하려면 flexible을 사용해야함.
+                                    Container(
+                                        width:
+                                            MediaQuery.of(context).size.width *
+                                                0.65,
+                                        child: AnimatedTextKit(
+                                          repeatForever: true,
+                                          animatedTexts: [
+                                            FadeAnimatedText(
+                                                context
+                                                    .watch<NewsProvider>()
+                                                    .getNewsContent()[0],
+                                                textStyle: AppTheme.menu_news2,
+                                                duration:
+                                                    const Duration(seconds: 5)),
+                                            FadeAnimatedText(
+                                                context
+                                                    .watch<NewsProvider>()
+                                                    .getNewsContent()[1],
+                                                textStyle: AppTheme.menu_news2,
+                                                duration:
+                                                    const Duration(seconds: 5)),
+                                            FadeAnimatedText(
+                                                context
+                                                    .watch<NewsProvider>()
+                                                    .getNewsContent()[2],
+                                                textStyle: AppTheme.menu_news2,
+                                                duration:
+                                                    const Duration(seconds: 5)),
+                                          ],
                                         ),
-                                        FadeAnimatedText(context
-                                            .watch<NewsProvider>()
-                                            .getNewsContent()[2],
-                                          textStyle: TextStyle(overflow: TextOverflow.ellipsis),
-                                          duration: const Duration(seconds: 5)
-                                        ),
-                                      ],
-                                    )
-                                    // Text(
-                                    //   context.watch<NewsProvider>().getNewsContent()[0],
-                                    //   //news[0],
-                                    //   style: AppTheme.menu_news2,
-                                    //   overflow: TextOverflow.ellipsis,
-                                    //   maxLines: 1,
-                                    //   softWrap: true,
-                                    // ),
-                                    )
+                                      ),
                               ],
                             )
                           ],

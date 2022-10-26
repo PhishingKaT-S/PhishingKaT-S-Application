@@ -20,6 +20,11 @@ class SmsProvider with ChangeNotifier {
     getContacts();
   }
 
+  void setDangerSms(int number){
+    _danger_sms = number;
+    notifyListeners();
+  }
+
   Future<void> getInitialInfo(int userId) async{
     await MySqlConnection.connect(Database.getConnection()).then((conn) async {
       await conn.query(
@@ -47,6 +52,7 @@ class SmsProvider with ChangeNotifier {
       return;
     }
     _smsList.clear();
+    _total_sms = smsList.length;
 
     for (int i = 0; i < smsList.length; i++) {
       List temp = smsList[i].toString().split("[sms_text]");
@@ -167,11 +173,13 @@ class SmsProvider with ChangeNotifier {
                   date: DateTime(
                       date_temp.year, date_temp.month, date_temp.day)));
               results_length--;
+              notifyListeners();
               continue;
             }
             dayList.add("--/--");
             data.add(LineChartModel(amount: 0, date: DateTime(2000, 1, 1)));
             results_length--;
+            notifyListeners();
           }
           notifyListeners();
         } else if (results.isEmpty) {}
