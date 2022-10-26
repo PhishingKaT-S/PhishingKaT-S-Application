@@ -24,49 +24,60 @@ class _NoticePageState extends State<NoticePage> {
   List<String> _title = [] ;
   List<String> _written_date = [] ;
   List<String> _content = [];
+  List<bool> _notice_tap = [false];
+
+  bool update_flag = false;
 
   Future<bool> _getNoticeData() async {
+    if(!update_flag) {
+      await MySqlConnection.connect(Database.getConnection())
+          .then((conn) async {
+        await conn.query("SELECT * FROM notice WHERE view = 1")
+            .then((results) {
+          if (results.isNotEmpty) {
+            for (var res in results) {
+              _title.add(res['title']);
 
-    await MySqlConnection.connect(Database.getConnection())
-        .then((conn) async {
-      await conn.query("SELECT * FROM notice WHERE view = 1")
-          .then((results) {
-        if ( results.isNotEmpty ) {
-          for (var res in results )  {
-            _title.add(res['title']) ;
+              DateTime _datetime = res['day'] as DateTime;
+              int _year = _datetime.year;
+              int _month = _datetime.month;
+              int _day = _datetime.day;
 
-            DateTime _datetime = res['day'] as DateTime ;
-            int _year = _datetime.year ;
-            int _month = _datetime.month ;
-            int _day = _datetime.day ;
+              _written_date.add('$_year. $_month. $_day');
 
-            _written_date.add('$_year. $_month. $_day') ;
+              _content.add(res['content']);
 
-            _content.add(res['content']) ;
+              _notice_tap.add(false);
+
+              update_flag = true;
+            }
+          } else {
+            return false;
           }
-        } else {
-          return false;
-        }
+        }).onError((error, stackTrace) {
+          /// 쿼리 에러 처리
+        });
+        conn.close();
       }).onError((error, stackTrace) {
-        /// 쿼리 에러 처리
+        /// 네트워크 에러 처리
       });
-      conn.close();
-    }).onError((error, stackTrace) {
-      /// 네트워크 에러 처리
-    });
+    }
 
     return true;
   }
 
   Widget _expansionTile(int index) {
-    bool notice_tap = false;
+
 
     return ExpansionTile(
-      trailing: notice_tap
+      trailing: _notice_tap[index]
         ? Icon(Icons.keyboard_arrow_down_outlined)
         : Icon(Icons.keyboard_arrow_up_outlined),
       onExpansionChanged: (val) {
-        notice_tap = !notice_tap ;
+        setState(() {
+          _notice_tap[index] = !_notice_tap[index] ;
+        });
+
       },
       title: Text(_title[index]),
       subtitle: Text(_written_date[index]),

@@ -22,28 +22,40 @@ import '../providers/attendanceProvider.dart';
 import 'package:intl/intl.dart';
 
 class HomePage extends StatefulWidget {
-  const HomePage({Key? key,}) : super(key: key);
+  const HomePage({
+    Key? key,
+  }) : super(key: key);
 
   @override
   State<StatefulWidget> createState() => new _HomePage();
 }
 
 class _HomePage extends State<HomePage> {
-  List<bool> _weekAttendance = [false, false, false, false, false, false, false];
+  final _isSelected = [false, false, true];
+  List<bool> _weekAttendance = [
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false
+  ];
 
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance?.addPostFrameCallback((_) async {
-      int _userId = Provider.of<LaunchProvider>(context, listen: false).getUserInfo().userId;
+      int _userId = Provider.of<LaunchProvider>(context, listen: false)
+          .getUserInfo()
+          .userId;
       Provider.of<SmsProvider>(context, listen: false).getReportDate(_userId);
       Provider.of<SmsProvider>(context, listen: false).getInitialInfo(_userId);
       print("user id:: $_userId");
       _attendanceProvider =
           Provider.of<AttendanceProvider>(context, listen: false);
 
-      bool _attendance =
-      await _attendanceProvider.getTodayAttendance(_userId);
+      bool _attendance = await _attendanceProvider.getTodayAttendance(_userId);
       if (!_attendance) {
         _attendanceProvider.setTodayAttendance(_userId);
         showDialog(
@@ -55,9 +67,9 @@ class _HomePage extends State<HomePage> {
                 borderRadius: BorderRadius.all(Radius.circular(15.0))),
             title: const Center(
                 child: Text(
-                  '출석 체크 이벤트',
-                  style: TextStyle(fontSize: 15, fontWeight: FontWeight.w800),
-                )),
+              '출석 체크 이벤트',
+              style: TextStyle(fontSize: 15, fontWeight: FontWeight.w800),
+            )),
             content: Column(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
@@ -71,7 +83,7 @@ class _HomePage extends State<HomePage> {
                   style: const TextStyle(fontWeight: FontWeight.w300),
                 ),
                 Text(
-                  '\n목표 달성하려면 ${25-_attendanceProvider.getMonthAttendance()}회 남았어요!\n',
+                  '\n목표 달성하려면 ${25 - _attendanceProvider.getMonthAttendance()}회 남았어요!\n',
                   style: const TextStyle(fontWeight: FontWeight.w300),
                 ),
                 Container(
@@ -82,14 +94,13 @@ class _HomePage extends State<HomePage> {
                         bottomLeft: Radius.circular(15.0),
                         bottomRight: Radius.circular(15.0)),
                     color: Colors.blue,
-
                   ),
                   width: MediaQuery.of(context).size.width * 0.8,
                   //color: Colors.blue,
                   child: TextButton(
                     style: ButtonStyle(
                       backgroundColor:
-                      MaterialStateProperty.all<Color>(Colors.blue),
+                          MaterialStateProperty.all<Color>(Colors.blue),
                     ),
                     onPressed: () => Navigator.pop(context),
                     child: const Text(
@@ -116,10 +127,11 @@ class _HomePage extends State<HomePage> {
       });
     });
   }
+
   late AttendanceProvider _attendanceProvider;
 
   final GlobalKey<AnimatedCircularChartState> _chartKey =
-  new GlobalKey<AnimatedCircularChartState>();
+      new GlobalKey<AnimatedCircularChartState>();
   double dividingLine = 250;
 
   double SCORE_WIDTH_RANGE = 110;
@@ -127,43 +139,50 @@ class _HomePage extends State<HomePage> {
   bool smish_detect_flag = false; // provider ?
 
   Widget _getCircularChart(double score) {
-
     setState(() {
-      smish_detect_flag = (context.watch<LaunchProvider>().getUserInfo().score != -1) ? true : false;
+      smish_detect_flag =
+          (context.watch<LaunchProvider>().getUserInfo().score != -1)
+              ? true
+              : false;
     });
     score = context.watch<LaunchProvider>().getUserInfo().score.toDouble();
-    smish_detect_flag = (context.watch<LaunchProvider>().getUserInfo().score != -1) ? true : false;
+    smish_detect_flag =
+        (context.watch<LaunchProvider>().getUserInfo().score != -1)
+            ? true
+            : false;
     print(smish_detect_flag);
     return AnimatedCircularChart(
       key: _chartKey,
       size: Size(SCORE_WIDTH_RANGE + 30, SCORE_WIDTH_RANGE + 30),
       initialChartData: <CircularStackEntry>[
         CircularStackEntry(
-          ((context.watch<LaunchProvider>().getUserInfo().score != -1) ? true : false)
+          ((context.watch<LaunchProvider>().getUserInfo().score != -1)
+                  ? true
+                  : false)
               ? (<CircularSegmentEntry>[
-            CircularSegmentEntry(
-              score,
-              AppTheme.blueText,
-              rankKey: 'completed',
-            ),
-            CircularSegmentEntry(
-              100 - score,
-              Colors.blueGrey[600],
-              rankKey: 'remaining',
-            ),
-          ])
+                  CircularSegmentEntry(
+                    score,
+                    AppTheme.blueText,
+                    rankKey: 'completed',
+                  ),
+                  CircularSegmentEntry(
+                    100 - score,
+                    Colors.blueGrey[600],
+                    rankKey: 'remaining',
+                  ),
+                ])
               : (<CircularSegmentEntry>[
-            const CircularSegmentEntry(
-              0,
-              AppTheme.blueText,
-              rankKey: 'completed',
-            ),
-            const CircularSegmentEntry(
-              100,
-              Color(0xFFF0C9D5),
-              rankKey: 'remaining',
-            ),
-          ]),
+                  const CircularSegmentEntry(
+                    0,
+                    AppTheme.blueText,
+                    rankKey: 'completed',
+                  ),
+                  const CircularSegmentEntry(
+                    100,
+                    Color(0xFFF0C9D5),
+                    rankKey: 'remaining',
+                  ),
+                ]),
           rankKey: 'progress',
         ),
       ],
@@ -183,7 +202,10 @@ class _HomePage extends State<HomePage> {
      * 1. 점수 로직 구현 및 점수 표시
      * */
     score = context.watch<LaunchProvider>().getUserInfo().score.toDouble();
-    smish_detect_flag = (context.watch<LaunchProvider>().getUserInfo().score != -1) ? true : false;
+    smish_detect_flag =
+        (context.watch<LaunchProvider>().getUserInfo().score != -1)
+            ? true
+            : false;
     return Stack(
       children: <Widget>[
         Column(
@@ -204,34 +226,34 @@ class _HomePage extends State<HomePage> {
                         width: MediaQuery.of(context).size.width * 0.3,
                         child: (!smish_detect_flag)
                             ? Image.asset('assets/logo/score_default.png',
-                            width: MediaQuery.of(context).size.width * 0.2,
-                            fit: BoxFit.contain)
+                                width: MediaQuery.of(context).size.width * 0.2,
+                                fit: BoxFit.contain)
                             : (score >= 80)
-                            ? Image.asset('assets/logo/score_80_100.png',
-                            width:
-                            MediaQuery.of(context).size.width * 0.2,
-                            fit: BoxFit.contain)
-                            : (score >= 70)
-                            ? Image.asset('assets/logo/score_70_80.png',
-                            width:
-                            MediaQuery.of(context).size.width *
-                                0.2,
-                            fit: BoxFit.contain)
-                            : (score >= 60)
-                            ? Image.asset(
-                            'assets/logo/score_60_69.png',
-                            width: MediaQuery.of(context)
-                                .size
-                                .width *
-                                0.2,
-                            fit: BoxFit.contain)
-                            : Image.asset(
-                            'assets/logo/score_0_59.png',
-                            width: MediaQuery.of(context)
-                                .size
-                                .width *
-                                0.2,
-                            fit: BoxFit.contain)),
+                                ? Image.asset('assets/logo/score_80_100.png',
+                                    width:
+                                        MediaQuery.of(context).size.width * 0.2,
+                                    fit: BoxFit.contain)
+                                : (score >= 70)
+                                    ? Image.asset('assets/logo/score_70_80.png',
+                                        width:
+                                            MediaQuery.of(context).size.width *
+                                                0.2,
+                                        fit: BoxFit.contain)
+                                    : (score >= 60)
+                                        ? Image.asset(
+                                            'assets/logo/score_60_69.png',
+                                            width: MediaQuery.of(context)
+                                                    .size
+                                                    .width *
+                                                0.2,
+                                            fit: BoxFit.contain)
+                                        : Image.asset(
+                                            'assets/logo/score_0_59.png',
+                                            width: MediaQuery.of(context)
+                                                    .size
+                                                    .width *
+                                                0.2,
+                                            fit: BoxFit.contain)),
                     Container(
                       width: MediaQuery.of(context).size.width * 0.4,
                       margin: const EdgeInsets.only(top: 20),
@@ -240,61 +262,61 @@ class _HomePage extends State<HomePage> {
                         children: [
                           Center(
                               child: InkWell(
-                                onTap: () {
-                                  (smish_detect_flag)
-                                      ? Navigator.pushNamed(
+                            onTap: () {
+                              (smish_detect_flag)
+                                  ? Navigator.pushNamed(
                                       context, '/kat_pages/score')
-                                      : Navigator.pushNamed(
+                                  : Navigator.pushNamed(
                                       context, '/kat_pages/detect_load');
-                                },
-                                child: Container(
-                                  margin: const EdgeInsets.all(2),
-                                  width: SCORE_WIDTH_RANGE,
-                                  height: SCORE_WIDTH_RANGE,
-                                  decoration: const BoxDecoration(
-                                    shape: BoxShape.circle,
-                                    color: Colors.white,
-                                  ),
-                                  child: Stack(
-                                    children: [
-                                      Center(
-                                          child: Container(
-                                              padding:
+                            },
+                            child: Container(
+                              margin: const EdgeInsets.all(2),
+                              width: SCORE_WIDTH_RANGE,
+                              height: SCORE_WIDTH_RANGE,
+                              decoration: const BoxDecoration(
+                                shape: BoxShape.circle,
+                                color: Colors.white,
+                              ),
+                              child: Stack(
+                                children: [
+                                  Center(
+                                      child: Container(
+                                          padding:
                                               const EdgeInsets.only(top: 5),
-                                              child: Row(
-                                                crossAxisAlignment:
+                                          child: Row(
+                                            crossAxisAlignment:
                                                 CrossAxisAlignment.center,
-                                                mainAxisAlignment:
+                                            mainAxisAlignment:
                                                 MainAxisAlignment.center,
-                                                children: (smish_detect_flag)
-                                                    ? [
-                                                  Text(
-                                                      score
-                                                          .toInt()
-                                                          .toString(),
-                                                      style: AppTheme
-                                                          .display1_blue,
-                                                      textAlign:
-                                                      TextAlign.center),
-                                                  const Text('점',
-                                                      style:
-                                                      AppTheme.subtitle,
-                                                      textAlign:
-                                                      TextAlign.center)
-                                                ]
-                                                    : [
-                                                  const Text('분석 시작',
-                                                      style: AppTheme
-                                                          .score_start_pink,
-                                                      textAlign:
-                                                      TextAlign.center),
-                                                ],
-                                              ))),
-                                      _getCircularChart(score),
-                                    ],
-                                  ),
-                                ),
-                              )),
+                                            children: (smish_detect_flag)
+                                                ? [
+                                                    Text(
+                                                        score
+                                                            .toInt()
+                                                            .toString(),
+                                                        style: AppTheme
+                                                            .display1_blue,
+                                                        textAlign:
+                                                            TextAlign.center),
+                                                    const Text('점',
+                                                        style:
+                                                            AppTheme.subtitle,
+                                                        textAlign:
+                                                            TextAlign.center)
+                                                  ]
+                                                : [
+                                                    const Text('분석 시작',
+                                                        style: AppTheme
+                                                            .score_start_pink,
+                                                        textAlign:
+                                                            TextAlign.center),
+                                                  ],
+                                          ))),
+                                  _getCircularChart(score),
+                                ],
+                              ),
+                            ),
+                          )),
                           const Center(
                             child: Padding(
                               padding: EdgeInsets.symmetric(vertical: 5),
@@ -305,34 +327,37 @@ class _HomePage extends State<HomePage> {
                           ),
                           (smish_detect_flag)
                               ? (Column(
-                            children: [
-                              Container(
-                                  child: Row(
-                                    mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                    children:  [
-                                      const Text('최근 검사', style: AppTheme.caption),
-                                      Text(DateFormat('yyyy-MM-dd').format(DateTime.now()),
-                                          style: AppTheme.caption),
-                                    ],
-                                  )),
-                              Container(
-                                  child: Row(
-                                    mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                    children:  const [
-                                      Text('최근 업데이트',
-                                          style: AppTheme.caption),
-                                      Text('2022-09-05',
-                                          style: AppTheme.caption),
-                                    ],
-                                  )),
-                            ],
-                          ))
+                                  children: [
+                                    Container(
+                                        child: Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        const Text('최근 검사',
+                                            style: AppTheme.caption),
+                                        Text(
+                                            DateFormat('yyyy-MM-dd')
+                                                .format(DateTime.now()),
+                                            style: AppTheme.caption),
+                                      ],
+                                    )),
+                                    Container(
+                                        child: Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      children: const [
+                                        Text('최근 업데이트',
+                                            style: AppTheme.caption),
+                                        Text('2022-09-05',
+                                            style: AppTheme.caption),
+                                      ],
+                                    )),
+                                  ],
+                                ))
                               : (const Center(
-                            child: Text('분석 시작 버튼을 눌러주세요!',
-                                style: AppTheme.caption2_black),
-                          ))
+                                  child: Text('분석 시작 버튼을 눌러주세요!',
+                                      style: AppTheme.caption2_black),
+                                ))
                         ],
                       ),
                     ),
@@ -370,50 +395,53 @@ class _HomePage extends State<HomePage> {
         style: ButtonStyle(
             shape: MaterialStateProperty.all<RoundedRectangleBorder>(
                 RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(25.0),
-                ))),
+          borderRadius: BorderRadius.circular(25.0),
+        ))),
       ),
     );
   }
 
   Widget _smishingData(String bullet, String name, String num, Color color) {
-
     /**
      * _smishingData
      * _smishingDataAnalysisView 에서 사용하고 있음
      * */
     return Container(
         child: Row(
-          children: [
-            Container(
-              width: MediaQuery.of(context).size.width * 0.5,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: [
-                  Text(bullet, style: TextStyle(color: color)),
-                  Text(name),
-                ],
-              ),
-            ),
-            Container(
-                width: MediaQuery.of(context).size.width * 0.3,
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children:
-                  (context.watch<LaunchProvider>().getUserInfo().score != -1)
-                      ?
-                  [
-                    Text(context.watch<SmsProvider>().getSmsLength().toString(), style: TextStyle(color: color)),
-                    const Text(' 건'),
-                  ]
-                      : [
-                    const Icon(Icons.arrow_right, color: AppTheme.greyText),
-                    const Text('피싱 분석 필요',
-                        style: TextStyle(color: AppTheme.greyText)),
-                  ],
-                ))
-          ],
-        ));
+      children: [
+        Container(
+          width: MediaQuery.of(context).size.width * 0.5,
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              Text(bullet, style: TextStyle(color: color)),
+              Text(name),
+            ],
+          ),
+        ),
+        Container(
+            width: MediaQuery.of(context).size.width * 0.3,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: (context.watch<LaunchProvider>().getUserInfo().score !=
+                      -1)
+                  ? [
+                      Text(
+                          context
+                              .watch<SmsProvider>()
+                              .getSmsLength()
+                              .toString(),
+                          style: TextStyle(color: color)),
+                      const Text(' 건'),
+                    ]
+                  : [
+                      const Icon(Icons.arrow_right, color: AppTheme.greyText),
+                      const Text('피싱 분석 필요',
+                          style: TextStyle(color: AppTheme.greyText)),
+                    ],
+            ))
+      ],
+    ));
   }
 
   Widget _dataAnalysisDayButton() {
@@ -421,7 +449,7 @@ class _HomePage extends State<HomePage> {
     const double BUTTON_HEIGHT = 30;
     const double PADDING_SIZE = 10;
 
-    final _isSelected = [false, false, true];
+
     List<String> dayList = ['1개월', '3개월', '전체'];
 
     return Row(
@@ -433,26 +461,32 @@ class _HomePage extends State<HomePage> {
             width: BUTTON_WIDTH,
             height: BUTTON_HEIGHT,
             child: TextButton(
-                onPressed: () {
-                  setState(() {
-                    for (int i = 0; i < _isSelected.length; i++) {
-                      if (i == index) {
-                        _isSelected[index] = true;
-                      } else {
-                        _isSelected[i] = false;
-                      }
+              onPressed: () {
+                setState(() {
+                  for (int i = 0; i < _isSelected.length; i++) {
+                    if (i == index) {
+                      _isSelected[index] = true;
+                      print("${i}: true");
+                    } else {
+                      _isSelected[i] = false;
+                      print("$i: false");
                     }
-                  });
-                },
-                child: Text(
-                  dayList[index],
-                  style: AppTheme.caption,
-                ),
-                style: TextButton.styleFrom(
-                    padding: EdgeInsets.zero,
-                    backgroundColor: (_isSelected[index])
-                        ? const Color(0xFF95DBED)
-                        : AppTheme.whiteGreyBackground)),
+                  }
+                });
+              },
+              child: Text(
+                dayList[index],
+                style: (_isSelected[index])
+                    ? AppTheme.caption_select
+                    : AppTheme.caption,
+              ),
+              style: TextButton.styleFrom(
+                padding: EdgeInsets.zero,
+                backgroundColor: (_isSelected[index])
+                    ? const Color(0xFF95DBED)
+                    : AppTheme.whiteGreyBackground,
+              ),
+            ),
           );
         }));
   }
@@ -501,7 +535,9 @@ class _HomePage extends State<HomePage> {
 
   Widget _attendanceCheck() {
     List<String> dayList = <String>['월', '화', '수', '목', '금', '토', '일'];
-    List<bool> dayCheckList = Provider.of<AttendanceProvider>(context, listen: true).getWeekAttendance();
+    List<bool> dayCheckList =
+        Provider.of<AttendanceProvider>(context, listen: true)
+            .getWeekAttendance();
 
     /**
      * _attendanceCheck
@@ -532,13 +568,13 @@ class _HomePage extends State<HomePage> {
               children: [
                 Container(
                     child: const Text(
-                      '출석 체크',
-                      style: AppTheme.subtitle,
-                    )),
+                  '출석 체크',
+                  style: AppTheme.subtitle,
+                )),
                 Row(
                     children: List.generate(dayList.length, (index) {
-                      return _day(dayList[index], dayCheckList[index]);
-                    }))
+                  return _day(dayList[index], dayCheckList[index]);
+                }))
               ],
             ),
             const Padding(
@@ -561,26 +597,26 @@ class _HomePage extends State<HomePage> {
      */
     return (check)
         ? Container(
-      margin: EdgeInsets.all(2),
-      width: MediaQuery.of(context).size.width * 0.07,
-      height: MediaQuery.of(context).size.width * 0.07,
-      child: const CircleAvatar(
-        backgroundColor: AppTheme.blueBackground,
-        radius: 30,
-        child: Icon(Icons.check),
-      ),
-    )
+            margin: EdgeInsets.all(2),
+            width: MediaQuery.of(context).size.width * 0.07,
+            height: MediaQuery.of(context).size.width * 0.07,
+            child: const CircleAvatar(
+              backgroundColor: AppTheme.blueBackground,
+              radius: 30,
+              child: Icon(Icons.check),
+            ),
+          )
         : Container(
-        margin: EdgeInsets.all(2),
-        width: MediaQuery.of(context).size.width * 0.07,
-        height: MediaQuery.of(context).size.width * 0.07,
-        decoration: const BoxDecoration(
-          shape: BoxShape.circle,
-          color: AppTheme.whiteGrey,
-        ),
-        child: Center(
-          child: Text(day),
-        ));
+            margin: EdgeInsets.all(2),
+            width: MediaQuery.of(context).size.width * 0.07,
+            height: MediaQuery.of(context).size.width * 0.07,
+            decoration: const BoxDecoration(
+              shape: BoxShape.circle,
+              color: AppTheme.whiteGrey,
+            ),
+            child: Center(
+              child: Text(day),
+            ));
   }
 
   Widget _additionalFuctions() {
@@ -641,11 +677,11 @@ class _HomePage extends State<HomePage> {
   Widget _scoreInChart(double? _score, int index) {
     return Container(
       width: MediaQuery.of(context).size.width * 0.08,
-      margin: EdgeInsets.only(top: 1.35 * (100 - _score!), right: (index < 5) ? MediaQuery.of(context).size.width * 0.08 : 0),
+      margin: EdgeInsets.only(
+          top: 1.35 * (100 - _score!),
+          right: (index < 5) ? MediaQuery.of(context).size.width * 0.08 : 0),
       height: 20,
-      child: Center(
-        child: Text(_score.round().toString())
-      ),
+      child: Center(child: Text(_score.round().toString())),
     );
   }
 
@@ -677,8 +713,6 @@ class _HomePage extends State<HomePage> {
         ));
   }
 
-
-
   Widget _dailyChart() {
     List<String> dayList = context.watch<SmsProvider>().dayList;
     List<LineChartModel> data = context.watch<SmsProvider>().data;
@@ -703,12 +737,11 @@ class _HomePage extends State<HomePage> {
                 left: MediaQuery.of(context).size.width * 0.1,
                 right: MediaQuery.of(context).size.width * 0.1,
               ),
-              child:Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: List.generate(data.length, (index) {
-                  return _verticalDivider();
-                })
-              ),
+              child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: List.generate(data.length, (index) {
+                    return _verticalDivider();
+                  })),
             ),
 
             Container(
@@ -716,13 +749,14 @@ class _HomePage extends State<HomePage> {
                 left: MediaQuery.of(context).size.width * 0.06,
                 right: MediaQuery.of(context).size.width * 0.06,
               ),
-              child: (smish_detect_flag) ? Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: List.generate(data.length, (index) {
-                  return _scoreInChart(data[index].amount, index) ;
-                })
-              ) : Container(),
+              child: (smish_detect_flag)
+                  ? Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: List.generate(data.length, (index) {
+                        return _scoreInChart(data[index].amount, index);
+                      }))
+                  : Container(),
             ),
 
             Container(
@@ -733,24 +767,26 @@ class _HomePage extends State<HomePage> {
                 left: MediaQuery.of(context).size.width * 0.08,
                 right: MediaQuery.of(context).size.width * 0.08,
               ),
-              child: (smish_detect_flag) ? LineChart(
-                width: MediaQuery.of(context).size.width * 0.95,
-                height: 100,
-                data: data,
-                linePaint: linePaint,
-                circlePaint: circlePaint,
-                showPointer: true,
-                showCircles: true,
-                customDraw: (Canvas canvas, Size size) {},
-                insideCirclePaint: insideCirclePaint,
-                onValuePointer: (LineChartModelCallback value) {
-                  print('${value.chart} ${value.percentage}');
-                },
-                onDropPointer: () {
-                  print('onDropPointer');
-                },
-                insidePadding: 15,
-              ) : Container(),
+              child: (smish_detect_flag)
+                  ? LineChart(
+                      width: MediaQuery.of(context).size.width * 0.95,
+                      height: 100,
+                      data: data,
+                      linePaint: linePaint,
+                      circlePaint: circlePaint,
+                      showPointer: true,
+                      showCircles: true,
+                      customDraw: (Canvas canvas, Size size) {},
+                      insideCirclePaint: insideCirclePaint,
+                      onValuePointer: (LineChartModelCallback value) {
+                        print('${value.chart} ${value.percentage}');
+                      },
+                      onDropPointer: () {
+                        print('onDropPointer');
+                      },
+                      insidePadding: 15,
+                    )
+                  : Container(),
             ),
 
             // _currentLine(),
@@ -761,22 +797,24 @@ class _HomePage extends State<HomePage> {
                     left: MediaQuery.of(context).size.width * 0.06,
                     right: MediaQuery.of(context).size.width * 0.06),
                 margin: EdgeInsets.only(top: 170),
-                child: (smish_detect_flag) ? Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: List.generate(dayList.length, (index) {
-                      return Text(dayList[index]);
-                      // (index < 5)
-                      //   ? Text(dayList[index])
-                      //   : Container(
-                      //     width: MediaQuery.of(context).size.width * 0.12,
-                      //     height: MediaQuery.of(context).size.width * 0.12,
-                      //     decoration: BoxDecoration(
-                      //       color: AppTheme.blueLineChart,
-                      //       borderRadius: BorderRadius.circular(25),
-                      //     ),
-                      //     child: Center(child: Text(dayList[index], textAlign: TextAlign.center, style: const TextStyle(color: AppTheme.white))),
-                      //   );
-                    })): Container())
+                child: (smish_detect_flag)
+                    ? Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: List.generate(dayList.length, (index) {
+                          return Text(dayList[index]);
+                          // (index < 5)
+                          //   ? Text(dayList[index])
+                          //   : Container(
+                          //     width: MediaQuery.of(context).size.width * 0.12,
+                          //     height: MediaQuery.of(context).size.width * 0.12,
+                          //     decoration: BoxDecoration(
+                          //       color: AppTheme.blueLineChart,
+                          //       borderRadius: BorderRadius.circular(25),
+                          //     ),
+                          //     child: Center(child: Text(dayList[index], textAlign: TextAlign.center, style: const TextStyle(color: AppTheme.white))),
+                          //   );
+                        }))
+                    : Container())
           ],
         ));
   }
@@ -814,7 +852,6 @@ class _HomePage extends State<HomePage> {
       ),
     );
   }
-
 
   final _scaffoldKey = GlobalKey<ScaffoldState>();
 
