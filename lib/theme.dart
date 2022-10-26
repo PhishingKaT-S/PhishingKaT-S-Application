@@ -190,7 +190,15 @@ class AppTheme {
     fontWeight: FontWeight.w400,
     fontSize: 12,
     letterSpacing: 0.2,
-    color: lightText, // was lightText
+    color: Colors.black, // was lightText
+  );
+  static const TextStyle caption_select = TextStyle(
+    // Caption -> caption
+    fontFamily: fontName,
+    fontWeight: FontWeight.w400,
+    fontSize: 12,
+    letterSpacing: 0.2,
+    color: Colors.white, // was lightText
   );
 
   static const TextStyle caption2_black = TextStyle(
@@ -480,6 +488,15 @@ class AppTheme {
     fontWeight: FontWeight.bold,
   );
 
+  static const TextStyle family_app = TextStyle(
+      fontFamily: 'applegothicLight',
+      fontSize: 12,
+      letterSpacing: 0.2,
+      color: Colors.black,
+      // fontWeight: FontWeight.w100,
+      overflow: TextOverflow.ellipsis
+  );
+
   static const TextStyle menu_news2 = TextStyle(
     fontFamily: 'applegothicBold',
     fontSize: 13,
@@ -491,9 +508,16 @@ class AppTheme {
 
   static const TextStyle menu_list = TextStyle(
       fontFamily: 'applegothicMedium',
-      fontSize: 13,
+      fontSize: 12,
       letterSpacing: 0.2,
       color: Color(0xFF9b9b9b),
+      fontWeight: FontWeight.w600
+  );
+  static const TextStyle menu_list_select = TextStyle(
+      fontFamily: 'applegothicMedium',
+      fontSize: 12,
+      letterSpacing: 0.2,
+      color: Color(0xFF0b80f5),
       fontWeight: FontWeight.w600
   );
 

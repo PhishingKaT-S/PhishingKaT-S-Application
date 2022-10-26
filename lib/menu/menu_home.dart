@@ -5,7 +5,7 @@
  */
 
 import 'dart:io';
-
+import 'package:rolling_switch/rolling_switch.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -89,7 +89,7 @@ class _MenuHomeState extends State<MenuHome> {
           ),
           Text(
             app_name,
-            style: AppTheme.menu_news2,
+            style: AppTheme.family_app,
           )
         ],
       ),
@@ -352,15 +352,15 @@ class _MenuHomeState extends State<MenuHome> {
               ListTile(
                 title: Text(
                   "SNS",
-                  style: AppTheme.menu_list,
+                  style: sns_tap ? AppTheme.menu_list_select : AppTheme.menu_list,
                 ),
-                leading: Icon(
+                leading: const Icon(
                   Icons.language_outlined,
                   color: Colors.grey,
                 ),
                 trailing: sns_tap
-                    ? Icon(Icons.keyboard_arrow_down_outlined)
-                    : Icon(Icons.keyboard_arrow_up_outlined),
+                    ? const Icon(Icons.keyboard_arrow_down_outlined, color: Color(0xFF0b80f5),)
+                    : const Icon(Icons.keyboard_arrow_up_outlined),
                 dense: true,
                 onTap: () {
                   setState(() {
@@ -371,15 +371,15 @@ class _MenuHomeState extends State<MenuHome> {
               menu_divider(),
               sns_tap
                   ? Container(
-                      color: Color(0xFFf6f6f6),
+                      color: const Color(0xFFf6f6f6),
                       padding:
-                          EdgeInsets.only(top: 15.0, bottom: 15.0, left: 70),
+                          const EdgeInsets.only(top: 15.0, bottom: 15.0, left: 70),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                         children: [
                           GestureDetector(
-                            child: Text(
+                            child: const Text(
                               '- 인스타그램',
                               style: AppTheme.menu_news2,
                             ),
@@ -418,9 +418,9 @@ class _MenuHomeState extends State<MenuHome> {
                     )
                   : Container(),
               ListTile(
-                title: const Text(
+                title: Text(
                   "패밀리 앱",
-                  style: AppTheme.menu_list,
+                  style: app_tap ? AppTheme.menu_list_select : AppTheme.menu_list,
                 ),
                 leading: const Icon(
                   Icons.share,
@@ -429,7 +429,7 @@ class _MenuHomeState extends State<MenuHome> {
                 trailing: app_tap
                     ? const Icon(
                         Icons.keyboard_arrow_down_outlined,
-                        color: Colors.grey,
+                        color: Color(0xFF0b80f5),
                       )
                     : const Icon(Icons.keyboard_arrow_up_outlined,
                         color: Colors.grey),
@@ -444,8 +444,8 @@ class _MenuHomeState extends State<MenuHome> {
               app_tap
                   ? Container(
                       width: MediaQuery.of(context).size.width,
-                      color: Color(0xFFf6f6f6),
-                      padding: EdgeInsets.only(
+                      color: const Color(0xFFf6f6f6),
+                      padding: const EdgeInsets.only(
                           top: 15.0, bottom: 15.0, left: 70, right: 70),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -458,7 +458,7 @@ class _MenuHomeState extends State<MenuHome> {
                               '모의훈련\n출시예정',
                               'http://phishingkat.com/app/PKat-TL-22.apk'),
                           family_app('assets/images/citizenConan.png', '시티즌코난',
-                              'https://m.onestore.co.kr/mobilepoc/apps/appsDetail.omp?prodId=0000758242'),
+                              'https://play.google.com/store/apps/details?id=com.infinigru.police.phishingeyes'),
                         ],
                       ),
                     )
@@ -468,9 +468,9 @@ class _MenuHomeState extends State<MenuHome> {
               menu_divider(),
               // menu_list_tile_nevigation('설정', Icons.settings_outlined, '/menu/setting'),
               ListTile(
-                title: const Text(
+                title: Text(
                   '설정',
-                  style: AppTheme.menu_list,
+                  style: setting_tap ? AppTheme.menu_list_select :AppTheme.menu_list,
                 ),
                 leading: const Icon(
                   Icons.settings_outlined,
@@ -479,7 +479,7 @@ class _MenuHomeState extends State<MenuHome> {
                 trailing: setting_tap
                     ? const Icon(
                         Icons.keyboard_arrow_down_outlined,
-                        color: Colors.grey,
+                        color: Color(0xFF0b80f5),
                       )
                     : const Icon(Icons.keyboard_arrow_up_outlined,
                         color: Colors.grey),
@@ -531,6 +531,7 @@ class _MenuHomeState extends State<MenuHome> {
                                   '- DB 자동 업데이트',
                                   style: AppTheme.menu_news2,
                                 ),
+                                //
                                 FlutterSwitch(
                                   height: 25,
                                   showOnOff: true,

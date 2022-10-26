@@ -57,7 +57,7 @@ class SmsProvider with ChangeNotifier {
     for (int i = 0; i < smsList.length; i++) {
       List temp = smsList[i].toString().split("[sms_text]");
       _smsList.add(
-          SmsInfo(name: temp[0], phone: temp[1], date: temp[2], body: temp[3]));
+          SmsInfo(name: temp[0], phone: temp[1], date: temp[2], body: temp[3], score: 0));
       if(_user_contact.contains(temp[1])){
         _unknown_number++;
       }
@@ -194,10 +194,13 @@ class SmsInfo {
       {required this.name,
         required this.phone,
         required this.date,
-        required this.body});
+        required this.body,
+        required this.score,
+      });
 
   String name;
   String phone;
   String date;
   String body;
+  int score;
 }
