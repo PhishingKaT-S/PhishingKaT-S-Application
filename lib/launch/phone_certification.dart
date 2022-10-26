@@ -9,6 +9,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 import '../Theme.dart';
 import '../kat_widget/launch_appbar.dart';
@@ -111,6 +112,29 @@ class _Phone_CRTState extends State<PhoneCRT> {
           bottomNavigationBar: bottomBar(
               title: '다음',
               onPress: () {
+                //print(_certificationController.text.length);
+
+                if(_certificationController.text.length == 0){
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Container(
+                        height: 45,
+                        child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: <Widget>[Text('비밀번호 미입력', style:AppTheme.smsPhone), Text('인증번호를 입력해주세요', style:AppTheme.checksmsContent),]),
+                      ))
+                  );
+                }else if(_certificationController.text != verification){
+                  ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                          content: Container(
+                            height: 45,
+                            child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: <Widget>[Text('비밀번호 불일치', style:AppTheme.smsPhone), Text('인증번호 6자리를 다시 입력해주세요', style:AppTheme.checksmsContent),]),
+                          ))
+                  );
+                }
                 if (flag) {
                   Navigator.push(context,
                       MaterialPageRoute(builder: (context) => (DetailInfo(phoneNumber: _phoneNumber))));
