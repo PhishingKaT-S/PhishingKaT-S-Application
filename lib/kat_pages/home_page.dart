@@ -449,7 +449,11 @@ class _HomePage extends State<HomePage> {
     const double BUTTON_HEIGHT = 30;
     const double PADDING_SIZE = 10;
 
+<<<<<<< HEAD
 
+=======
+    final _isSelected = [false, false, true];
+>>>>>>> d68c2cf612bc9e29e6817920d3a5e54418116ea1
     List<String> dayList = ['1개월', '3개월', '전체'];
 
     return Row(
@@ -737,11 +741,20 @@ class _HomePage extends State<HomePage> {
                 left: MediaQuery.of(context).size.width * 0.1,
                 right: MediaQuery.of(context).size.width * 0.1,
               ),
+<<<<<<< HEAD
               child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: List.generate(data.length, (index) {
                     return _verticalDivider();
                   })),
+=======
+              child:Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: List.generate(data.length, (index) {
+                  return _verticalDivider();
+                })
+              ),
+>>>>>>> d68c2cf612bc9e29e6817920d3a5e54418116ea1
             ),
 
             Container(
@@ -749,6 +762,7 @@ class _HomePage extends State<HomePage> {
                 left: MediaQuery.of(context).size.width * 0.06,
                 right: MediaQuery.of(context).size.width * 0.06,
               ),
+<<<<<<< HEAD
               child: (smish_detect_flag)
                   ? Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -757,6 +771,15 @@ class _HomePage extends State<HomePage> {
                         return _scoreInChart(data[index].amount, index);
                       }))
                   : Container(),
+=======
+              child: (smish_detect_flag) ? Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: List.generate(data.length, (index) {
+                  return _scoreInChart(data[index].amount, index) ;
+                })
+              ) : Container(),
+>>>>>>> d68c2cf612bc9e29e6817920d3a5e54418116ea1
             ),
 
             Container(
@@ -797,6 +820,7 @@ class _HomePage extends State<HomePage> {
                     left: MediaQuery.of(context).size.width * 0.06,
                     right: MediaQuery.of(context).size.width * 0.06),
                 margin: EdgeInsets.only(top: 170),
+<<<<<<< HEAD
                 child: (smish_detect_flag)
                     ? Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -815,6 +839,24 @@ class _HomePage extends State<HomePage> {
                           //   );
                         }))
                     : Container())
+=======
+                child: (smish_detect_flag) ? Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: List.generate(dayList.length, (index) {
+                      return Text(dayList[index]);
+                      // (index < 5)
+                      //   ? Text(dayList[index])
+                      //   : Container(
+                      //     width: MediaQuery.of(context).size.width * 0.12,
+                      //     height: MediaQuery.of(context).size.width * 0.12,
+                      //     decoration: BoxDecoration(
+                      //       color: AppTheme.blueLineChart,
+                      //       borderRadius: BorderRadius.circular(25),
+                      //     ),
+                      //     child: Center(child: Text(dayList[index], textAlign: TextAlign.center, style: const TextStyle(color: AppTheme.white))),
+                      //   );
+                    })): Container())
+>>>>>>> d68c2cf612bc9e29e6817920d3a5e54418116ea1
           ],
         ));
   }

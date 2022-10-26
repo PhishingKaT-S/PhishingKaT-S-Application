@@ -26,8 +26,8 @@ class SettingPage extends StatefulWidget {
 }
 
 class _SettingPageState extends State<SettingPage> {
-  List<bool> _status = [false, false, false, false] ;
-  List<bool> _settingStatus = [false, false, false, false] ;
+  List<int> _status = [0, 0, 0, 0] ;
+  List<int> _settingStatus = [0, 0, 0, 0] ;
   List<String> settingNames = ['피싱관련 뉴스 알림', '이벤트 알림', '알림 미리보기', '푸시알림'] ;
   late int user_id ;
 
@@ -62,7 +62,7 @@ class _SettingPageState extends State<SettingPage> {
         if ( results.isNotEmpty ) {
           for (var res in results )  {
             for (int i = 0 ; i < _settingStatus.length; i++) {
-              _settingStatus[i] = ( res[alarm_cols[i]] == 1 ) ? true : false ;
+              _settingStatus[i] = ( res[alarm_cols[i]] == 1 ) ? 1 : 0 ;
               print(_settingStatus[i].toString()) ;
             }
           }
@@ -98,7 +98,7 @@ class _SettingPageState extends State<SettingPage> {
 
   Widget _title() {
     return Container(
-      padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width * 0.1, vertical: 5),
+      padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width * 0.1, vertical: 10),
       width: MediaQuery.of(context).size.width ,
       child: const Text('알림 설정', style: AppTheme.subtitle),
       decoration: const BoxDecoration(
@@ -108,6 +108,7 @@ class _SettingPageState extends State<SettingPage> {
   }
 
   Widget _flutterSwitch(int index) {
+    List<String> buttonNames = ['무음', '소리', '진동', '소리+진동'] ;
 
     return Container(
         padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width * 0.1, vertical: 5),
@@ -116,42 +117,53 @@ class _SettingPageState extends State<SettingPage> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              Text(settingNames[index]),
+              Text(settingNames[index], textAlign: TextAlign.center,),
 
               (index < 3) ? (
-                  FlutterSwitch(
-                    height: 30,
-                    showOnOff: true,
-                    activeTextColor: AppTheme.white,
-                    inactiveTextColor: AppTheme.white,
-                    value: _status[index],
-                    onToggle: (val) {
-                      setState(() {
-                        print(index);
-                        _status[index] = val;
-                      });
-                    },
+                Center(
+                  child: Padding(
+                      padding: EdgeInsets.only(top: MediaQuery.of(context).size.height * 0.006 ),
+                      child: FlutterSwitch(
+                        width: MediaQuery.of(context).size.width * 0.13,
+                        height: MediaQuery.of(context).size.height * 0.028,
+                        showOnOff: true,
+                        activeTextColor: AppTheme.white,
+                        inactiveTextColor: AppTheme.white,
+                        value: (_status[index] == 1) ? true : false,
+                        valueFontSize: MediaQuery.of(context).size.height * 0.015,
+                        toggleSize: MediaQuery.of(context).size.height * 0.026,
+                        padding: 1,
+                        onToggle: (val) {
+                          setState(() {
+                            _status[index] = (val) ? 1 : 0;
+                          });
+                        },
+                      )
                   )
+                )
               )
                   :
               (
                   GestureDetector(
                       onTap: () {
                         setState(() {
-                          _status[3] = !_status[3] ;
+                          _status[3] = (_status[3] + 1) % 4 ;
                         });
                       } ,
+
                       child: Container(
-                          padding: EdgeInsets.only(top: 3, bottom: 3),
-                          width: 90,
-                          height: 30,
-                          decoration: BoxDecoration(
-                            color: (_status[3]) ? AppTheme.blueLineChart : AppTheme.white,
+                          margin: EdgeInsets.only(top: MediaQuery.of(context).size.height * 0.014),
+                          padding: const EdgeInsets.only(top: 1, bottom: 3),
+                          width: MediaQuery.of(context).size.width * 0.2,
+                          height: MediaQuery.of(context).size.height * 0.03,
+                          decoration: const BoxDecoration(
+                            color: AppTheme.blueLineChart, // (_status[3] == 1) ? AppTheme.blueLineChart : AppTheme.white,
                             borderRadius: BorderRadius.all(Radius.circular(15)),
                           ),
                           child: Align(
                             alignment: Alignment.center,
-                            child: Text('소리+진동', style: TextStyle(color: (_status[3]) ? AppTheme.white : AppTheme.blueLineChart), textAlign: TextAlign.center,),
+                            child: Text(buttonNames[_status[3]],
+                                        style: TextStyle(color: AppTheme.white, fontSize: 12), textAlign: TextAlign.center,)// TextStyle(color: (_status[3] == 1) ? AppTheme.white : AppTheme.blueLineChart), textAlign: TextAlign.center,),
                           )
                       )
                   )
