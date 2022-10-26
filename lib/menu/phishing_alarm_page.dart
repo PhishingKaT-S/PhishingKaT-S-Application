@@ -173,7 +173,7 @@ class _PhishingAlarmPageState extends State<PhishingAlarmPage> {
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
-        icon: Icon(Icons.arrow_back_ios_new, color: Colors.grey),
+        icon: Icon(Icons.close, color: Colors.black),
         onPressed: () => Navigator.of(context).pop(),
         ),
         title: Text('피싱알림', style: TextStyle(fontWeight: FontWeight.bold, color: AppTheme.blueText),),
@@ -181,7 +181,7 @@ class _PhishingAlarmPageState extends State<PhishingAlarmPage> {
         centerTitle: true,
         actions: [
           IconButton(
-            icon: Image.asset('assets/images/setting.png', width: 25,),
+            icon: Image.asset('assets/images/setting.png', width: MediaQuery.of(context).size.width * 0.055,),
             onPressed: () {
               Navigator.pushNamed(context, '/menu/alarm/setting');
             },
