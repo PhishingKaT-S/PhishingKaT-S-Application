@@ -419,14 +419,6 @@ class AppTheme {
     //shadowColor: MaterialStateProperty.all<Color>(Colors.transparent),
     //elevation: MaterialStateProperty.all<double>(0)
   );
-  static final TextStyle urlInspect = TextStyle(
-    // 문자 내에 위험요소, 1.7 url 검사
-    fontFamily: fontName,
-    fontWeight: FontWeight.w400,
-    fontSize: 18,
-    letterSpacing: 0.2,
-    color: lightText, // was lightText
-  );
 
   static const TextStyle serviceLimit = TextStyle(
     // 0.3 권한 요청
