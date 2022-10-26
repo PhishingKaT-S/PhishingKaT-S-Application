@@ -260,7 +260,7 @@ class _OneClickPageState extends State<OneClickPage> {
     const double LABEL_HEIGHT = 40;
     List<String> imgList = ['deposit_loan_credit_card_lookup', 'general_certificate_revocation',
                             'check_my_phone_number', 'check_the_authenticity_of_official_documents'];
-    const List<String> urlList = ['https://www.payinfo.or.kr/extl/qryExtlFxamtIns.do?menu=1', 'https://login.kt.com/wamui/NewKTFindIdPhoneCertifiedFront.do', '', 'https://www.gov.kr/mw/EgovPageLink.do?link=confirm/AA040_confirm_id'] ;
+    const List<String> urlList = ['https://play.google.com/store/apps/details?id=com.kftc.payinfo.android', 'https://www.data.go.kr/data/15081808/openapi.do', '', 'https://www.gov.kr/mw/EgovPageLink.do?link=confirm/AA040_confirm_id'] ;
     const List<String> titleList = ['예금/대출/신용카드 조회', '내 명의 핸드폰 찾기', '', '공문서 진위 확인'] ;
 
     return Container(

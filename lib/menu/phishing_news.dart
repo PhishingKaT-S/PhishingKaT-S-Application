@@ -224,7 +224,6 @@ class _NewsWebViewState extends State<NewsWebView> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Container(
-                        height: 50,
                         child: Text(_newsList[index].title, style: AppTheme.subtitle, overflow: TextOverflow.clip,),
                       ),
 
@@ -270,7 +269,15 @@ class _NewsWebViewState extends State<NewsWebView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: const AppBarBack(title: '피싱 뉴스'),
+        appBar: AppBar(
+          leading: IconButton(
+            icon: const Icon(Icons.close, color: Colors.black),
+            onPressed: () => Navigator.of(context).pop(),
+          ),
+          title: const Text('피싱 뉴스', style: TextStyle(fontWeight: FontWeight.bold, color: AppTheme.blueText),),
+          backgroundColor: AppTheme.blueBackground,
+          centerTitle: true,
+        ),
         body: SingleChildScrollView(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.start,
