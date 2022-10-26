@@ -70,6 +70,8 @@ class AppTheme {
   static const Color lightdark = Color(0xFF707070); //8/18 수정
   static const Color lightdark2 = Color(0xFF777777); //8/18 수정
   static const Color lightGrey = Color(0xFFb1aeae); //8/18 수정
+  static const Color birth = Color(0xcc000000);
+
   static const String fontName = 'WorkSans';
 
   static const TextTheme textTheme = TextTheme(
@@ -277,6 +279,7 @@ class AppTheme {
       letterSpacing: 0.2,
       color: lightdark,
       fontWeight: FontWeight.bold);
+
   static const TextStyle law_content = TextStyle(
     //법규에 제1조 약관의 내용 화면 0.2 서비스 이용 약관
     fontFamily: 'applegothicRegular',
@@ -327,6 +330,14 @@ class AppTheme {
     )),
     //shadowColor: MaterialStateProperty.all<Color>(Colors.transparent),
     //elevation: MaterialStateProperty.all<double>(0)
+  );
+
+  static final TextStyle birthday = TextStyle(
+    // 문자 내에 위험요소, 1.7 url 검사
+    fontFamily: fontName,
+    fontSize: 17,
+    letterSpacing: 0.2,
+    color: birth, // was lightText
   );
 
   /* 8/17일 URL 검사결과() 1.7.1 ~ 1.8.1 텍스트 스타일*
@@ -427,13 +438,23 @@ class AppTheme {
   );
   static const TextStyle serviceAuth = TextStyle(
     // h6 -> title
-    fontFamily: 'applegothicRegular',
-    fontWeight: FontWeight.bold,
-    fontSize: 24,
+    fontFamily: 'applegothicBold',
+    fontSize: 19,
     height: 1.5,
     letterSpacing: 0.18,
     color: darkerText,
   );
+
+  static const TextStyle serviceCaption = TextStyle(
+    // h6 -> title
+    fontFamily: 'applegothicMedium',
+    fontSize: 18,
+    height: 1.5,
+    letterSpacing: 0.18,
+    color: lightGrey,
+  );
+
+
   static const TextStyle nationalNumber = TextStyle(
     // 0.4 국가번호
     fontFamily: 'applegothicRegular',
