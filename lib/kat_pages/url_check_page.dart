@@ -24,15 +24,13 @@ class UrlCheckPage extends StatelessWidget {
 
             },
             child: Container(
-                width:230,
-                height:40,
-                decoration: BoxDecoration(
+                height: MediaQuery.of(context).size.height * 0.053,
+                decoration: const BoxDecoration(
                   image: DecorationImage(
                       image: AssetImage('assets/images/url_inspect.png'),
-                      fit: BoxFit.cover
                   ),
                 ),
-                child: Center(
+                child: const Center(
                   child: Text(
                       '지금 바로 URL 검사하기',
                       style:
@@ -55,7 +53,15 @@ class UrlCheckPage extends StatelessWidget {
     return Padding(
             padding: EdgeInsets.fromLTRB(20, 20, 37, 10),
             child:
-            Text('문자 내에 위험 요소를 검사하여 스미싱 피해를 방지합니다.(최대 100개)', style: AppTheme.urlInspect)
+            Text('문자 내에 위험 요소를 검사하여 스미싱 피해를 방지합니다.(최대 100개)',
+                style: TextStyle(
+                // 문자 내에 위험요소, 1.7 url 검사
+                fontFamily: 'WorkSans',
+                fontSize: 16,
+                letterSpacing: 0.2,
+                color: Color(0xFF9b9b9b), // was lightText
+              ),
+            )
     );
   }
   @override
