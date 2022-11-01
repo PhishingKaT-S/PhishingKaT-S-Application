@@ -85,13 +85,14 @@ class _DetectLoadPageState extends State<DetectLoadPage> {
       num_of_total_sms = ch.length ;
     });
 
-    context.read<SmsProvider>().setSmsToSmsProvider(msgs);
+    await context.read<SmsProvider>().setSmsToSmsProvider(msgs);
     context.read<LaunchProvider>().setScore(Random(1234).nextInt(100));
     // context.read<LaunchProvider>().setUpdate();
   }
 
   Future<void> _detectionSms() async {
     final url = Uri.parse('http://52.53.168.246:5000/api') ;
+    final List<SmsInfo> smsData = context.read<SmsProvider>().getUnknownSmsList();
 
     for (int i = 0 ; i < num_of_total_sms ; i++) {
       List<String> text = msgs[i].split("[sms_text]");
@@ -103,6 +104,8 @@ class _DetectLoadPageState extends State<DetectLoadPage> {
         },
         body: json.encode({
           'exp' : text[3]
+          // smsData[i].body
+          // text[3]
         }),
         encoding: Encoding.getByName('utf-8'),
       );

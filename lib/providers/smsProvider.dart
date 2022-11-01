@@ -7,6 +7,7 @@ import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
 import '../db_conn.dart';
 import 'launch_provider.dart';
+import 'dart:math';
 
 class SmsProvider with ChangeNotifier {
   late List<SmsInfo> _smsList;
@@ -24,6 +25,12 @@ class SmsProvider with ChangeNotifier {
     _danger_sms = number;
     notifyListeners();
   }
+  int getDangerSms() => _danger_sms;
+  int getUnknownSms() => _unknown_number;
+  int getSmsLength() {
+    return _smsList.length;
+  }
+  int getTotalSms() => _total_sms;
 
   Future<void> getInitialInfo(int userId) async{
     await MySqlConnection.connect(Database.getConnection()).then((conn) async {
@@ -46,34 +53,51 @@ class SmsProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  void setSmsToSmsProvider(List smsList) {
+  Future setSmsToSmsProvider(List smsList) async{
     _smsList = [];
+    _unknown_number = 0;
     if (smsList[0] == "Error") {
       return;
     }
     _smsList.clear();
     _total_sms = smsList.length;
 
+    bool UnknownNumbers = true;
+
     for (int i = 0; i < smsList.length; i++) {
+      UnknownNumbers = true;
       List temp = smsList[i].toString().split("[sms_text]");
-      _smsList.add(
-          SmsInfo(name: temp[0], phone: temp[1], date: temp[2], body: temp[3], score: 0));
-      if(_user_contact.contains(temp[1])){
+      for(int j = 0 ; j < _user_contact.length ; j++){
+        if(_user_contact[j].compareTo(temp[1]) == 0){
+          UnknownNumbers = false;
+          break;
+        }
+        else{
+          continue;
+        }
+      }
+      if(UnknownNumbers){
         _unknown_number++;
+        _smsList.add(
+            SmsInfo(name: temp[0], phone: temp[1], date: temp[2], body: temp[3], score: 0));
       }
     }
     notifyListeners();
     //_makeScore();
   }
 
+  List<SmsInfo> getUnknownSmsList() => _smsList;
+
   Future<void> insertScore(int userId) async {
+    Random random_num = Random.secure();
+
     await MySqlConnection.connect(Database.getConnection()).then((conn) async {
       await conn.query(
           "INSERT INTO analysis_reports VALUES (null, ?, ?, ?, ?, ?, ?)", [
         userId,
-        80,
+        random_num.nextInt(100),
         DateFormat('yyyy-MM-dd').format(DateTime.now()),
-        _smsList.length,
+        _total_sms,
         _unknown_number,
         _danger_sms
       ]).then((results) {
@@ -87,7 +111,6 @@ class SmsProvider with ChangeNotifier {
       print("error2: $error");
     });
   }
-
 
   Future<void> updateScore(int userId) async {
     await MySqlConnection.connect(Database.getConnection()).then((conn) async {
@@ -107,26 +130,13 @@ class SmsProvider with ChangeNotifier {
     });
   }
 
-  // Future<int> _makeScore() async{
-  //   if(await getContacts()){
-  //     for(int i = 0; i < _smsList.length ; i++){
-  //       if()
-  //     }
-  //   }
-  //
-  // }
-
-  int getSmsLength() {
-    return _smsList.length;
-  }
-
   Future<bool> getContacts() async {
     var status = await Permission.contacts.status;
     if (status.isGranted) {
       List<Contact> temp = await ContactsService.getContacts();
       for (int i = 0; i < temp.length; i++) {
         if(temp[i].phones!.isNotEmpty){
-          _user_contact.add(temp[i].phones!.first.value.toString());
+          _user_contact.add(temp[i].phones!.first.value.toString().replaceAll("-", ""));
         }
       }
       return true;
@@ -134,6 +144,7 @@ class SmsProvider with ChangeNotifier {
       Permission.contacts.request();
       return false;
     }
+    notifyListeners();
     return false;
   }
 
@@ -146,6 +157,9 @@ class SmsProvider with ChangeNotifier {
     LineChartModel(amount: 0, date: DateTime(2000, 1, 1)),
     LineChartModel(amount: 0, date: DateTime(2000, 1, 1)),
   ];
+
+  String _recent_analysis_date = "";
+  String get_recent_analysis_date() => _recent_analysis_date;
 
   Future<void> getReportDate(int userId) async {
     await MySqlConnection.connect(Database.getConnection()).then((conn) async {
@@ -160,25 +174,28 @@ class SmsProvider with ChangeNotifier {
           data.clear();
           List temp = results.toList();
 
-          int results_length = results.length - 1;
-          DateTime date_temp;
+          int resultsLength = results.length - 1;
+          DateTime dateTemp;
           for (int i = 0; i < 6; i++) {
-            if (results_length >= 0) {
-              date_temp = DateTime.parse(
-                  temp[results_length]["date"].toString().split(" ").first);
-              dayList.add("${date_temp.month}/${date_temp.day}");
+            if (resultsLength >= 0) {
+              dateTemp = DateTime.parse(
+                  temp[resultsLength]["date"].toString().split(" ").first);
+              dayList.add("${dateTemp.month}/${dateTemp.day}");
               data.add(LineChartModel(
                   amount:
-                  double.parse(temp[results_length]["score"].toString()),
+                  double.parse(temp[resultsLength]["score"].toString()),
                   date: DateTime(
-                      date_temp.year, date_temp.month, date_temp.day)));
-              results_length--;
+                      dateTemp.year, dateTemp.month, dateTemp.day)));
+              resultsLength--;
+              if(resultsLength == 0){
+                _recent_analysis_date = temp[resultsLength]["date"].toString().split(" ").first;
+              }
               notifyListeners();
               continue;
             }
             dayList.add("--/--");
             data.add(LineChartModel(amount: 0, date: DateTime(2000, 1, 1)));
-            results_length--;
+            resultsLength--;
             notifyListeners();
           }
           notifyListeners();
