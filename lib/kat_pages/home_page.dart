@@ -329,9 +329,7 @@ class _HomePage extends State<HomePage> {
                                       children: [
                                         const Text('최근 검사',
                                             style: AppTheme.caption),
-                                        Text(
-                                            DateFormat('yyyy-MM-dd')
-                                                .format(DateTime.now()),
+                                        Text(context.read<SmsProvider>().get_recent_analysis_date(),
                                             style: AppTheme.caption),
                                       ],
                                     )),
@@ -421,10 +419,7 @@ class _HomePage extends State<HomePage> {
                       -1)
                   ? [
                       Text(
-                          context
-                              .watch<SmsProvider>()
-                              .getSmsLength()
-                              .toString(),
+                          num,
                           style: TextStyle(color: color)),
                       const Text(' 건'),
                     ]
@@ -518,9 +513,18 @@ class _HomePage extends State<HomePage> {
               ],
             ),
           ),
-          _smishingData(bullet, " 기존 받은 문자", "000", AppTheme.greenText),
-          _smishingData(bullet, " 모르는 번호", "000", AppTheme.yellowText),
-          _smishingData(bullet, " 피싱 의심 문자", "000", AppTheme.redText),
+          _smishingData(bullet, " 기존 받은 문자", context
+              .watch<SmsProvider>()
+              .getTotalSms()
+              .toString(), AppTheme.greenText),
+          _smishingData(bullet, " 모르는 번호", context
+              .watch<SmsProvider>()
+              .getUnknownSms()
+              .toString(), AppTheme.yellowText),
+          _smishingData(bullet, " 피싱 의심 문자", context
+              .watch<SmsProvider>()
+              .getDangerSms()
+              .toString(), AppTheme.redText),
         ],
       ),
     );

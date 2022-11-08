@@ -86,7 +86,7 @@ class _OneClickPageState extends State<OneClickPage> {
   }
 
   Widget _search_widget() {
-
+    String _bankName = "";
     return Container(
       padding: EdgeInsets.only(left: MediaQuery.of(context).size.width * 0.03, right: MediaQuery.of(context).size.width * 0.03),
       decoration: BoxDecoration(
@@ -131,56 +131,34 @@ class _OneClickPageState extends State<OneClickPage> {
           ),
           Container(
             width: MediaQuery.of(context).size.width * 0.08,
-            child: IconButton(icon: Icon(Icons.search), color: AppTheme.blueText ,onPressed: () {  },),
+            child: IconButton(icon: Icon(Icons.search), color: AppTheme.blueText,
+              onPressed: () {
+                bool isSearched = false;
+                for (var bank in _banks) {
+                  if ( bank.name.contains(search_controller.text)) {
+                    isSearched = true;
+                    Navigator.push(context, MaterialPageRoute(
+                        builder: (context) => OneClickBank(bank_name: bank.name,
+                          phone_list: bank.phones,
+                          image: bank.image,)));
+                  }
+                }
+
+                /// 입력한 은행을 찾지 못하였을 경우
+                if ( !isSearched ) {
+                  Navigator.push(context, MaterialPageRoute(
+                      builder: (context) => const BankQuestionsCenter()
+                  ));
+                }
+              },
+            ),
           )
         ],
       )
     );
   }
 
-  Widget _search_list() {
-    return SingleChildScrollView(
-      child: _banks.isNotEmpty ? Container(
-        height: 150,
-        child: Column(
-          children: [
-            Expanded(
-                child: ListView.builder(
-                  itemCount: _banks.length,
-                  itemBuilder: (context, index) {
-                    return InkWell(
-                      onTap: () {
-                        Navigator.push(context, MaterialPageRoute(
-                            builder: (context) => OneClickBank(bank_name: _banks[index].name,
-                                                               phone_list: _banks[index].phones,
-                                                               image: _banks[index].image,)));
-                      },
-                      child: Container(
-                        padding: EdgeInsets.only(top: 5),
-                        height: 50,
-                        decoration: const BoxDecoration(
-                          border: Border(
-                            bottom: BorderSide(
-                              color: AppTheme.grey,
-                            )
-                          )
-                        ),
-                        child: Align(
-                          alignment: Alignment.centerLeft,
-                          child: Text(_banks[index].name, style: AppTheme.body1,),
-                        )
-                      )
-                    );
-                  },
-                )
-            )
-          ],
-        ),
-      ) : Container() ,
-    );
-  }
-
-  Widget _bank_search() {
+  Widget _bankSearch() {
     const double PADDING_TOP = 30.0;
     return Container(
       padding: EdgeInsets.only(top: PADDING_TOP),
@@ -255,12 +233,19 @@ class _OneClickPageState extends State<OneClickPage> {
           );
         });
   }
-  Widget _other_functions() {
+
+  /**
+   * 수정 완료 (11/06):
+   * 전 금융기관 예금, 대출, 신용카드 조회 - URL 변경
+   * 범용 인증서 폐기 - URL 연결이 아닌 1577-8787 번호로 연결
+   * 공문서 진위 확인 - URL 연결이 아닌 010-3570-8242 번호로 연결
+   */
+  Widget _otherFunctions() {
     const double HEIGHT = 100;
     const double LABEL_HEIGHT = 40;
     List<String> imgList = ['deposit_loan_credit_card_lookup', 'general_certificate_revocation',
                             'check_my_phone_number', 'check_the_authenticity_of_official_documents'];
-    const List<String> urlList = ['https://play.google.com/store/apps/details?id=com.kftc.payinfo.android', 'https://www.data.go.kr/data/15081808/openapi.do', '', 'https://www.gov.kr/mw/EgovPageLink.do?link=confirm/AA040_confirm_id'] ;
+    // const List<String> urlList = ['https://play.google.com/store/apps/details?id=com.kftc.payinfo.android', 'https://www.data.go.kr/data/15081808/openapi.do', '', 'https://www.gov.kr/mw/EgovPageLink.do?link=confirm/AA040_confirm_id'] ;
     const List<String> titleList = ['예금/대출/신용카드 조회', '내 명의 핸드폰 찾기', '', '공문서 진위 확인'] ;
 
     return Container(
@@ -296,26 +281,27 @@ class _OneClickPageState extends State<OneClickPage> {
               ],
             ),
             onTap: () {
-              if (index != 2) {
-                if ( index == 0 ) {
-                  DateTime _now = DateTime.now() ;
+              if ( index == 0 ) {
+                DateTime _now = DateTime.now();
 
-                  if ( _now.hour < 9 || _now.hour > 22 ) {
-                    /**
-                     * 서비스 이용 불가 표시
-                     */
-                    _displayDialog(context) ;
-                  } else {
-                    Navigator.push(context, MaterialPageRoute(
-                        builder: (context) => KaTWebView(title: titleList[index], url: urlList[index],))) ;
-                  }
+                if (_now.hour < 9 || _now.hour > 22) {
+                  /**
+                   * 서비스 이용 불가 표시
+                   */
+                  _displayDialog(context);
                 } else {
                   Navigator.push(context, MaterialPageRoute(
-                      builder: (context) => KaTWebView(title: titleList[index], url: urlList[index],))) ;
+                      builder: (context) =>
+                          KaTWebView(title: titleList[index],
+                            url: 'https://www.payinfo.or.kr/extl/qryExtlFxamtIns.do?menu=1',)));
                 }
-              } else {
+              } else if (index == 1){
+                _launchCaller('15778787');
+              } else if (index == 2) {
                 Navigator.push(context, MaterialPageRoute(
                     builder: (context) => const PrepaidPhonePage()));
+              } else if (index == 3) {
+                _launchCaller('01035708242');
               }
             },
           );
@@ -342,9 +328,9 @@ class _OneClickPageState extends State<OneClickPage> {
                     .width * 0.1),
             child: Column(
               children: [
-                _bank_search(),
+                _bankSearch(),
                 _declaration(),
-                _other_functions(),
+                _otherFunctions(),
               ],
             ),
           )

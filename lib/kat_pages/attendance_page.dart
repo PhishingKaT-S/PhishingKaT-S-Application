@@ -20,6 +20,7 @@ import 'package:rflutter_alert/rflutter_alert.dart';
 import 'package:table_calendar/table_calendar.dart';
 
 import '../kat_widget/kat_appbar_back.dart';
+import '../providers/attendanceProvider.dart';
 import '../providers/launch_provider.dart';
 import '../theme.dart';
 
@@ -77,7 +78,7 @@ class _AttendancePage extends State<AttendancePage> {
         }).onError((error, stackTrace) {
           /// 네트워크 에러 처리
         });
-    print(_events) ;
+    //print(_events) ;
 
     setState(() {
       total_attendance = _events.length;
@@ -126,7 +127,7 @@ class _AttendancePage extends State<AttendancePage> {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Container(
-            width: MediaQuery.of(context).size.width * 0.3,
+            width: MediaQuery.of(context).size.width * 0.4,
             padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width * 0.08),
             child: Row(
               children: [
@@ -137,14 +138,14 @@ class _AttendancePage extends State<AttendancePage> {
           ),
 
           Container(
-            width: MediaQuery.of(context).size.width * 0.7,
+            width: MediaQuery.of(context).size.width * 0.6,
               padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width * 0.08),
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.center,
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
                 const Text('이번달 출석일수 '),
-                Text(total_attendance.toString(), style: const TextStyle(color: AppTheme.blueText, fontSize: 16, fontWeight: FontWeight.bold,), textAlign: TextAlign.center,),
+                Text(context.read<AttendanceProvider>().getMonthAttendance().toString(), style: const TextStyle(color: AppTheme.blueText, fontSize: 16, fontWeight: FontWeight.bold,), textAlign: TextAlign.center,),
                 const Text('일'),
               ],
             )
@@ -166,7 +167,7 @@ class _AttendancePage extends State<AttendancePage> {
      * 1. Database에서 사용자의 출석 현황 값을 들고와 표시
      */
     return Container(
-      height: MediaQuery.of(context).size.height * 0.45,
+      height: MediaQuery.of(context).size.height * 0.55,
       color: AppTheme.blueBackground,
       padding: EdgeInsets.symmetric(vertical: 10),
       child: FutureBuilder(

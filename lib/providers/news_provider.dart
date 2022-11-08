@@ -20,6 +20,7 @@ class NewsProvider extends ChangeNotifier {
           _news.clear();
           List temp = results.toList();
           for(int i =0 ; i < 3 ; i++){
+            print(temp[i]["title"].toString());
             _news.add(temp[i]["title"].toString().replaceFirst("[관련기사] ", ""));
           }
           notifyListeners();
