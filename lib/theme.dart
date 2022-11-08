@@ -521,10 +521,9 @@ class AppTheme {
 
   static const TextStyle menu_list = TextStyle(
       fontFamily: 'applegothicMedium',
-      fontSize: 12,
+      fontSize: 15,
       letterSpacing: 0.2,
       color: Color(0xFF9b9b9b),
-      fontWeight: FontWeight.w600
   );
   static const TextStyle menu_list_select = TextStyle(
       fontFamily: 'applegothicMedium',
