@@ -110,8 +110,14 @@ class _NewsWebViewState extends State<NewsWebView> {
                       color: const Color(0xCC000000),
                       borderRadius: BorderRadius.circular(25),
                     ),
-                    child: const Center(
-                      child: Text('바로 가기', style: TextStyle(color: AppTheme.white), textAlign: TextAlign.center,)
+                    child: Center(
+                      child: InkWell(
+                        onTap: () {
+                          Navigator.push(context,
+                              MaterialPageRoute(builder: (BuildContext context) => KaTWebView(title: '피싱 뉴스', url: _newsList[0].url))) ;
+                        },
+                        child: const Text('바로 가기', style: TextStyle(color: AppTheme.white, fontSize: 12), textAlign: TextAlign.center,),
+                      ),
                     )
                   )
                 )
@@ -155,50 +161,6 @@ class _NewsWebViewState extends State<NewsWebView> {
                               ))
                           ),
                           child: Text('DAY', style: TextStyle(fontSize: 17, color: (_isSelected[0]) ? AppTheme.white : AppTheme.greyText, fontWeight: FontWeight.bold))
-                      )
-                  ),
-
-                  const Padding(padding: EdgeInsets.only(left: 20),),
-
-                  InkWell(
-                      onTap: () {
-                        setState(() {
-                          _isSelected[0] = false ; _isSelected[1] = true; _isSelected[2] = false;
-                        });
-                      },
-                      child: Container(
-                          padding: const EdgeInsets.only(
-                            bottom: 3, // space between underline and text
-                          ),
-                          decoration: BoxDecoration(
-                              border: Border(bottom: BorderSide(
-                                color: (_isSelected[1]) ? Colors.white : AppTheme.greyText,  // Text colour here
-                                width: 1.0, // Underline width
-                              ))
-                          ),
-                          child: Text('WEEK', style: TextStyle(fontSize: 17, color: (_isSelected[1]) ? AppTheme.white : AppTheme.greyText, fontWeight: FontWeight.bold))
-                      )
-                  ),
-
-                  const Padding(padding: EdgeInsets.only(left: 20),),
-
-                  InkWell(
-                      onTap: () {
-                        setState(() {
-                          _isSelected[0] = false ; _isSelected[1] = false; _isSelected[2] = true;
-                        });
-                      },
-                      child: Container(
-                          padding: const EdgeInsets.only(
-                            bottom: 3, // space between underline and text
-                          ),
-                          decoration: BoxDecoration(
-                              border: Border(bottom: BorderSide(
-                                color: (_isSelected[2]) ? Colors.white : AppTheme.greyText,  // Text colour here
-                                width: 1.0, // Underline width
-                              ))
-                          ),
-                          child: Text('MONTH', style: TextStyle(fontSize: 17, color: (_isSelected[2]) ? AppTheme.white : AppTheme.greyText, fontWeight: FontWeight.bold))
                       )
                   ),
                 ],
