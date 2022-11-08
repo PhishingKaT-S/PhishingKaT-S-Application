@@ -100,8 +100,7 @@ class MyApp extends StatelessWidget {
                 primaryColor: Colors.blueGrey,
                 scaffoldBackgroundColor: Colors.white,
               ),
-              home: CeleBration(),
-              // context.watch<LaunchProvider>().getUserInfo().nickname != "" ? const HomePage() : const LoginPage(),
+              home: context.watch<LaunchProvider>().getUserInfo().nickname != "" ? const HomePage() : const LoginPage(),
 
               // initialRoute: snapshot.data? '/homepage' : '/launch/login',
               ///앱에서 이동할 페이지의 이름 설정

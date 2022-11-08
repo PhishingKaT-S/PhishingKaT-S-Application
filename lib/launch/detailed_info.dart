@@ -65,7 +65,7 @@ class _detailed_infoState extends State<DetailInfo> {
   List<String> itemTypes = ['남', '여'];
   List<bool> _isSelected = [true, false]; // gender toggle button
 
-  List<bool> _categorySelected=[true, false, false, false];
+  List<bool> _categorySelected=[false, false, false, false];
   List<String> _job_Category=['일반', '직장인','실버','주부'];
 
   DateTime selectedDate = DateTime.now();
@@ -135,6 +135,7 @@ class _detailed_infoState extends State<DetailInfo> {
   Widget _category_button() {
     return Container(
       child: ToggleButtons(
+          splashColor: Colors.white,
           selectedColor: Colors.white,
           fillColor: Colors.white,
           renderBorder: false,
@@ -256,7 +257,10 @@ class _detailed_infoState extends State<DetailInfo> {
                       )
                       ),
                       SizedBox(width: 10,),// 이어피커
+
+
                       ToggleButtons(
+                            splashColor: Colors.white,
                             selectedColor: Colors.white,
                             fillColor: Colors.white,
                             renderBorder: false,
@@ -336,16 +340,34 @@ class _detailed_infoState extends State<DetailInfo> {
 
       //할일 onPress에 DB로 저장할 수 있게 해야됨
         bottomNavigationBar: bottomBar(title:'확인', onPress: () async {
-          if((yController.text != '') && (nicknameController.text!='')) {
-            users = Users(nicknameController.text, type, gender, yController.text,_phone, _identifier); // String name, int type, bool gender, String year, String phone
-              print(users.nickname + " " +   users.gender.toString() + " " + users.phone + " " + users.type.toString() + " " + users.year);
-                var ret = await main(users);
-                print(ret);
-                Navigator.pop(context);
-                Navigator.pop(context);
-                Navigator.push(context,
-                MaterialPageRoute(builder: (context) => CeleBration()));
+          if(_categorySelected[0] || _categorySelected[1]|| _categorySelected[2] || _categorySelected[3]) {
+            if ((yController.text != '') && (nicknameController.text != '')) {
+              users = Users(
+                  nicknameController.text, type, gender, yController.text,
+                  _phone,
+                  _identifier); // String name, int type, bool gender, String year, String phone
+              print(users.nickname + " " + users.gender.toString() + " " +
+                  users.phone + " " + users.type.toString() + " " + users.year);
+              var ret = await main(users);
+              print(ret);
+              Navigator.pop(context);
+              Navigator.pop(context);
+              Navigator.push(context,
+                  MaterialPageRoute(builder: (context) => CeleBration()));
+            }
           }
+          else{
+            ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                    content: Container(
+                      height: 45,
+                      child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: <Widget>[Text('유형이 입력되지 않았습니다.', style:AppTheme.smsPhone)]),
+                    ))
+            );
+          }
+
         }),
         appBar: certification_appbar(Colors.blue, Colors.blue),
         body: SingleChildScrollView(
