@@ -666,7 +666,7 @@ class _InspectFeedbackState extends State<InspectFeedback> with SingleTickerProv
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: ((ModalRoute.of(context))!.settings.arguments) == 1? AppBarBack( title: '메세지 관리',) : AppBarBack( title: 'Url 검사결과',),
+        appBar: ((ModalRoute.of(context))!.settings.arguments) == 1? AppBarBack( title: '메시지 관리',) : AppBarBack( title: 'Url 검사결과',),
 
 
         body:
