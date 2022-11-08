@@ -57,7 +57,7 @@ class _Phone_CRTState extends State<PhoneCRT> {
   //int time = 5; //300 seconds
   Timer? _timer;
   int time = 300;
-  final TextEditingController _textEditingController = TextEditingController();
+  final TextEditingController _textEditingController = TextEditingController(); // phonenumber textfield
   final TextEditingController _certificationController =
       TextEditingController();
 
@@ -112,9 +112,10 @@ class _Phone_CRTState extends State<PhoneCRT> {
           bottomNavigationBar: bottomBar(
               title: '다음',
               onPress: () {
-                //print(_certificationController.text.length);
 
+                /*각 경우에 따라서 알림을 날릴꺼임*/
                 if(_certificationController.text.length == 0){
+                  flag=false;
                   ScaffoldMessenger.of(context).showSnackBar(
                     SnackBar(
                       content: Container(
@@ -125,6 +126,7 @@ class _Phone_CRTState extends State<PhoneCRT> {
                       ))
                   );
                 }else if(_certificationController.text != verification){
+                  flag=false;
                   ScaffoldMessenger.of(context).showSnackBar(
                       SnackBar(
                           content: Container(
@@ -135,9 +137,31 @@ class _Phone_CRTState extends State<PhoneCRT> {
                           ))
                   );
                 }
-                if (flag) {
+                if (flag &&  !timeover && ( _phoneNumber.compareTo(_textEditingController.text)==0 )) { //  옳고, 타임오버 아니고, 현재 text가 맞으면
+                  _timer?.cancel();
                   Navigator.push(context,
                       MaterialPageRoute(builder: (context) => (DetailInfo(phoneNumber: _phoneNumber))));
+                }else if(timeover){ //시간초과
+                  ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                          content: Container(
+                            height: 45,
+                            child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: <Widget>[Text('시간 초과 입니다. \n인증 번호를 다시 받아주세요.', style:AppTheme.smsPhone)]),
+                          ))
+                  );
+                }
+                else{
+                  ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                          content: Container(
+                            height: 45,
+                            child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: <Widget>[Text('번호 및 인증번호를 다시 확인해주세요', style:AppTheme.smsPhone)]),
+                          ))
+                  );
                 }
               }),
           // button '확인'
@@ -183,11 +207,16 @@ class _Phone_CRTState extends State<PhoneCRT> {
                             Expanded(
                               child: TextField(
                                 onSubmitted: (value) async { // 확인 눌렀을 때
-                                  verification = await PhoneVerificationController()
-                                      .sendSMS(_textEditingController.text);
-                                  time = original;
-                                  _timer?.cancel();
-                                  _clickPlayButton();
+                                  _correctCellphone = cellphoneREG.hasMatch(_textEditingController.text);
+                                  if (_correctCellphone) {
+                                    _phoneNumber = _textEditingController.text;
+                                    _pushedBtn=true;
+                                    verification = await PhoneVerificationController()
+                                        .sendSMS(_textEditingController.text);
+                                    time = original;
+                                    _timer?.cancel();
+                                    _clickPlayButton();
+                                  }
                                 },
                                 controller: _textEditingController,
                                 keyboardType: TextInputType.number,
@@ -285,9 +314,12 @@ class _Phone_CRTState extends State<PhoneCRT> {
                         child: TextButton(
                           child: _pushedBtn ? Text('인증번호 다시받기', style: AppTheme.certicationResend) : Text('인증번호 받기', style: AppTheme.certicationResend),
                           onPressed: () async {
+                            _correctCellphone = cellphoneREG.hasMatch(_textEditingController.text);
+                            timeover=false;
+
                             if(_correctCellphone){
                               if(_pushedBtn){ // 한번 눌릴 상태
-
+                                _phoneNumber = _textEditingController.text;
                             verification = await PhoneVerificationController()
                                 .sendSMS(_textEditingController.text);
                             _timer?.cancel();
@@ -299,6 +331,7 @@ class _Phone_CRTState extends State<PhoneCRT> {
                             _clickResend();}
                               else{ //처음 눌릴 상태
                                 _phoneNumber = _textEditingController.text;
+                                print("지금은" + _phoneNumber);
                                 verification =
                                 await PhoneVerificationController()
                                     .sendSMS(_textEditingController.text);
@@ -311,9 +344,7 @@ class _Phone_CRTState extends State<PhoneCRT> {
                                 });
                               }
                             }
-                            else{
-                              ;
-                            }
+
                           },
                         ),
                       ) //인증번호 받기 받기
