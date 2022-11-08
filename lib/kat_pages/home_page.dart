@@ -11,7 +11,6 @@ import 'package:phishing_kat_pluss/providers/launch_provider.dart';
 import 'package:phishing_kat_pluss/providers/smsProvider.dart';
 import 'package:phishing_kat_pluss/theme.dart';
 import 'package:provider/provider.dart';
-import 'package:awesome_circular_chart/awesome_circular_chart.dart';
 
 import '../providers/attendanceProvider.dart';
 import 'package:intl/intl.dart';
@@ -147,8 +146,6 @@ class _HomePage extends State<HomePage> with TickerProviderStateMixin {
 
   late AttendanceProvider _attendanceProvider;
 
-  final GlobalKey<AnimatedCircularChartState> _chartKey =
-      GlobalKey<AnimatedCircularChartState>();
   double dividingLine = 250;
 
   double SCORE_WIDTH_RANGE = 110;
@@ -394,7 +391,12 @@ class _HomePage extends State<HomePage> with TickerProviderStateMixin {
       child: ElevatedButton(
         child: const Padding(
           padding: EdgeInsets.only(left: 0, top: 15, right: 0, bottom: 15),
-          child: Text("오늘의 스미싱분석", style: AppTheme.button),
+          child: Text("오늘의 스미싱분석", style: TextStyle(
+            fontFamily: 'shineforU',
+            fontSize: 18,
+            letterSpacing: 0.2,
+            color: AppTheme.whiteText, // was lightText
+          )),
         ),
         onPressed: () {
           Navigator.pushNamed(context, '/kat_pages/detect_load');

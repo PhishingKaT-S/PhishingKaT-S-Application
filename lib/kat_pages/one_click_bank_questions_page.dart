@@ -46,9 +46,9 @@ class BankQuestionsCenter extends StatelessWidget {
             SizedBox(
               width: MediaQuery.of(context).size.width - 80,
               child: OutlinedButton(
-                  onPressed: ()async{
+                  onPressed: () async{
 
-                    Uri url = await TalkApi.instance.addChannelUrl('_vwdxfb');
+                    Uri url = await TalkApi.instance.addChannelUrl('_nvExoxb');
                     //await TalkApi.instance.channelChatUrl('_ZeUTxl');
 
                     // 연결 페이지 URL을 브라우저에서 열기

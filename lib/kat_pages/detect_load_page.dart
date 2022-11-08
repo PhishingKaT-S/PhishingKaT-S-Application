@@ -13,7 +13,6 @@ import 'dart:math';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:awesome_circular_chart/awesome_circular_chart.dart';
 import 'package:phishing_kat_pluss/providers/smsProvider.dart';
 import 'package:provider/provider.dart';
 import 'package:http/http.dart' as http;
@@ -41,13 +40,11 @@ class DetectLoadPage extends StatefulWidget {
 }
 
 class _DetectLoadPageState extends State<DetectLoadPage> with TickerProviderStateMixin {
-  final GlobalKey<AnimatedCircularChartState> _chartKey = GlobalKey<AnimatedCircularChartState>();
   final double threshold = 0.5 ;
   late AnimationController controller; // progress
 
   double score = 0;
   double prev_score = 0 ;
-  Widget scoreBoard = Container() ;
   int num_of_completed_sms = 0 ;
   int num_of_total_sms = 0 ;
   int num_of_smishing_sms = 0 ;
@@ -145,7 +142,6 @@ class _DetectLoadPageState extends State<DetectLoadPage> with TickerProviderStat
 
       setState(() {
         num_of_completed_sms++;
-        scoreBoard = _getCircularChart(num_of_completed_sms) ;
         print("Controller" + controller.value.toString());
       });
 
@@ -167,37 +163,6 @@ class _DetectLoadPageState extends State<DetectLoadPage> with TickerProviderStat
 
       Navigator.pop(context);
     }
-  }
-
-  /**
-   * _get_circular_chart
-   * 현재 스미싱 검사 상태 원형 차트
-   * */
-  Widget _getCircularChart(int _idx) {
-    return AnimatedCircularChart(
-        key: _chartKey,
-        size: Size(MediaQuery.of(context).size.width * 0.5, MediaQuery.of(context).size.width * 0.5),
-        initialChartData: <CircularStackEntry>[
-          CircularStackEntry(
-            <CircularSegmentEntry>[
-              CircularSegmentEntry(
-                (_idx * 100 / num_of_total_sms), // scoreList[_idx],
-                AppTheme.blueText,
-                rankKey: 'completed',
-              ),
-              CircularSegmentEntry(
-                100 - (_idx * 100 / num_of_total_sms), // scoreList[_idx],
-                AppTheme.skyBackground,
-                rankKey: 'remaining',
-              ),
-            ],
-            rankKey: 'progress',
-          ),
-        ],
-        chartType: CircularChartType.Radial,
-        edgeStyle: SegmentEdgeStyle.round,
-        percentageValues: true,
-    );
   }
 
   Widget _percentage() {
