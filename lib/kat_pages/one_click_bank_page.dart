@@ -42,7 +42,7 @@ class OneClickBank extends StatelessWidget {
           /// 눌러서 통화하기
           Container(
             height: 20,
-            child: Text(">> 눌러서 통화하기 <<"),
+            child: Image.asset('assets/images/bank_call.png', width: MediaQuery.of(context).size.width * 0.4,)
           ),
 
           /// 은행 이미지
