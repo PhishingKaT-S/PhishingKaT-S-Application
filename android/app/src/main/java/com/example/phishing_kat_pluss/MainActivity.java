@@ -113,13 +113,13 @@ public class MainActivity extends FlutterActivity {
                 if (this.readSMS(sms) && this.readMMS(sms)) {
                     for (int i = 0; i < sms.size(); i++) {
                         String[] __sms = sms.get(i).split("[sms_text]");
-                        Log.i(TAG, __sms[0] + " " + __sms[1] + " " + __sms[2] + " " + __sms[3]);
+//                        Log.i(TAG, __sms[0] + " " + __sms[1] + " " + __sms[2] + " " + __sms[3]);
                     }
                 }
 
                 for (int i = 0; i < sms.size(); i++) {
                     String[] __sms = sms.get(i).split("[sms_text]");
-                    Log.i(TAG, __sms[0] + " " + __sms[1] + " " + __sms[2] + " " + __sms[3]);
+//                    Log.i(TAG, __sms[0] + " " + __sms[1] + " " + __sms[2] + " " + __sms[3]);
                 }
             }
         }
@@ -196,13 +196,13 @@ public class MainActivity extends FlutterActivity {
         Uri sms_uri = Uri.parse("content://sms/");
         Cursor cursor = this.getContentResolver().query(sms_uri, null, null, null, "date DESC");
         int count = cursor.getCount();
-        Log.i(TAG, "SMS Count = " + count);
+//        Log.i(TAG, "SMS Count = " + count);
 //        ArrayList<MessageInfo> al_sms = new ArrayList<MessageInfo>();
 
         while (cursor.moveToNext()) {
-            for (int i = 0; i < cursor.getColumnCount(); i++) {
-                Log.i(cursor.getColumnName(i) + "", cursor.getString(i) + "");
-            }
+//            for (int i = 0; i < cursor.getColumnCount(); i++) {
+//                Log.i(cursor.getColumnName(i) + "", cursor.getString(i) + "");
+//            }
             @SuppressLint("Range") String body = cursor.getString(cursor.getColumnIndex("body"));
             // 내용 없는 메시지 제외
             if (!body.trim().isEmpty()) {
