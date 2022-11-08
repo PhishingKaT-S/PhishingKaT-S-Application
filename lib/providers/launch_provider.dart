@@ -183,16 +183,6 @@ class LaunchProvider extends ChangeNotifier {
         final productName = await DeviceInformation.productName;
         final cpuType = await DeviceInformation.cpuName;
         final hardware = await DeviceInformation.hardware;
-
-        print("platformVersion: " + platformVersion);
-        print("IMEI: " + imeiNo);
-        print("modelName: " + modelName);
-        print("manufacturer: " + manufacturer);
-        //print("apiLevel: "+apiLevel);
-        print("deviceName: " + deviceName);
-        print("productName: " + productName);
-        print("cpuType: " + cpuType);
-        print("hardware: " + hardware);
       } on PlatformException {
         final platformVersion = "Failed to get platform version";
         print(platformVersion);

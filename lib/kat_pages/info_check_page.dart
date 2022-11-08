@@ -42,7 +42,7 @@ class _InfoCheckPageState extends State<InfoCheckPage> {
     //   return response;
     // }
 
-    return Scaffold(
+    return const Scaffold(
         appBar: AppBarBack(
           title: "털린 정보 확인",
         ),

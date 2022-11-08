@@ -17,7 +17,7 @@ class AttendanceProvider extends ChangeNotifier {
 
   bool _todayAttendance = false;
   int _monthAttendance = 0;
-  List _month_attendance = [];
+  List _week_attendance_date = [];
   List<bool> _week_attendance = [false, false, false, false, false, false, false];
 
   int getMonthAttendance(){
@@ -46,7 +46,7 @@ class AttendanceProvider extends ChangeNotifier {
           [
             userId,
             DateFormat('yy-MM-dd').format(
-                DateTime.now().subtract(Duration(days: DateTime.now().day)))
+                DateTime.now().subtract(Duration(days: DateTime.now().day - 1)))
           ]).then((results) {
         if (results.isNotEmpty) {
           if (results.last["attendance"].toString().split(" ").first ==
@@ -58,22 +58,6 @@ class AttendanceProvider extends ChangeNotifier {
             _monthAttendance = results.length + 1;
             _todayAttendance = false;
           }
-          List temp = results.toList();
-          for(int i = 0 ; i < results.length ; i++){
-            _month_attendance.add(temp[i]["attendance"].toString().split(" ").first);
-          }
-
-          DateTime _nowDay = DateTime.now();
-          int _now_week = _nowDay.weekday;
-          DateTime _firstDay = DateTime.now().subtract(Duration(days: _now_week-1));
-          for(int i = 0 ; i < _now_week ; i++){
-            if(_month_attendance.contains(_firstDay.add(Duration(days: i)).toString().split(" ").first)){
-              _week_attendance[i] = true;
-              notifyListeners();
-            }
-          }
-
-
         } else if (results.isEmpty) {
           _todayAttendance = false;
           _monthAttendance = 1;
@@ -85,32 +69,42 @@ class AttendanceProvider extends ChangeNotifier {
     }).onError((error, stackTrace) {
       print("error2: $error");
     });
+    getWeekAttendance_fromDB(userId);
   }
 
-  // Future getMonthAttendance(int userId) async {
-  //   await MySqlConnection.connect(Database.getConnection()).then((conn) async {
-  //     await conn.query(
-  //         "SELECT attendance FROM attendance WHERE user_id = ? AND attendance >= ? ORDER BY attendance",
-  //         [
-  //           userId,
-  //           DateFormat('yy-MM-dd').format(
-  //               DateTime.now().subtract(Duration(days: DateTime.now().day)))
-  //         ]).then((results) {
-  //       if (results.isNotEmpty) {
-  //         print(results.last["attendance"].toString().split(" ").first);
-  //         _month_attendance.addAll(results.toList());
-  //         print(_month_attendance[0]);
-  //       } else if (results.isEmpty) {
-  //         _month_attendance = [];
-  //       }
-  //     }).onError((error, stackTrace) {
-  //       print("error: $error");
-  //     });
-  //     conn.close();
-  //   }).onError((error, stackTrace) {
-  //     print("error2: $error");
-  //   });
-  // }
+  Future getWeekAttendance_fromDB(int userId) async {
+    await MySqlConnection.connect(Database.getConnection()).then((conn) async {
+      await conn.query(
+          "SELECT attendance FROM attendance WHERE user_id = ? AND attendance >= ? ORDER BY attendance",
+          [
+            userId,
+            DateFormat('yy-MM-dd').format(
+                DateTime.now().subtract(const Duration(days: 7)))
+          ]).then((results) {
+        if (results.isNotEmpty) {
+          List temp = results.toList();
+          for(int i = 0 ; i < results.length ; i++){
+            _week_attendance_date.add(temp[i]["attendance"].toString().split(" ").first);
+          }
+
+          DateTime _nowDay = DateTime.now();
+          int _now_week = _nowDay.weekday;
+          DateTime _firstDay = DateTime.now().subtract(Duration(days: _now_week-1));
+          for(int i = 0 ; i < _now_week ; i++){
+            if(_week_attendance_date.contains(_firstDay.add(Duration(days: i)).toString().split(" ").first)){
+              _week_attendance[i] = true;
+              notifyListeners();
+            }
+          }
+        }
+      }).onError((error, stackTrace) {
+        print("error: $error");
+      });
+      conn.close();
+    }).onError((error, stackTrace) {
+      print("error2: $error");
+    });
+  }
 
   void _attendanceCheck(int userId) async {
     print("user ID: $userId");
