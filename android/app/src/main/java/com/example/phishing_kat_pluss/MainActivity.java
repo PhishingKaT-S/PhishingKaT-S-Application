@@ -53,8 +53,30 @@ public class MainActivity extends FlutterActivity {
         new MethodChannel(flutterEngine.getDartExecutor().getBinaryMessenger(), CHANNEL)
                 .setMethodCallHandler(
                         (call, result) -> {
+                            int sms_permission = ContextCompat.checkSelfPermission(this, Manifest.permission.READ_SMS);
+                            int contact_permission = ContextCompat.checkSelfPermission(this, Manifest.permission.READ_CONTACTS);
+                            int contact_state_permission = ContextCompat.checkSelfPermission(this, Manifest.permission.READ_PHONE_STATE);
+
+                            if (sms_permission == PackageManager.PERMISSION_GRANTED &&
+                                    contact_permission == PackageManager.PERMISSION_GRANTED &&
+                                    contact_state_permission == PackageManager.PERMISSION_GRANTED) {
+                                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+
+                                    if (this.readSMS(sms) && this.readMMS(sms)) {
+                                        for (int i = 0; i < sms.size(); i++) {
+                                                String[] __sms = sms.get(i).split("[sms_text]");
+//                        Log.i(TAG, __sms[0] + " " + __sms[1] + " " + __sms[2] + " " + __sms[3]);
+                                        }
+
+                                        for (int i = 0; i < sms.size(); i++) {
+                                            String[] __sms = sms.get(i).split("[sms_text]");
+//                    Log.i(TAG, __sms[0] + " " + __sms[1] + " " + __sms[2] + " " + __sms[3]);
+                                        }
+                                    }
+                                }
+                            }
+
                             if ((sms.isEmpty())) {
-                                sms.add("Error");
                                 result.success(sms);
                             } else {
                                 result.success(sms);
@@ -100,29 +122,6 @@ public class MainActivity extends FlutterActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         OnCheckPermission();
-
-        int sms_permission = ContextCompat.checkSelfPermission(this, Manifest.permission.READ_SMS);
-        int contact_permission = ContextCompat.checkSelfPermission(this, Manifest.permission.READ_CONTACTS);
-        int contact_state_permission = ContextCompat.checkSelfPermission(this, Manifest.permission.READ_PHONE_STATE);
-
-        if (sms_permission == PackageManager.PERMISSION_GRANTED &&
-                contact_permission == PackageManager.PERMISSION_GRANTED &&
-                contact_state_permission == PackageManager.PERMISSION_GRANTED) {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-
-                if (this.readSMS(sms) && this.readMMS(sms)) {
-                    for (int i = 0; i < sms.size(); i++) {
-                        String[] __sms = sms.get(i).split("[sms_text]");
-//                        Log.i(TAG, __sms[0] + " " + __sms[1] + " " + __sms[2] + " " + __sms[3]);
-                    }
-                }
-
-                for (int i = 0; i < sms.size(); i++) {
-                    String[] __sms = sms.get(i).split("[sms_text]");
-//                    Log.i(TAG, __sms[0] + " " + __sms[1] + " " + __sms[2] + " " + __sms[3]);
-                }
-            }
-        }
     }
 
     @RequiresApi(api = Build.VERSION_CODES.M)

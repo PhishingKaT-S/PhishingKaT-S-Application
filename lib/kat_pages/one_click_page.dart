@@ -287,17 +287,17 @@ class _OneClickPageState extends State<OneClickPage> {
               if ( index == 0 ) {
                 DateTime _now = DateTime.now();
 
-                if (_now.hour < 9 || _now.hour > 22) {
-                  /**
-                   * 서비스 이용 불가 표시
-                   */
-                  _displayDialog(context);
-                } else {
+                // if (_now.hour < 9 || _now.hour > 22) {
+                //   /**
+                //    * 서비스 이용 불가 표시
+                //    */
+                //   _displayDialog(context);
+                // } else {
                   Navigator.push(context, MaterialPageRoute(
                       builder: (context) =>
                           KaTWebView(title: titleList[index],
                             url: 'https://www.payinfo.or.kr/extl/qryExtlFxamtIns.do?menu=1',)));
-                }
+                // }
               } else if (index == 1){
                 _launchCaller('15778787');
               } else if (index == 2) {
