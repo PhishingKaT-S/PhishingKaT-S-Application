@@ -697,8 +697,9 @@ class _InspectFeedbackState extends State<InspectFeedback> with SingleTickerProv
                       child: Container(
                         alignment: Alignment.center,
                         decoration: BoxDecoration(
-                          color: (_idx==0)?  Colors.transparent:Colors.white,
-                          border:Border.all(color: (_idx==0) ? Colors.transparent : AppTheme.nearlyBlack),
+                          color: (_idx==0) ? Colors.transparent:Colors.white,
+                          border:Border.all(color: (_idx==0) ? Colors.transparent : AppTheme.greyText),
+
                           borderRadius: BorderRadius.circular(50),
                         ),
                         child: Text('빈도순', style: (_idx==0)? AppTheme.selected:AppTheme.unseletedURL),
@@ -710,7 +711,7 @@ class _InspectFeedbackState extends State<InspectFeedback> with SingleTickerProv
                       child: Container(
                         decoration: BoxDecoration(
                           border:
-                          Border.all(color: (_idx==1) ? Colors.transparent : AppTheme.nearlyBlack),
+                          Border.all(color: (_idx==1) ? Colors.transparent : AppTheme.greyText),
                           borderRadius: BorderRadius.circular(50),
                           color: (_idx==1)?  Colors.transparent:Colors.white,
 
@@ -726,7 +727,7 @@ class _InspectFeedbackState extends State<InspectFeedback> with SingleTickerProv
                       child: Container(
                         decoration: BoxDecoration(
                           color: (_idx==2)?  Colors.transparent:Colors.white,
-                          border:Border.all(color: (_idx==2) ? Colors.transparent : AppTheme.nearlyBlack),
+                          border:Border.all(color: (_idx==2) ? Colors.transparent : AppTheme.greyText),
                           borderRadius: BorderRadius.circular(50),
                           // border:Border.all(color:  AppTheme.startBackground)
                         ),
