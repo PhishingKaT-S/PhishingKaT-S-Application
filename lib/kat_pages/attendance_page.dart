@@ -16,7 +16,6 @@ import 'package:flutter/material.dart';
 import 'package:mysql1/mysql1.dart';
 import 'package:phishing_kat_pluss/db_conn.dart';
 import 'package:provider/provider.dart';
-import 'package:rflutter_alert/rflutter_alert.dart';
 import 'package:table_calendar/table_calendar.dart';
 
 import '../kat_widget/kat_appbar_back.dart';
@@ -98,7 +97,7 @@ class _AttendancePage extends State<AttendancePage> {
       color: AppTheme.white,
       padding: const EdgeInsets.only(top: 15, bottom: 15),
       child: const Center(
-        child: Text('* 하루에 한 번 출석 가능합니다.', style: TextStyle(color: AppTheme.greyText),),
+        child: Text('* 하루에 한 번 출석 가능합니다.', style: TextStyle(color: AppTheme.greyText, fontSize: 16),),
       ),
     ) ;
   }

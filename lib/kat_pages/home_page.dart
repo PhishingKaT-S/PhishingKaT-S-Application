@@ -11,7 +11,6 @@ import 'package:phishing_kat_pluss/providers/launch_provider.dart';
 import 'package:phishing_kat_pluss/providers/smsProvider.dart';
 import 'package:phishing_kat_pluss/theme.dart';
 import 'package:provider/provider.dart';
-import 'package:awesome_circular_chart/awesome_circular_chart.dart';
 
 import '../providers/attendanceProvider.dart';
 import 'package:intl/intl.dart';
@@ -25,8 +24,10 @@ class HomePage extends StatefulWidget {
   State<StatefulWidget> createState() => _HomePage();
 }
 
-class _HomePage extends State<HomePage> {
+class _HomePage extends State<HomePage> with TickerProviderStateMixin {
   final _isSelected = [false, false, true];
+  late AnimationController controller ;
+  int _score = 0;
   List<bool> _weekAttendance = [
     false,
     false,
@@ -40,6 +41,20 @@ class _HomePage extends State<HomePage> {
   @override
   void initState() {
     super.initState();
+
+    controller = AnimationController(
+      /// [AnimationController]s can be created with `vsync: this` because of
+      /// [TickerProviderStateMixin].
+      vsync: this,
+      duration: const Duration(microseconds: 100),
+    )..addListener(() {
+      setState(() {
+        var k = Provider.of<LaunchProvider>(context, listen: false).getUserInfo().score ;
+        if ( k != -1 && k >= _score ) _score++;
+      });
+    });
+    controller.repeat(reverse: true);
+
     WidgetsBinding.instance?.addPostFrameCallback((_) async {
       int _userId = Provider.of<LaunchProvider>(context, listen: false)
           .getUserInfo()
@@ -123,10 +138,14 @@ class _HomePage extends State<HomePage> {
     });
   }
 
+  @override
+  void dispose() {
+    controller.dispose();
+    super.dispose() ;
+  }
+
   late AttendanceProvider _attendanceProvider;
 
-  final GlobalKey<AnimatedCircularChartState> _chartKey =
-      GlobalKey<AnimatedCircularChartState>();
   double dividingLine = 250;
 
   double SCORE_WIDTH_RANGE = 110;
@@ -135,54 +154,47 @@ class _HomePage extends State<HomePage> {
 
   Widget _getCircularChart(double score) {
     setState(() {
-      smish_detect_flag =
-          (context.watch<LaunchProvider>().getUserInfo().score != -1)
-              ? true
-              : false;
+      smish_detect_flag = (context.watch<LaunchProvider>().getUserInfo().score != -1) ? true : false;
     });
     score = context.watch<LaunchProvider>().getUserInfo().score.toDouble();
-    smish_detect_flag =
-        (context.watch<LaunchProvider>().getUserInfo().score != -1)
-            ? true
-            : false;
-    return AnimatedCircularChart(
-      key: _chartKey,
-      size: Size(SCORE_WIDTH_RANGE + 30, SCORE_WIDTH_RANGE + 30),
-      initialChartData: <CircularStackEntry>[
-        CircularStackEntry(
-          ((context.watch<LaunchProvider>().getUserInfo().score != -1)
-                  ? true
-                  : false)
-              ? (<CircularSegmentEntry>[
-                  CircularSegmentEntry(
-                    score,
-                    AppTheme.blueText,
-                    rankKey: 'completed',
-                  ),
-                  CircularSegmentEntry(
-                    100 - score,
-                    Colors.blueGrey[600],
-                    rankKey: 'remaining',
-                  ),
-                ])
-              : (<CircularSegmentEntry>[
-                  const CircularSegmentEntry(
-                    0,
-                    AppTheme.blueText,
-                    rankKey: 'completed',
-                  ),
-                  const CircularSegmentEntry(
-                    100,
-                    Color(0xFFF0C9D5),
-                    rankKey: 'remaining',
-                  ),
-                ]),
-          rankKey: 'progress',
-        ),
-      ],
-      chartType: CircularChartType.Radial,
-      edgeStyle: SegmentEdgeStyle.round,
-      percentageValues: true,
+    smish_detect_flag = (context.watch<LaunchProvider>().getUserInfo().score != -1) ? true : false;
+
+    return Container(
+      width: SCORE_WIDTH_RANGE + 30,
+      height: SCORE_WIDTH_RANGE + 30,
+      child: (context.watch<LaunchProvider>().getUserInfo().score != -1) ? (
+          Stack(
+            children: [
+              Container(
+                width: SCORE_WIDTH_RANGE + 30,
+                height: SCORE_WIDTH_RANGE + 30,
+                child: const CircularProgressIndicator(
+                  strokeWidth: 6.0,
+                  value: 1.0,
+                  color: Color(0xFFAED7FF),
+                ),
+              ),
+              AnimatedContainer(
+                duration: const Duration(microseconds: 100),
+                curve: Curves.fastOutSlowIn,
+                child: Container(
+                    width: SCORE_WIDTH_RANGE + 30,
+                    height: SCORE_WIDTH_RANGE + 30,
+                    child: CircularProgressIndicator(
+                      strokeWidth: 6.0,
+                      value: _score * 0.01,
+                      color: AppTheme.blueText,
+                    )
+                )
+              )
+            ]
+          )
+        ) : const CircularProgressIndicator(
+            strokeWidth: 4.0,
+            value: 100.0,
+            color: Color(0xFFF0C9D5),
+            semanticsLabel: 'Circular progress indicator',
+        )
     );
   }
 
@@ -379,7 +391,12 @@ class _HomePage extends State<HomePage> {
       child: ElevatedButton(
         child: const Padding(
           padding: EdgeInsets.only(left: 0, top: 15, right: 0, bottom: 15),
-          child: Text("오늘의 스미싱분석", style: AppTheme.button),
+          child: Text("오늘의 스미싱분석", style: TextStyle(
+            fontFamily: 'shineforU',
+            fontSize: 18,
+            letterSpacing: 0.2,
+            color: AppTheme.whiteText, // was lightText
+          )),
         ),
         onPressed: () {
           Navigator.pushNamed(context, '/kat_pages/detect_load');
@@ -799,17 +816,6 @@ class _HomePage extends State<HomePage> {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: List.generate(dayList.length, (index) {
                           return Text(dayList[index]);
-                          // (index < 5)
-                          //   ? Text(dayList[index])
-                          //   : Container(
-                          //     width: MediaQuery.of(context).size.width * 0.12,
-                          //     height: MediaQuery.of(context).size.width * 0.12,
-                          //     decoration: BoxDecoration(
-                          //       color: AppTheme.blueLineChart,
-                          //       borderRadius: BorderRadius.circular(25),
-                          //     ),
-                          //     child: Center(child: Text(dayList[index], textAlign: TextAlign.center, style: const TextStyle(color: AppTheme.white))),
-                          //   );
                         }))
                     : Container())
           ],

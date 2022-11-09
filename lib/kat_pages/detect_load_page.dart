@@ -13,7 +13,6 @@ import 'dart:math';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:awesome_circular_chart/awesome_circular_chart.dart';
 import 'package:phishing_kat_pluss/providers/smsProvider.dart';
 import 'package:provider/provider.dart';
 import 'package:http/http.dart' as http;
@@ -40,13 +39,16 @@ class DetectLoadPage extends StatefulWidget {
   _DetectLoadPageState createState() => _DetectLoadPageState();
 }
 
-class _DetectLoadPageState extends State<DetectLoadPage> {
-  final GlobalKey<AnimatedCircularChartState> _chartKey = GlobalKey<AnimatedCircularChartState>();
+class _DetectLoadPageState extends State<DetectLoadPage> with TickerProviderStateMixin {
   final double threshold = 0.5 ;
+  late AnimationController controller; // progress
 
+  double score = 0;
+  double prev_score = 0 ;
   int num_of_completed_sms = 0 ;
   int num_of_total_sms = 0 ;
   int num_of_smishing_sms = 0 ;
+  List<double> scoreList = [] ;
 
   List<SmsData> smsList = [] ;
   static const platform = MethodChannel('samples.flutter.dev/channel') ;
@@ -55,11 +57,28 @@ class _DetectLoadPageState extends State<DetectLoadPage> {
 
   @override
   void initState() {
+    controller = AnimationController(
+      /// [AnimationController]s can be created with `vsync: this` because of
+      /// [TickerProviderStateMixin].
+      duration: const Duration(milliseconds: 5), vsync: this,
+    )..addListener(() {
+      setState(() {
+
+      });
+    });
+    controller.repeat();
+
     super.initState() ;
     Future.microtask(() async {
       await _getSmsFromChannel() ;
       await _detectionSms() ;
     });
+  }
+
+  @override
+  void dispose() {
+    controller.dispose();
+    super.dispose();
   }
 
   Future<void> _getSmsFromChannel() async {
@@ -123,6 +142,7 @@ class _DetectLoadPageState extends State<DetectLoadPage> {
 
       setState(() {
         num_of_completed_sms++;
+        print("Controller" + controller.value.toString());
       });
 
       if ( response.statusCode == 200 ) {
@@ -145,42 +165,15 @@ class _DetectLoadPageState extends State<DetectLoadPage> {
     }
   }
 
-  /**
-   * _get_circular_chart
-   * 현재 스미싱 검사 상태 원형 차트
-   * */
-  Widget _getCircularChart(double score) {
-    return AnimatedCircularChart(
-      key: _chartKey,
-      size: Size(MediaQuery.of(context).size.width * 0.5, MediaQuery.of(context).size.width * 0.5),
-      initialChartData: <CircularStackEntry>[
-        CircularStackEntry(
-          <CircularSegmentEntry>[
-            CircularSegmentEntry(
-              score,
-              AppTheme.blueText,
-              rankKey: 'completed',
-            ),
-            CircularSegmentEntry(
-              100 - score,
-              AppTheme.skyBackground,
-              rankKey: 'remaining',
-            ),
-          ],
-          rankKey: 'progress',
-        ),
-      ],
-      chartType: CircularChartType.Radial,
-      edgeStyle: SegmentEdgeStyle.round,
-      percentageValues: true,
-    );
-  }
-
   Widget _percentage() {
-    double score = 0;
     if (num_of_total_sms == 0) { score = 0 ;}
-    else { score = num_of_completed_sms / num_of_total_sms * 100; }
+    else {
+      prev_score = score ;
+      score = num_of_completed_sms / num_of_total_sms * 100 ;
+    }
+
     print(score);
+
     /**
      * _percentage
      * 현재 스미싱 검사 퍼센트 표시
@@ -208,7 +201,18 @@ class _DetectLoadPageState extends State<DetectLoadPage> {
                   )
               )
           ),
-          _getCircularChart(score),
+
+          Center(
+            child: Container(
+              width: MediaQuery.of(context).size.width * 0.35,
+              height: MediaQuery.of(context).size.width * 0.35,
+              child: CircularProgressIndicator(
+                strokeWidth: 4.0,
+                value: (num_of_total_sms != 0) ? (num_of_completed_sms / num_of_total_sms) : 0,
+                semanticsLabel: 'Circular progress indicator',
+              ),
+            )
+          )
         ],
       ),
     );

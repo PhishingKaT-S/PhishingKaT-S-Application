@@ -53,8 +53,30 @@ public class MainActivity extends FlutterActivity {
         new MethodChannel(flutterEngine.getDartExecutor().getBinaryMessenger(), CHANNEL)
                 .setMethodCallHandler(
                         (call, result) -> {
+                            int sms_permission = ContextCompat.checkSelfPermission(this, Manifest.permission.READ_SMS);
+                            int contact_permission = ContextCompat.checkSelfPermission(this, Manifest.permission.READ_CONTACTS);
+                            int contact_state_permission = ContextCompat.checkSelfPermission(this, Manifest.permission.READ_PHONE_STATE);
+
+                            if (sms_permission == PackageManager.PERMISSION_GRANTED &&
+                                    contact_permission == PackageManager.PERMISSION_GRANTED &&
+                                    contact_state_permission == PackageManager.PERMISSION_GRANTED) {
+                                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+
+                                    if (this.readSMS(sms) && this.readMMS(sms)) {
+                                        for (int i = 0; i < sms.size(); i++) {
+                                                String[] __sms = sms.get(i).split("[sms_text]");
+//                        Log.i(TAG, __sms[0] + " " + __sms[1] + " " + __sms[2] + " " + __sms[3]);
+                                        }
+
+                                        for (int i = 0; i < sms.size(); i++) {
+                                            String[] __sms = sms.get(i).split("[sms_text]");
+//                    Log.i(TAG, __sms[0] + " " + __sms[1] + " " + __sms[2] + " " + __sms[3]);
+                                        }
+                                    }
+                                }
+                            }
+
                             if ((sms.isEmpty())) {
-                                sms.add("Error");
                                 result.success(sms);
                             } else {
                                 result.success(sms);
@@ -100,29 +122,6 @@ public class MainActivity extends FlutterActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         OnCheckPermission();
-
-        int sms_permission = ContextCompat.checkSelfPermission(this, Manifest.permission.READ_SMS);
-        int contact_permission = ContextCompat.checkSelfPermission(this, Manifest.permission.READ_CONTACTS);
-        int contact_state_permission = ContextCompat.checkSelfPermission(this, Manifest.permission.READ_PHONE_STATE);
-
-        if (sms_permission == PackageManager.PERMISSION_GRANTED &&
-                contact_permission == PackageManager.PERMISSION_GRANTED &&
-                contact_state_permission == PackageManager.PERMISSION_GRANTED) {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-
-                if (this.readSMS(sms) && this.readMMS(sms)) {
-                    for (int i = 0; i < sms.size(); i++) {
-                        String[] __sms = sms.get(i).split("[sms_text]");
-                        Log.i(TAG, __sms[0] + " " + __sms[1] + " " + __sms[2] + " " + __sms[3]);
-                    }
-                }
-
-                for (int i = 0; i < sms.size(); i++) {
-                    String[] __sms = sms.get(i).split("[sms_text]");
-                    Log.i(TAG, __sms[0] + " " + __sms[1] + " " + __sms[2] + " " + __sms[3]);
-                }
-            }
-        }
     }
 
     @RequiresApi(api = Build.VERSION_CODES.M)
@@ -196,13 +195,13 @@ public class MainActivity extends FlutterActivity {
         Uri sms_uri = Uri.parse("content://sms/");
         Cursor cursor = this.getContentResolver().query(sms_uri, null, null, null, "date DESC");
         int count = cursor.getCount();
-        Log.i(TAG, "SMS Count = " + count);
+//        Log.i(TAG, "SMS Count = " + count);
 //        ArrayList<MessageInfo> al_sms = new ArrayList<MessageInfo>();
 
         while (cursor.moveToNext()) {
-            for (int i = 0; i < cursor.getColumnCount(); i++) {
-                Log.i(cursor.getColumnName(i) + "", cursor.getString(i) + "");
-            }
+//            for (int i = 0; i < cursor.getColumnCount(); i++) {
+//                Log.i(cursor.getColumnName(i) + "", cursor.getString(i) + "");
+//            }
             @SuppressLint("Range") String body = cursor.getString(cursor.getColumnIndex("body"));
             // 내용 없는 메시지 제외
             if (!body.trim().isEmpty()) {

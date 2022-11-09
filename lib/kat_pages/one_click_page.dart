@@ -133,22 +133,25 @@ class _OneClickPageState extends State<OneClickPage> {
             width: MediaQuery.of(context).size.width * 0.08,
             child: IconButton(icon: Icon(Icons.search), color: AppTheme.blueText,
               onPressed: () {
-                bool isSearched = false;
-                for (var bank in _banks) {
-                  if ( bank.name.contains(search_controller.text)) {
-                    isSearched = true;
-                    Navigator.push(context, MaterialPageRoute(
-                        builder: (context) => OneClickBank(bank_name: bank.name,
-                          phone_list: bank.phones,
-                          image: bank.image,)));
+                if ( search_controller.text.isNotEmpty ) {
+                  bool isSearched = false;
+                  for (var bank in _banks) {
+                    if (bank.name.contains(search_controller.text)) {
+                      isSearched = true;
+                      Navigator.push(context, MaterialPageRoute(
+                          builder: (context) =>
+                              OneClickBank(bank_name: bank.name,
+                                phone_list: bank.phones,
+                                image: bank.image,)));
+                    }
                   }
-                }
 
-                /// 입력한 은행을 찾지 못하였을 경우
-                if ( !isSearched ) {
-                  Navigator.push(context, MaterialPageRoute(
-                      builder: (context) => const BankQuestionsCenter()
-                  ));
+                  /// 입력한 은행을 찾지 못하였을 경우
+                  if (!isSearched) {
+                    Navigator.push(context, MaterialPageRoute(
+                        builder: (context) => const BankQuestionsCenter()
+                    ));
+                  }
                 }
               },
             ),
@@ -284,17 +287,17 @@ class _OneClickPageState extends State<OneClickPage> {
               if ( index == 0 ) {
                 DateTime _now = DateTime.now();
 
-                if (_now.hour < 9 || _now.hour > 22) {
-                  /**
-                   * 서비스 이용 불가 표시
-                   */
-                  _displayDialog(context);
-                } else {
+                // if (_now.hour < 9 || _now.hour > 22) {
+                //   /**
+                //    * 서비스 이용 불가 표시
+                //    */
+                //   _displayDialog(context);
+                // } else {
                   Navigator.push(context, MaterialPageRoute(
                       builder: (context) =>
                           KaTWebView(title: titleList[index],
                             url: 'https://www.payinfo.or.kr/extl/qryExtlFxamtIns.do?menu=1',)));
-                }
+                // }
               } else if (index == 1){
                 _launchCaller('15778787');
               } else if (index == 2) {
