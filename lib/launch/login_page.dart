@@ -14,6 +14,8 @@ next Page=>AccessAuthority()
 
 import 'package:flutter/material.dart';
 import 'package:phishing_kat_pluss/launch/access_authority.dart';
+import 'package:provider/provider.dart';
+import '../providers/launch_provider.dart';
 import 'policy.dart';
 
 import '../theme.dart';
@@ -144,6 +146,8 @@ class LoginPage extends StatelessWidget {
               },
               child: const Text("시작하기", style: AppTheme.button_blue, )),
         ),
+        Text(Provider.of<LaunchProvider>(context, listen: true).getUserInfo().imei.toString() ),
+        Text(Provider.of<LaunchProvider>(context, listen: true).getUserInfo().phoneNumber.toString() )
       ],
     );
   }

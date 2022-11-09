@@ -7,12 +7,19 @@
 import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:provider/provider.dart';
 import '../Theme.dart';
 import '../kat_pages/home_page.dart';
+import '../providers/launch_provider.dart';
 
-class SplashScreen extends StatelessWidget {
+class SplashScreen extends StatefulWidget {
   const SplashScreen({Key? key}) : super(key: key);
 
+  @override
+  State<SplashScreen> createState() => _SplashScreenState();
+}
+
+class _SplashScreenState extends State<SplashScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -55,6 +62,8 @@ class SplashScreen extends StatelessWidget {
           Container(
             height: 115,
           ),
+          Text(Provider.of<LaunchProvider>(context, listen: true).getUserInfo().imei.toString() ),
+          Text(Provider.of<LaunchProvider>(context, listen: true).getUserInfo().phoneNumber.toString() )
         ],
       ),
     );

@@ -38,7 +38,7 @@ class LaunchProvider extends ChangeNotifier {
         if (results.isNotEmpty) {
           if (results.length > 1) {
             //  동일한 IMEI와 핸드폰 번호가 있으면 2개 이상이 나오는데 그 때는 우짜나?
-            _signUp = false;
+            _signUp = true;
           } else {
             _userInfo.userId = results.first["id"];
             _userInfo.analysisDate = results.first["analysis_date"];
