@@ -18,7 +18,9 @@ import android.content.pm.PackageManager;
 import android.graphics.PixelFormat;
 import android.net.Uri;
 import android.os.Build;
+import android.os.Handler;
 import android.os.IBinder;
+import android.os.Message;
 import android.provider.Settings;
 import android.telephony.TelephonyManager;
 import android.util.Log;
@@ -27,6 +29,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
@@ -37,7 +40,12 @@ import androidx.annotation.RequiresApi;
 import androidx.core.app.ActivityCompat;
 import androidx.core.app.NotificationCompat;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
+
+import java.io.BufferedReader;
 import java.io.DataOutputStream;
+import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.URL;
@@ -47,6 +55,7 @@ import java.sql.DriverManager;
 import java.sql.Statement;
 import java.text.SimpleDateFormat;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
@@ -62,6 +71,8 @@ public class MyService extends Service {
     private static String score;
     private static String recipient;
     private static int smishing=0;
+    List<MemberDTO> items;
+
 
     TextView tv_sender;
     TextView tv_content;
@@ -79,6 +90,10 @@ public class MyService extends Service {
     public static final String username = "phishingkat3";
     public static final String passwd = "phishing3^kL03%!";
     public static final String TABLE_NAME = "sms";
+
+    /*스미싱에 등록되어 있는 번호*/
+
+
     public MyService() {
     }
 
@@ -139,6 +154,8 @@ public class MyService extends Service {
 
             vis_layout = (LinearLayout) mView.findViewById(R.id.showLayout);
 
+
+            //Log.d("SelectBlack List log ", sender);
 
             //이벤트 설정
             final Button bt = (Button) mView.findViewById(R.id.btn_cancel); // cancel
@@ -203,8 +220,8 @@ public class MyService extends Service {
 
             //Log.d("DDDD", score);
             try{
-                int num = Integer.parseInt(sms_type);
-                addsms(date, content, sender, Integer.parseInt(sms_type), recipient, smishing, score);       //public static void addsms(String _date, String _content, String _sender, int _smstype, String _recipient, int _smishing){
+                //int num = Integer.parseInt(sms_type);
+                addsms(date, content, sender, Integer.parseInt(type), recipient, smishing, score);       //public static void addsms(String _date, String _content, String _sender, int _smstype, String _recipient, int _smishing){
             } catch(NumberFormatException e){
                 Log.d("MY SERVICE", "sms_type convert error");
             }catch(Exception e){
@@ -236,8 +253,8 @@ public class MyService extends Service {
             setTextfromtype();
 
             try{
-                int num = Integer.parseInt(sms_type);
-                addsms(date, content, sender, Integer.parseInt(sms_type), recipient, smishing, score);       //public static void addsms(String _date, String _content, String _sender, int _smstype, String _recipient, int _smishing){
+                int num = Integer.parseInt(type);
+                addsms(date, content, sender, num, recipient, smishing, score);       //public static void addsms(String _date, String _content, String _sender, int _smstype, String _recipient, int _smishing){
             } catch(NumberFormatException e){
                 Log.d("MY SERVICE part2", "sms_type convert error");
             }catch(Exception e){
@@ -246,6 +263,8 @@ public class MyService extends Service {
 
             return super.onStartCommand(intent, flags, startId);
         }
+
+
     }
 
     @Override
@@ -259,6 +278,9 @@ public class MyService extends Service {
             wm = null;
         }
     }
+
+
+
 
     //type 설정
     void setTextfromtype() {
@@ -348,6 +370,7 @@ public class MyService extends Service {
                     .getLine1Number();
         }
     }
+    //db에 sms 추가
     public static void addsms(String _date, String _content, String _sender, int _smstype, String _recipient, int _smishing, String _score){
             new Thread(()->{
                 try{
@@ -415,6 +438,9 @@ public class MyService extends Service {
         ).start();
     }
 
+
+    //db에 접근해서 블랙리스트에 있는지 확인
+
     /*private String converttoDate(String date){ //miili를 yyyy-MM-dd로 바꿈
         SimpleDateFormat sdf= new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.KOREA);
         String senddate = sdf.format(date).toString();//날짜
@@ -441,3 +467,4 @@ class ParameterStringBuilder {
                 : resultString;
     }
 }
+

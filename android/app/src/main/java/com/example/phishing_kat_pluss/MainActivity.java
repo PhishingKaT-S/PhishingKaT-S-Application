@@ -8,6 +8,7 @@ import android.annotation.TargetApi;
 import android.content.ContentUris;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.content.res.AssetFileDescriptor;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Build;
@@ -21,12 +22,17 @@ import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.core.content.ContextCompat;
 
+import org.tensorflow.lite.Interpreter;
+
 import java.io.BufferedReader;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
+import java.nio.MappedByteBuffer;
+import java.nio.channels.FileChannel;
 import java.util.ArrayList;
 
 import io.flutter.embedding.android.FlutterActivity;
@@ -44,6 +50,8 @@ public class MainActivity extends FlutterActivity {
     private static final int ACTION_MANAGE_OVERLAY_PERMISSION_REQUEST_CODE = 1;
     private static final String CHANNEL2 = "phishingkat.flutter.android"; //지원
     private static final String CHANNEL3 = "onestore";
+    public static Interpreter lite_smish;
+    public static Interpreter lite_category;
     ArrayList<String> sms = new ArrayList<String>();
 
     @RequiresApi(api = Build.VERSION_CODES.M)
@@ -121,6 +129,8 @@ public class MainActivity extends FlutterActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        lite_smish = getTfliteInterpreter("smish_converted_model.tflite");
+        lite_category = getTfliteInterpreter("cate_converted_model.tflite");
         OnCheckPermission();
     }
 
@@ -159,7 +169,7 @@ public class MainActivity extends FlutterActivity {
                     Toast.makeText(this, "앱 실행을 위한 권한이 설정되었습니다.", Toast.LENGTH_LONG).show();
                 } else {
                     Toast.makeText(this, "앱 실행을 위한 권한이 취소되었습니다.", Toast.LENGTH_LONG).show();
-                    finish();
+                    //finish();
                 }
 
                 break;
@@ -402,6 +412,27 @@ public class MainActivity extends FlutterActivity {
     protected void onDestroy() {
         super.onDestroy();
 
+    }
+
+
+    /*tf lite 파일 권한 때문*/
+    public Interpreter getTfliteInterpreter(String modelPath) {
+        try {
+            return new Interpreter(loadModelFile(MainActivity.this, modelPath));
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    public MappedByteBuffer loadModelFile(MainActivity activity, String modelPath) throws IOException {
+        AssetFileDescriptor fileDescriptor = activity.getAssets().openFd(modelPath);
+        FileInputStream inputStream = new FileInputStream(fileDescriptor.getFileDescriptor());
+        FileChannel fileChannel = inputStream.getChannel();
+        long startOffset = fileDescriptor.getStartOffset();
+        long declaredLength = fileDescriptor.getDeclaredLength();
+        return fileChannel.map(FileChannel.MapMode.READ_ONLY, startOffset, declaredLength);
     }
 
     //////////////////////////////////////////////////////////////////////////////////

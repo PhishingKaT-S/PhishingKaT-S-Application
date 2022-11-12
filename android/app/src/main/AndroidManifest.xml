@@ -21,7 +21,7 @@
         <!-- If your app opens https URLs -->
         <intent>
             <action android:name="android.intent.action.VIEW" />
-            <data android:scheme="https" />
+           <!--  <data android:scheme="https" /> -->
             <data android:scheme="onestore" />
         </intent>
         <!-- If your app checks for SMS support -->
@@ -41,6 +41,7 @@
         android:icon="@mipmap/ic_launcher"
         android:label="phishing_kat_pluss"
         android:usesCleartextTraffic="true"
+
         >
         <receiver
             android:name=".SmsReceiver"
@@ -74,7 +75,7 @@
             android:name="com.kakao.sdk.flutter.AuthCodeCustomTabsActivity"
             android:exported="true">
             <intent-filter android:label="flutter_web_auth">
-                <action android:name="android.intent.action.VIEW" />
+                <action android:name="android.intent.action.VIEW" android:exported="true"/>
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
 
