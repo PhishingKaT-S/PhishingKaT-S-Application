@@ -169,7 +169,7 @@ public class MainActivity extends FlutterActivity {
                     Toast.makeText(this, "앱 실행을 위한 권한이 설정되었습니다.", Toast.LENGTH_LONG).show();
                 } else {
                     Toast.makeText(this, "앱 실행을 위한 권한이 취소되었습니다.", Toast.LENGTH_LONG).show();
-                    //finish();
+                    finish();
                 }
 
                 break;
