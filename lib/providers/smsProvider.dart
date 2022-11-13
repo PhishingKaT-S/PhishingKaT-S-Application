@@ -88,6 +88,30 @@ class SmsProvider with ChangeNotifier {
 
   List<SmsInfo> getUnknownSmsList() => _smsList;
 
+  Future<void> insertSMSList(List<SmsInfo> _unknownSmsList) async {
+    if ( _unknownSmsList.isEmpty ) {
+      return ;
+    } else {
+      await MySqlConnection.connect(Database.getConnection()).then((conn) async {
+        for (int i = 0 ; i < _unknownSmsList.length; i++) {
+          SmsInfo _smsInfo = _unknownSmsList[i];
+          await conn.query(
+              "INSERT INTO smsData VALUES (NULL, ?)", [
+            _smsInfo.body
+          ]).then((results) {
+            if (results.isNotEmpty) {} else if (results.isEmpty) {}
+          }).onError((error, stackTrace) {
+            print("error: $error");
+          });
+        }
+
+        conn.close();
+      }).onError((error, stackTrace) {
+        print("error2: $error");
+      });
+    }
+  }
+
   Future<void> insertScore(int userId) async {
     Random random_num = Random.secure();
 

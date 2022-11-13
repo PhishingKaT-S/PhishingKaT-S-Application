@@ -44,13 +44,12 @@ class _DetectLoadPageState extends State<DetectLoadPage> with TickerProviderStat
   late AnimationController controller; // progress
 
   double score = 0;
-  double prev_score = 0 ;
   int num_of_completed_sms = 0 ;
   int num_of_total_sms = 0 ;
   int num_of_smishing_sms = 0 ;
   List<double> scoreList = [] ;
 
-  List<SmsData> smsList = [] ;
+  List<SmsData> predictionList = [] ;
   static const platform = MethodChannel('samples.flutter.dev/channel') ;
 
   List<String> msgs = [] ;
@@ -83,17 +82,18 @@ class _DetectLoadPageState extends State<DetectLoadPage> with TickerProviderStat
 
   Future<void> _getSmsFromChannel() async {
     List<String> ch = [];
+    ch.clear();
     try{
       var res = await platform.invokeMethod('getResult');
       ch = res.cast<String>() ;
 
-      if ( ch.length == 1 ) print("No data") ;
+      if ( ch.isEmpty ) print("No data") ;
       else
       {
-        for ( var sms in ch ) {
-          List<String> s = sms.split("[sms_text]") ;
+        // for ( var sms in ch ) {
+        //   List<String> s = sms.split("[sms_text]") ;
           // print(s[0] + " " + s[1] + " " + s[2] + " " + s[3]) ;
-        }
+        // }
       }
     } on PlatformException catch (e) {
       ch.add("No data") ;
@@ -101,17 +101,20 @@ class _DetectLoadPageState extends State<DetectLoadPage> with TickerProviderStat
 
     setState(() {
       msgs = ch ;
+      num_of_completed_sms = 0 ;
       num_of_total_sms = ch.length ;
     });
 
     await context.read<SmsProvider>().setSmsToSmsProvider(msgs);
-    context.read<LaunchProvider>().setScore(Random(1234).nextInt(100));
+
     // context.read<LaunchProvider>().setUpdate();
   }
 
   Future<void> _detectionSms() async {
     final url = Uri.parse('http://52.53.168.246:5000/api') ;
     final List<SmsInfo> smsData = context.read<SmsProvider>().getUnknownSmsList();
+
+    print("Total: " + num_of_total_sms.toString()) ;
 
     for (int i = 0 ; i < num_of_total_sms ; i++) {
       List<String> text = msgs[i].split("[sms_text]");
@@ -138,11 +141,10 @@ class _DetectLoadPageState extends State<DetectLoadPage> with TickerProviderStat
         num_of_smishing_sms++;
       }
 
-      smsList.add(_sms) ;
+      predictionList.add(_sms) ;
 
       setState(() {
         num_of_completed_sms++;
-        print("Controller" + controller.value.toString());
       });
 
       if ( response.statusCode == 200 ) {
@@ -158,6 +160,15 @@ class _DetectLoadPageState extends State<DetectLoadPage> with TickerProviderStat
 
     if ( num_of_completed_sms == num_of_total_sms ) {
 
+      int _currScore = context.read<LaunchProvider>().getUserInfo().score ;
+
+      // 처음 검사할 때 문자 메세지 다 가져오기
+      if ( _currScore == -1 ) {
+        await context.read<SmsProvider>().insertSMSList(context.read<SmsProvider>().getUnknownSmsList());
+      }
+
+      context.read<LaunchProvider>().setScore(Random(1234).nextInt(100));
+
       context.read<SmsProvider>().insertScore(context.read<LaunchProvider>().getUserInfo().userId);
       context.read<SmsProvider>().updateScore(context.read<LaunchProvider>().getUserInfo().userId);
 
@@ -168,11 +179,8 @@ class _DetectLoadPageState extends State<DetectLoadPage> with TickerProviderStat
   Widget _percentage() {
     if (num_of_total_sms == 0) { score = 0 ;}
     else {
-      prev_score = score ;
       score = num_of_completed_sms / num_of_total_sms * 100 ;
     }
-
-    print(score);
 
     /**
      * _percentage
