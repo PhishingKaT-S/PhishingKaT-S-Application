@@ -7,7 +7,7 @@ import static android.Manifest.permission.READ_SMS;
 import static com.example.phishing_kat_pluss.SmsReceiver.millidate;
 import static com.example.phishing_kat_pluss.SmsReceiver.smsRe;
 
-import android.annotation.TargetApi;
+import android.annotation.SuppressLint;
 import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
@@ -15,23 +15,17 @@ import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.content.res.Resources;
 import android.graphics.PixelFormat;
-import android.net.Uri;
 import android.os.Build;
-import android.os.Handler;
 import android.os.IBinder;
-import android.os.Message;
-import android.provider.Settings;
 import android.telephony.TelephonyManager;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.WindowManager;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.RadioGroup;
 import android.widget.TextView;
@@ -40,23 +34,13 @@ import androidx.annotation.RequiresApi;
 import androidx.core.app.ActivityCompat;
 import androidx.core.app.NotificationCompat;
 
-import org.json.JSONArray;
-import org.json.JSONObject;
-
-import java.io.BufferedReader;
 import java.io.DataOutputStream;
-import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.Statement;
-import java.text.SimpleDateFormat;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 
 public class MyService extends Service {
@@ -176,26 +160,23 @@ public class MyService extends Service {
                  * */
                 int selectedId = radioGroup.getCheckedRadioButtonId();
                 switch (selectedId) {
-                    case R.id.radio_stock:
+                    case R.id.parcel:
                         sms_type = type = "0";
                         break;
-                    case R.id.radio_vishing:
+                    case R.id.radio_corp:
                         sms_type = type = "1";
                         break;
-                    case R.id.radio_insurance:
+                    case R.id.radio_acquaint:
                         sms_type = type = "2";
                         break;
-                    case R.id.radio_gambling:
+                    case R.id.radio_pay:
                         sms_type = type = "3";
                         break;
-                    case R.id.radio_survey:
+                    case R.id.radio_ad:
                         sms_type = type = "4";
                         break;
-                    case R.id.radio_telemarketing:
-                        sms_type = type = "5";
-                        break;
                     case R.id.radio_others:
-                        sms_type = type = "6";
+                        sms_type = type = "5";
                         break;
                 } // type 변경
 
@@ -283,51 +264,54 @@ public class MyService extends Service {
 
 
     //type 설정
+    @SuppressLint("StringFormatInvalid")
     void setTextfromtype() {
         int setTextScore;
         try {
         setTextScore = Integer.parseInt(score);
-            if (setTextScore < 40) {
+            if (setTextScore <0){
                 tv_type.setText(R.string.safe);
                 radioGroup.check(R.id.radio_others);
                 smishing = 0;
-            } else {
-                smishing= 1;
+            }
+      //      if (setTextScore < 40) {
+      //          tv_type.setText(R.string.safe);
+        //        radioGroup.check(R.id.radio_others);
+        //        smishing = 0;
+             else {
+                 if(setTextScore<40) smishing=0;
+                 else smishing= 1;
+                Resources res = getResources();
                 switch (Integer.parseInt(type)) {
                     case 0:
-                        tv_type.setText(R.string.stock);
-                        radioGroup.check(R.id.radio_stock);
+                        tv_type.setText(String.format(getString(R.string.parcel), score));
+                        radioGroup.check(R.id.parcel);
                         sms_type = "0";
                         break;
                     case 1:
-                        tv_type.setText(R.string.vishing);
-                        radioGroup.check(R.id.radio_vishing);
+                        tv_type.setText(String.format(getString(R.string.corp), score));
+                        radioGroup.check(R.id.radio_corp);
                         sms_type = "1";
                         break;
                     case 2:
-                        tv_type.setText(R.string.insurance);
-                        radioGroup.check(R.id.radio_insurance);
+                        tv_type.setText(String.format(getString(R.string.acquaint), score));
+                        radioGroup.check(R.id.radio_acquaint);
                         sms_type = "2";
                         break;
                     case 3:
-                        tv_type.setText(R.string.gambling);
-                        radioGroup.check(R.id.radio_gambling);
+                        tv_type.setText(String.format(getString(R.string.pay), score));
+                        radioGroup.check(R.id.radio_pay);
                         sms_type = "3";
                         break;
                     case 4:
-                        tv_type.setText(R.string.survey);
-                        radioGroup.check(R.id.radio_survey);
+                        tv_type.setText(String.format(getString(R.string.ad), score));
+                        radioGroup.check(R.id.radio_ad);
                         sms_type = "4";
                         break;
                     case 5:
-                        tv_type.setText(R.string.telemarketing);
-                        radioGroup.check(R.id.radio_telemarketing);
-                        sms_type = "5";
-                        break;
-                    case 6:
-                        tv_type.setText(R.string.others);
+                        tv_type.setText(String.format(getString(R.string.others), score));
                         radioGroup.check(R.id.radio_others);
-                        sms_type = "6";
+                        sms_type = "5";
                         break;
                 }
             }
@@ -344,9 +328,9 @@ public class MyService extends Service {
         int number;
         try{
             number = Integer.parseInt(score);
-            if (number < 40) {
+            if(number < 0){
                 scoreLayout.setBackgroundResource(R.drawable.upperbackgreen);
-            } else if (number < 60) {
+            }else if (number < 60) {
                 scoreLayout.setBackgroundResource(R.drawable.upperbackgrey);
             } else if (number < 70) {
                 scoreLayout.setBackgroundResource(R.drawable.upperbackyellow);

@@ -85,7 +85,7 @@ public class SmsReceiver extends BroadcastReceiver {
                     score=String.valueOf(Math.round(recentsms.score));//점수
                     type=String.valueOf(recentsms.category);
                 }else if(registered==0){ //우리 연락처 화이트 리스트 문자
-                    score = "0";
+                    score = "-1";
                     type="0";
                 }else{ //  블랙리스트 일 때
                     score = "100";

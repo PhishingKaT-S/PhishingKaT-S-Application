@@ -10,11 +10,11 @@
   <LinearLayout
       android:id="@+id/scoreColor"
       android:layout_width="260dp"
-      android:layout_height="60dp"
+      android:layout_height="75dp"
       android:orientation="vertical"
       android:background="@drawable/upperbackgreen"
       android:layout_gravity="center"
-      android:layout_marginTop="50dp"
+      android:layout_marginTop="190dp"
       >
 
     <LinearLayout
@@ -54,11 +54,11 @@
     <TextView
         android:id="@+id/textView_type"
         android:layout_width="match_parent"
-        android:layout_height="30dp"
+        android:layout_height="40dp"
         android:layout_gravity="start"
         android:layout_marginLeft="10dp"
         android:layout_marginTop="5dp"
-        android:text="스미싱 의심 URL 포함으로 분류된 문자입니다"
+        android:text="스미싱 의심 URL 포함으로 분류된 문자입니다. 스미싱 의심 확률은 0% 입니다."
         android:textColor="#FFFFFF"
         android:textSize="12dp" />
 
@@ -133,7 +133,7 @@
     <LinearLayout
         android:background="@drawable/upperwhite"
         android:layout_width="match_parent"
-        android:layout_height="360dp"
+        android:layout_height="330dp"
         android:layout_gravity="bottom"
         android:orientation="vertical"
 
@@ -141,7 +141,7 @@
 
       <LinearLayout
           android:layout_width="match_parent"
-          android:layout_height="310dp"
+          android:layout_height="280dp"
 
           >
 
@@ -154,76 +154,59 @@
 
 
           <RadioButton
-              android:buttonTint="@color/mylightblue"
-              android:id="@+id/radio_stock"
+              android:id="@+id/parcel"
               android:layout_width="match_parent"
               android:layout_height="0dp"
               android:layout_weight="1"
-              android:text="주식/투자"
-              android:textColor="@drawable/radioletter"
+              android:buttonTint="@color/mylightblue"
               android:fontFamily="@font/adrameothic2"
-              android:textSize="14dp"
-              />
+              android:text="택배유형"
+              android:textColor="@drawable/radioletter"
+              android:textSize="14dp" />
 
           <RadioButton
-              android:buttonTint="@color/mylightblue"
-              android:id="@+id/radio_vishing"
+              android:id="@+id/radio_corp"
               android:layout_width="match_parent"
               android:layout_height="0dp"
               android:layout_weight="1"
-              android:text="보이스피싱"
-              android:textColor="@drawable/radioletter"
+              android:buttonTint="@color/mylightblue"
               android:fontFamily="@font/adrameothic2"
-              android:textSize="14dp"
-              />
+              android:text="기관유형"
+              android:textColor="@drawable/radioletter"
+              android:textSize="14dp" />
 
           <RadioButton
-              android:buttonTint="@color/mylightblue"
-              android:id="@+id/radio_insurance"
+              android:id="@+id/radio_acquaint"
               android:layout_width="match_parent"
               android:layout_height="0dp"
               android:layout_weight="1"
-              android:text="보험/대출안내"
-              android:textColor="@drawable/radioletter"
+              android:buttonTint="@color/mylightblue"
               android:fontFamily="@font/adrameothic2"
-              android:textSize="14dp"
-              />
+              android:text="지인유형"
+              android:textColor="@drawable/radioletter"
+              android:textSize="14dp" />
 
           <RadioButton
-              android:buttonTint="@color/mylightblue"
-              android:id="@+id/radio_gambling"
+              android:id="@+id/radio_pay"
               android:layout_width="match_parent"
               android:layout_height="0dp"
               android:layout_weight="1"
-              android:text="게임/도박"
-              android:textColor="@drawable/radioletter"
+              android:buttonTint="@color/mylightblue"
               android:fontFamily="@font/adrameothic2"
-              android:textSize="14dp"
-              />
+              android:text="결제사칭"
+              android:textColor="@drawable/radioletter"
+              android:textSize="14dp" />
 
           <RadioButton
-              android:buttonTint="@color/mylightblue"
-              android:id="@+id/radio_survey"
+              android:id="@+id/radio_ad"
               android:layout_width="match_parent"
               android:layout_height="0dp"
               android:layout_weight="1"
-              android:text="설문조사"
-              android:textColor="@drawable/radioletter"
-              android:fontFamily="@font/adrameothic2"
-              android:textSize="14dp"
-              />
-
-          <RadioButton
               android:buttonTint="@color/mylightblue"
-              android:id="@+id/radio_telemarketing"
-              android:layout_width="match_parent"
-              android:layout_height="0dp"
-              android:layout_weight="1"
-              android:text="텔레마케팅"
-              android:textColor="@drawable/radioletter"
               android:fontFamily="@font/adrameothic2"
-              android:textSize="14dp"
-              />
+              android:text="광고사칭"
+              android:textColor="@drawable/radioletter"
+              android:textSize="14dp" />
 
           <RadioButton
               android:buttonTint="@color/mylightblue"
