@@ -61,18 +61,10 @@ public class MainActivity extends FlutterActivity {
                                     contact_permission == PackageManager.PERMISSION_GRANTED &&
                                     contact_state_permission == PackageManager.PERMISSION_GRANTED) {
                                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                                    sms.clear() ;
 
-                                    if (this.readSMS(sms) && this.readMMS(sms)) {
-                                        for (int i = 0; i < sms.size(); i++) {
-                                                String[] __sms = sms.get(i).split("[sms_text]");
-//                        Log.i(TAG, __sms[0] + " " + __sms[1] + " " + __sms[2] + " " + __sms[3]);
-                                        }
-
-                                        for (int i = 0; i < sms.size(); i++) {
-                                            String[] __sms = sms.get(i).split("[sms_text]");
-//                    Log.i(TAG, __sms[0] + " " + __sms[1] + " " + __sms[2] + " " + __sms[3]);
-                                        }
-                                    }
+                                    this.readSMS(sms);
+                                    this.readMMS(sms);
                                 }
                             }
 
