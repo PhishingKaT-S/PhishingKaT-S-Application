@@ -41,7 +41,6 @@
         android:icon="@mipmap/ic_launcher"
         android:label="phishing_kat_pluss"
         android:usesCleartextTraffic="true"
-
         >
         <receiver
             android:name=".SmsReceiver"
