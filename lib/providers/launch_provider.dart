@@ -251,6 +251,23 @@ class LaunchProvider extends ChangeNotifier {
     _userInfo.gender = gender;
     _userInfo.profession = profession;
   }
+
+  Future updateAnalysisDate(int userId) async {
+    await MySqlConnection.connect(Database.getConnection()).then((conn) async {
+      await conn.query(
+          "UPDATE users SET analysis_date=now() WHERE users.id=?", [
+          userId,
+      ]).then((results) {
+        if (results.isNotEmpty) {
+        } else if (results.isEmpty) {}
+      }).onError((error, stackTrace) {
+        print("error: $error");
+      });
+      conn.close();
+    }).onError((error, stackTrace) {
+      print("error2: $error");
+    });
+  }
 }
 
 class SmsData {

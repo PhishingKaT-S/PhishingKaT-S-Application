@@ -114,8 +114,6 @@ class _DetectLoadPageState extends State<DetectLoadPage> with TickerProviderStat
     final url = Uri.parse('http://52.53.168.246:5000/api') ;
     final List<SmsInfo> smsData = context.read<SmsProvider>().getUnknownSmsList();
 
-    print("Total: " + num_of_total_sms.toString()) ;
-
     for (int i = 0 ; i < num_of_total_sms ; i++) {
       List<String> text = msgs[i].split("[sms_text]");
 
@@ -125,9 +123,7 @@ class _DetectLoadPageState extends State<DetectLoadPage> with TickerProviderStat
           HttpHeaders.contentTypeHeader: "application/json",
         },
         body: json.encode({
-          'exp' : text[3]
-          // smsData[i].body
-          // text[3]
+          'exp' : text[3] // body (sms text)
         }),
         encoding: Encoding.getByName('utf-8'),
       );
@@ -159,6 +155,8 @@ class _DetectLoadPageState extends State<DetectLoadPage> with TickerProviderStat
     print("SMISH: " + num_of_smishing_sms.toString()) ;
 
     if ( num_of_completed_sms == num_of_total_sms ) {
+
+      context.read<LaunchProvider>().updateAnalysisDate(context.read<LaunchProvider>().getUserInfo().userId) ;
 
       int _currScore = context.read<LaunchProvider>().getUserInfo().score ;
 
