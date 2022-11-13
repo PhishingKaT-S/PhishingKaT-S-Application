@@ -7,7 +7,7 @@ import static android.Manifest.permission.READ_SMS;
 import static com.example.phishing_kat_pluss.SmsReceiver.millidate;
 import static com.example.phishing_kat_pluss.SmsReceiver.smsRe;
 
-import android.annotation.TargetApi;
+import android.annotation.SuppressLint;
 import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
@@ -15,20 +15,17 @@ import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.content.res.Resources;
 import android.graphics.PixelFormat;
-import android.net.Uri;
 import android.os.Build;
 import android.os.IBinder;
-import android.provider.Settings;
 import android.telephony.TelephonyManager;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.Button;
-import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.RadioGroup;
 import android.widget.TextView;
@@ -42,12 +39,8 @@ import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.Statement;
-import java.text.SimpleDateFormat;
 import java.util.HashMap;
-import java.util.Locale;
+import java.util.List;
 import java.util.Map;
 
 public class MyService extends Service {
@@ -62,6 +55,8 @@ public class MyService extends Service {
     private static String score;
     private static String recipient;
     private static int smishing=0;
+    List<MemberDTO> items;
+
 
     TextView tv_sender;
     TextView tv_content;
@@ -79,6 +74,10 @@ public class MyService extends Service {
     public static final String username = "phishingkat3";
     public static final String passwd = "phishing3^kL03%!";
     public static final String TABLE_NAME = "sms";
+
+    /*스미싱에 등록되어 있는 번호*/
+
+
     public MyService() {
     }
 
@@ -140,6 +139,8 @@ public class MyService extends Service {
             vis_layout = (LinearLayout) mView.findViewById(R.id.showLayout);
 
 
+            //Log.d("SelectBlack List log ", sender);
+
             //이벤트 설정
             final Button bt = (Button) mView.findViewById(R.id.btn_cancel); // cancel
             bt.setOnClickListener(v -> {
@@ -159,26 +160,23 @@ public class MyService extends Service {
                  * */
                 int selectedId = radioGroup.getCheckedRadioButtonId();
                 switch (selectedId) {
-                    case R.id.radio_stock:
+                    case R.id.parcel:
                         sms_type = type = "0";
                         break;
-                    case R.id.radio_vishing:
+                    case R.id.radio_corp:
                         sms_type = type = "1";
                         break;
-                    case R.id.radio_insurance:
+                    case R.id.radio_acquaint:
                         sms_type = type = "2";
                         break;
-                    case R.id.radio_gambling:
+                    case R.id.radio_pay:
                         sms_type = type = "3";
                         break;
-                    case R.id.radio_survey:
+                    case R.id.radio_ad:
                         sms_type = type = "4";
                         break;
-                    case R.id.radio_telemarketing:
-                        sms_type = type = "5";
-                        break;
                     case R.id.radio_others:
-                        sms_type = type = "6";
+                        sms_type = type = "5";
                         break;
                 } // type 변경
 
@@ -203,8 +201,8 @@ public class MyService extends Service {
 
             //Log.d("DDDD", score);
             try{
-                int num = Integer.parseInt(sms_type);
-                addsms(date, content, sender, Integer.parseInt(sms_type), recipient, smishing, score);       //public static void addsms(String _date, String _content, String _sender, int _smstype, String _recipient, int _smishing){
+                //int num = Integer.parseInt(sms_type);
+                addsms(date, content, sender, Integer.parseInt(type), recipient, smishing, score);       //public static void addsms(String _date, String _content, String _sender, int _smstype, String _recipient, int _smishing){
             } catch(NumberFormatException e){
                 Log.d("MY SERVICE", "sms_type convert error");
             }catch(Exception e){
@@ -236,8 +234,8 @@ public class MyService extends Service {
             setTextfromtype();
 
             try{
-                int num = Integer.parseInt(sms_type);
-                addsms(date, content, sender, Integer.parseInt(sms_type), recipient, smishing, score);       //public static void addsms(String _date, String _content, String _sender, int _smstype, String _recipient, int _smishing){
+                int num = Integer.parseInt(type);
+                addsms(date, content, sender, num, recipient, smishing, score);       //public static void addsms(String _date, String _content, String _sender, int _smstype, String _recipient, int _smishing){
             } catch(NumberFormatException e){
                 Log.d("MY SERVICE part2", "sms_type convert error");
             }catch(Exception e){
@@ -246,6 +244,8 @@ public class MyService extends Service {
 
             return super.onStartCommand(intent, flags, startId);
         }
+
+
     }
 
     @Override
@@ -260,52 +260,58 @@ public class MyService extends Service {
         }
     }
 
+
+
+
     //type 설정
+    @SuppressLint("StringFormatInvalid")
     void setTextfromtype() {
         int setTextScore;
         try {
         setTextScore = Integer.parseInt(score);
-            if (setTextScore < 40) {
+            if (setTextScore <0){
                 tv_type.setText(R.string.safe);
                 radioGroup.check(R.id.radio_others);
                 smishing = 0;
-            } else {
-                smishing= 1;
+            }
+      //      if (setTextScore < 40) {
+      //          tv_type.setText(R.string.safe);
+        //        radioGroup.check(R.id.radio_others);
+        //        smishing = 0;
+             else {
+                 if(setTextScore<40) smishing=0;
+                 else smishing= 1;
+                Resources res = getResources();
                 switch (Integer.parseInt(type)) {
                     case 0:
-                        tv_type.setText(R.string.stock);
-                        radioGroup.check(R.id.radio_stock);
+                        tv_type.setText(String.format(getString(R.string.parcel), score));
+                        radioGroup.check(R.id.parcel);
                         sms_type = "0";
                         break;
                     case 1:
-                        tv_type.setText(R.string.vishing);
-                        radioGroup.check(R.id.radio_vishing);
+                        tv_type.setText(String.format(getString(R.string.corp), score));
+                        radioGroup.check(R.id.radio_corp);
                         sms_type = "1";
                         break;
                     case 2:
-                        tv_type.setText(R.string.insurance);
-                        radioGroup.check(R.id.radio_insurance);
+                        tv_type.setText(String.format(getString(R.string.acquaint), score));
+                        radioGroup.check(R.id.radio_acquaint);
                         sms_type = "2";
                         break;
                     case 3:
-                        tv_type.setText(R.string.gambling);
-                        radioGroup.check(R.id.radio_gambling);
+                        tv_type.setText(String.format(getString(R.string.pay), score));
+                        radioGroup.check(R.id.radio_pay);
                         sms_type = "3";
                         break;
                     case 4:
-                        tv_type.setText(R.string.survey);
-                        radioGroup.check(R.id.radio_survey);
+                        tv_type.setText(String.format(getString(R.string.ad), score));
+                        radioGroup.check(R.id.radio_ad);
                         sms_type = "4";
                         break;
                     case 5:
-                        tv_type.setText(R.string.telemarketing);
-                        radioGroup.check(R.id.radio_telemarketing);
-                        sms_type = "5";
-                        break;
-                    case 6:
-                        tv_type.setText(R.string.others);
+                        tv_type.setText(String.format(getString(R.string.others), score));
                         radioGroup.check(R.id.radio_others);
-                        sms_type = "6";
+                        sms_type = "5";
                         break;
                 }
             }
@@ -322,9 +328,9 @@ public class MyService extends Service {
         int number;
         try{
             number = Integer.parseInt(score);
-            if (number < 40) {
+            if(number < 0){
                 scoreLayout.setBackgroundResource(R.drawable.upperbackgreen);
-            } else if (number < 60) {
+            }else if (number < 60) {
                 scoreLayout.setBackgroundResource(R.drawable.upperbackgrey);
             } else if (number < 70) {
                 scoreLayout.setBackgroundResource(R.drawable.upperbackyellow);
@@ -348,6 +354,7 @@ public class MyService extends Service {
                     .getLine1Number();
         }
     }
+    //db에 sms 추가
     public static void addsms(String _date, String _content, String _sender, int _smstype, String _recipient, int _smishing, String _score){
             new Thread(()->{
                 try{
@@ -415,6 +422,9 @@ public class MyService extends Service {
         ).start();
     }
 
+
+    //db에 접근해서 블랙리스트에 있는지 확인
+
     /*private String converttoDate(String date){ //miili를 yyyy-MM-dd로 바꿈
         SimpleDateFormat sdf= new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.KOREA);
         String senddate = sdf.format(date).toString();//날짜
@@ -441,3 +451,4 @@ class ParameterStringBuilder {
                 : resultString;
     }
 }
+
