@@ -25,7 +25,7 @@
         <intent>
             <action android:name="android.intent.action.VIEW" />
 
-       <!--     <data android:scheme="https" /> 주석처리-->
+            <data android:scheme="https" />
             <data android:scheme="onestore" />
         </intent>
         <!-- If your app checks for SMS support -->
