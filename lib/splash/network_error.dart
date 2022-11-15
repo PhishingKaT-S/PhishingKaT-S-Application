@@ -1,10 +1,18 @@
 import 'package:connectivity/connectivity.dart';
 import 'package:flutter/material.dart';
 import 'package:phishing_kat_pluss/theme.dart';
+import 'package:provider/provider.dart';
 
-class NetworkError extends StatelessWidget {
+import '../providers/launch_provider.dart';
+
+class NetworkError extends StatefulWidget {
   const NetworkError({Key? key}) : super(key: key);
 
+  @override
+  State<NetworkError> createState() => _NetworkErrorState();
+}
+
+class _NetworkErrorState extends State<NetworkError> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -40,6 +48,7 @@ class NetworkError extends StatelessWidget {
               ),
               OutlinedButton(
                 child: const Text(
+
                   '다시 시도하기',
                   style: TextStyle(
                       fontSize: 16,
@@ -53,8 +62,11 @@ class NetworkError extends StatelessWidget {
                     ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
                         content: Text("네트워크 연결에 실패했습니다."),
                         duration: Duration(seconds: 2)));
-                  } else if (connectivityResult == ConnectivityResult.wifi) {
+                  } else if (connectivityResult == ConnectivityResult.wifi || connectivityResult == ConnectivityResult.mobile) {
                     // I am connected to a wifi network.
+                    Provider.of<LaunchProvider>(context, listen: false).Init();
+                    Navigator.pop(context);
+
                   }
                 },
                 style: OutlinedButton.styleFrom(

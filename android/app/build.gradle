@@ -56,11 +56,6 @@ android {
         }
     }
 
-<<<<<<< HEAD
-//    lintOptions {
-//        checkReleaseBuilds false
-//    }
-=======
     lintOptions {
         checkReleaseBuilds false
     }
@@ -68,7 +63,6 @@ android {
     aaptOptions {
         noCompress "tflite"
     }
->>>>>>> 520b79ddd23c41ab83d6b1c621458cbd708bb48a
 }
 
 flutter {

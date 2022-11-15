@@ -123,7 +123,7 @@ public class MainActivity extends FlutterActivity {
         super.onCreate(savedInstanceState);
         lite_smish = getTfliteInterpreter("smish_converted_model.tflite");
         lite_category = getTfliteInterpreter("cate_converted_model.tflite");
-        OnCheckPermission();
+//        OnCheckPermission();
     }
 
     @RequiresApi(api = Build.VERSION_CODES.M)

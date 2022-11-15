@@ -13,7 +13,10 @@ import '../kat_pages/home_page.dart';
 import '../providers/launch_provider.dart';
 
 class SplashScreen extends StatefulWidget {
-  const SplashScreen({Key? key}) : super(key: key);
+  //const SplashScreen({Key? key, required error_mes}) : super(key: key);
+  SplashScreen({required this.error_mes});
+
+  String error_mes;
 
   @override
   State<SplashScreen> createState() => _SplashScreenState();
@@ -62,8 +65,6 @@ class _SplashScreenState extends State<SplashScreen> {
           Container(
             height: 115,
           ),
-          Text(Provider.of<LaunchProvider>(context, listen: true).getUserInfo().imei.toString() ),
-          Text(Provider.of<LaunchProvider>(context, listen: true).getUserInfo().phoneNumber.toString() )
         ],
       ),
     );

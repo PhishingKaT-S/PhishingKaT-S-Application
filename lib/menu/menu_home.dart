@@ -194,7 +194,7 @@ class _MenuHomeState extends State<MenuHome> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              Provider.of<LaunchProvider>(context)
+                              context.watch<LaunchProvider>()
                                   .getUserInfo()
                                   .nickname
                                   .toString(),
@@ -217,7 +217,7 @@ class _MenuHomeState extends State<MenuHome> {
                                       fontFamily: 'NotoSansKRBold',
                                       color: Color(0xFF0b80f5)),
                                 ),
-                                Provider.of<LaunchProvider>(context)
+                                context.watch<LaunchProvider>()
                                             .getUserInfo()
                                             .score ==
                                         -1
@@ -230,7 +230,7 @@ class _MenuHomeState extends State<MenuHome> {
                                             color: Color(0xFF0b80f5)),
                                       )
                                     : Text(
-                                        ' ${Provider.of<LaunchProvider>(context).getUserInfo().score}점',
+                                        ' ${context.watch<LaunchProvider>().getUserInfo().score}점',
                                         style: const TextStyle(
                                             fontSize: 15,
                                             //fontWeight: FontWeight.w900,

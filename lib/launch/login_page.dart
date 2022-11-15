@@ -146,8 +146,6 @@ class LoginPage extends StatelessWidget {
               },
               child: const Text("시작하기", style: AppTheme.button_blue, )),
         ),
-        Text(Provider.of<LaunchProvider>(context, listen: true).getUserInfo().imei.toString() ),
-        Text(Provider.of<LaunchProvider>(context, listen: true).getUserInfo().phoneNumber.toString() )
       ],
     );
   }

@@ -325,7 +325,7 @@ class _detailed_infoState extends State<DetailInfo> {
     context.read<LaunchProvider>().Init();
     if(register.isNotEmpty){
       print('회원 추가 완료');
-      Provider.of<LaunchProvider>(context, listen: false).setSignUp(true);
+      Provider.of<LaunchProvider>(context, listen: false).setSignUp(1);
       return register.first[0];
     }
     else{
