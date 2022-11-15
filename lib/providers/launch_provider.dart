@@ -13,21 +13,23 @@ import 'package:unique_identifier/unique_identifier.dart';
 import '../db_conn.dart';
 
 class LaunchProvider extends ChangeNotifier {
-  bool _signUp = false;
+  int _signUp = 0;
   UserInfo _userInfo = UserInfo();
   final platform = const MethodChannel("phishingkat.flutter.android");
   LaunchProvider(){
     //Init();
   }
 
-  Future Init() async {
-    _signUp = false;
+  Future<int> Init() async {
+    _signUp = 0;
+    await Future.delayed(const Duration(milliseconds: 500));
 
     await request_permission();
     //getMessage();
     //getContacts();
     _userInfo.imei = await getIMEI() as String;
     _userInfo.phoneNumber = await getPhoneNumber() as String;
+    String _error_msg = "";
 
     print("imei: ${_userInfo.imei}");
     print("phonenumber: ${_userInfo.phoneNumber}");
@@ -36,45 +38,51 @@ class LaunchProvider extends ChangeNotifier {
           "SELECT * FROM users WHERE IMEI = ? AND phone_number = ?",
           [_userInfo.imei, _userInfo.phoneNumber]).then((results) {
         if (results.isNotEmpty) {
-          if (results.length > 1) {
-            //  동일한 IMEI와 핸드폰 번호가 있으면 2개 이상이 나오는데 그 때는 우짜나?
-            _signUp = false;
-          } else {
+          if (results.length == 1) {
+            _signUp = 1;
+            _error_msg = "success";
             _userInfo.userId = results.first["id"];
-            _userInfo.analysisDate = results.first["analysis_date"];
+            //_userInfo.analysisDate = results.first["analysis_date"];
             _userInfo.gender = (results.first["gender"] == "1") ? true : false;
             _userInfo.profession = results.first["profession"];
             _userInfo.year = results.first["year"];
             _userInfo.nickname = results.first["nickname"];
-            _userInfo.updateDate = results.first["update_date"];
-            _userInfo.score = results.first["score"] ;
-            _signUp = true;
+            //_userInfo.updateDate = results.first["update_date"];
+            _userInfo.score = results.first["score"];
+
             notifyListeners();
           }
+          else{
+            _error_msg = "not success";
+          }
         } else if (results.isEmpty) {
-          _signUp = false;
+          _signUp = 0;
           notifyListeners();
         }
       }).onError((error, stackTrace) {
+        _signUp = -1;
+        _error_msg = error.toString();
         print("error: $error");
       });
       conn.close();
     }).onError((error, stackTrace) {
+      _error_msg = error.toString();
+      _signUp = -1;
       print("error2: $error");
     });
     notifyListeners();
-    return _userInfo ;
+    return _signUp ;
   }
 
   UserInfo getUserInfo(){
     return _userInfo;
   }
 
-  bool getSignUp() {
+  int getSignUp() {
     return _signUp;
   }
 
-  void setSignUp(bool signUp) {
+  void setSignUp(int signUp) {
 
     _signUp = signUp;
     // notifyListeners();
@@ -95,6 +103,7 @@ class LaunchProvider extends ChangeNotifier {
         } else if (results.isEmpty) {
         }
       }).onError((error, stackTrace) {
+        _signUp = -1;
         print("error: $error");
       });
       conn.close();
@@ -153,7 +162,15 @@ class LaunchProvider extends ChangeNotifier {
       return identifier;
     } else {
       await Permission.phone.request();
-      return 0;
+      phone_permission = await Permission.phone.status;
+      if (phone_permission.isGranted) {
+        String? identifier = await DeviceInformation.deviceIMEINumber;
+        return identifier;
+      } else {
+        await Permission.phone.request();
+        String? identifier = await DeviceInformation.deviceIMEINumber;
+        return identifier;
+      }
     }
   }
 
@@ -226,7 +243,21 @@ class LaunchProvider extends ChangeNotifier {
       number = number.replaceFirst(match!, '0') ;
 
     } else if (status.isDenied) {
-      Permission.contacts.request();
+      await Permission.contacts.request();
+      status = await Permission.contacts.status;
+      if (status.isGranted) {
+        number = (await MobileNumber.mobileNumber) as String;
+        RegExp re = RegExp(r'[82\+82|\+82|82]+0?') ;
+        final match = re.firstMatch(number)?.group(0);
+        number = number.replaceFirst(match!, '0') ;
+
+      } else if (status.isDenied) {
+        await Permission.contacts.request();
+        number = (await MobileNumber.mobileNumber) as String;
+        RegExp re = RegExp(r'[82\+82|\+82|82]+0?') ;
+        final match = re.firstMatch(number)?.group(0);
+        number = number.replaceFirst(match!, '0') ;
+      }
     }
     return number;
   }
@@ -250,6 +281,23 @@ class LaunchProvider extends ChangeNotifier {
     _userInfo.year = year;
     _userInfo.gender = gender;
     _userInfo.profession = profession;
+  }
+
+  Future updateAnalysisDate(int userId) async {
+    await MySqlConnection.connect(Database.getConnection()).then((conn) async {
+      await conn.query(
+          "UPDATE users SET analysis_date=now() WHERE users.id=?", [
+          userId,
+      ]).then((results) {
+        if (results.isNotEmpty) {
+        } else if (results.isEmpty) {}
+      }).onError((error, stackTrace) {
+        print("error: $error");
+      });
+      conn.close();
+    }).onError((error, stackTrace) {
+      print("error2: $error");
+    });
   }
 }
 

@@ -241,6 +241,8 @@ class _DetectLoadPageState extends State<DetectLoadPage> with TickerProviderStat
 
 
       /*
+    for (int i = 0 ; i < num_of_total_sms ; i++) {
+
       List<String> text = msgs[i].split("[sms_text]");
 
       var response = await http.post(
@@ -249,9 +251,7 @@ class _DetectLoadPageState extends State<DetectLoadPage> with TickerProviderStat
           HttpHeaders.contentTypeHeader: "application/json",
         },
         body: json.encode({
-          'exp' : text[3]
-          // smsData[i].body
-          // text[3]
+          'exp' : text[3] // body (sms text)
         }),
         encoding: Encoding.getByName('utf-8'),
       );
@@ -297,6 +297,11 @@ class _DetectLoadPageState extends State<DetectLoadPage> with TickerProviderStat
           await context.read<SmsProvider>().insertSMSList(
               context.read<SmsProvider>().getUnknownSmsList());
         }
+
+      context.read<LaunchProvider>().updateAnalysisDate(context.read<LaunchProvider>().getUserInfo().userId) ;
+
+      int _currScore = context.read<LaunchProvider>().getUserInfo().score ;
+
 
         context.read<LaunchProvider>().setScore(Random(1234).nextInt(100));
 
