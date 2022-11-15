@@ -58,14 +58,13 @@ class _Phone_CRTState extends State<PhoneCRT> {
   Timer? _timer;
   int time = 300;
   final TextEditingController _textEditingController = TextEditingController(); // phonenumber textfield
-  final TextEditingController _certificationController =
-      TextEditingController();
+  final TextEditingController _certificationController = TextEditingController();
 
   //verification
   var verification;
   String _phoneNumber = '';
   void _start() {
-    _timer = Timer.periodic(Duration(seconds: 1), (timer) {
+    _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
       setState(() {
         time--;
         if (time == 0) {
@@ -85,6 +84,12 @@ class _Phone_CRTState extends State<PhoneCRT> {
     _timer?.cancel();
     _start();
   }//다시 보내기
+
+  @override
+  void dispose() {
+    super.dispose() ;
+    _timer?.cancel();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -178,10 +183,10 @@ class _Phone_CRTState extends State<PhoneCRT> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: <Widget>[
-                      _banner(), //피싱 피해를 막기 위해 ~
+                      Text(banner, style: AppTheme.serviceAuth), //피싱 피해를 막기 위해 ~
 
-                      SizedBox(
-                        height: 30,
+                      const SizedBox(
+                        height: 40,
                       ), //크기 조절
 
                       //휴대폰 번호 입력하는 container
@@ -195,15 +200,19 @@ class _Phone_CRTState extends State<PhoneCRT> {
                           border: Border.all(color: Colors.blue, width: 2),
                           borderRadius: BorderRadius.circular(10),
                         ),
-                        width: double.infinity,
-                        height: 70,
+                        height: MediaQuery.of(context).size.height * 0.075,
                         child: Row(
                           children: <Widget>[
                             Container(
-                                padding: EdgeInsets.only(left:10),
-                                width: 65,
-                                child: Center(
-                                    child: Text('+82 ', style: AppTheme.nationalNumber))),
+                                padding: EdgeInsets.only(left: MediaQuery.of(context).size.width * 0.03, right: MediaQuery.of(context).size.width * 0.04),
+                                child: const Center(
+                                    child: Text('+82 ', style: TextStyle(
+                                      // 0.4 국가번호
+                                      fontFamily: 'applegothicRegular',
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.bold,
+                                      color: AppTheme.lightdark2,
+                                    )))),
                             Expanded(
                               child: TextField(
                                 onSubmitted: (value) async { // 확인 눌렀을 때
@@ -223,13 +232,15 @@ class _Phone_CRTState extends State<PhoneCRT> {
                                 decoration: InputDecoration(
                                   border: InputBorder.none,
                                   hintText: '휴대폰 번호 입력(-제외)',
-                                  hintStyle: AppTheme.serviceCaption,
+                                  hintStyle: const TextStyle(fontFamily: 'applegothicMedium', fontSize: 17, color: AppTheme.lightGrey),
+                                  contentPadding: EdgeInsets.only(bottom: MediaQuery.of(context).size.height * 0.002),
                                 ),
                               ),
                             ),
+
                             Container(
                                 width: 50,
-                                height: 60,
+                                height: MediaQuery.of(context).size.height * 0.1,
                                 decoration: BoxDecoration(
                                     image: DecorationImage(
                                         scale: 8,
@@ -237,13 +248,11 @@ class _Phone_CRTState extends State<PhoneCRT> {
                                     )
                                 ),
                               ),
-
-
                           ],
                         ), //국가 번호, 휴대폰번호, 아이콘이 flexible 1, 8, 1 비율로 있음
                       ), //border
 
-                      SizedBox(
+                      const SizedBox(
                         height: 30,
                       ),
 
@@ -252,26 +261,24 @@ class _Phone_CRTState extends State<PhoneCRT> {
                           border: Border.all(color: Colors.blue, width: 2),
                           borderRadius: BorderRadius.circular(10),
                         ),
-                        width: double.infinity,
-                        height: 70,
+                        height: MediaQuery.of(context).size.height * 0.075,
                         child: Row(
                           children: <Widget>[
                             Container(
-                                padding: EdgeInsets.only(left:10),
-                                width: 65,
+                                padding: EdgeInsets.only(left: MediaQuery.of(context).size.width * 0.03, right: MediaQuery.of(context).size.width * 0.03),
                                 child: Center(
-                                    child: Text("0${(time ~/ 60)} : "+"${(time % 60).toString().length==2?(time % 60).toString():"0"+(time % 60).toString()}",
-                                        style: AppTheme.timer))),
+                                    child: Text("0${(time ~/ 60)}:"+"${(time % 60).toString().length==2?(time % 60).toString():"0"+(time % 60).toString()}",
+                                        style: TextStyle(fontFamily: 'applegothicRegular', fontSize: 13, fontWeight: FontWeight.bold, color: AppTheme.blueText,)))),
                             Expanded(
                               child: TextField(
-                                onSubmitted: ((value) {
-                                  if (value == verification) {
-                                    setState(() {
-                                      _timer?.cancel();
-                                      flag = true;
-                                    });
+                                  onSubmitted: ((value) {
+                                    if (value == verification) {
+                                      setState(() {
+                                        _timer?.cancel();
+                                        flag = true;
+                                      });
+                                    }
                                   }
-                                }
                                 ),
                                 focusNode: textFocus,
                                 controller: _certificationController,
@@ -279,7 +286,8 @@ class _Phone_CRTState extends State<PhoneCRT> {
                                 decoration: InputDecoration(
                                   border: InputBorder.none,
                                   hintText: '인증번호 입력',
-                                  hintStyle: AppTheme.serviceCaption,
+                                  hintStyle: const TextStyle(fontFamily: 'applegothicMedium', fontSize: 17, color: AppTheme.lightGrey),
+                                  contentPadding: EdgeInsets.only(bottom: MediaQuery.of(context).size.height * 0.003),
                                 ),
                               ),
                             ),
@@ -353,12 +361,5 @@ class _Phone_CRTState extends State<PhoneCRT> {
             ),
           )),
     );
-  }
-
-  Text _banner() {
-    return Text(
-                  banner, //위의 안내글을 입력받아서 state를 변화시킴
-                  style: AppTheme.serviceAuth, //스타일
-                );
   }
 }
