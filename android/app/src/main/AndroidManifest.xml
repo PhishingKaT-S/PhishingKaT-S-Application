@@ -45,6 +45,10 @@
     <application
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher"
+        android:label="피싱캣S"
+        android:usesCleartextTraffic="true"
+        >
+
         android:label="phishing_kat_pluss"
         android:usesCleartextTraffic="true">
         <receiver

@@ -88,6 +88,11 @@ class MyApp extends StatelessWidget {
           // }
           ///future에서 데이터를 불러온 다음 home page로 이동
           if (snapshot.connectionState == ConnectionState.done) {
+            if(snapshot.data == -1){
+              return const MaterialApp(
+                home: NetworkError(),
+              );
+            }
             print(snapshot.data);
             return MaterialApp(
               title: 'PhishingKaT+s', // 앱 이름
@@ -101,15 +106,14 @@ class MyApp extends StatelessWidget {
                 primaryColor: Colors.blueGrey,
                 scaffoldBackgroundColor: Colors.white,
               ),
-              home: context.watch<LaunchProvider>().getUserInfo().nickname != "" ? const HomePage() : const LoginPage(),
+              home: snapshot.data == 1? const HomePage() : const LoginPage(),
 
               // initialRoute: snapshot.data? '/homepage' : '/launch/login',
               ///앱에서 이동할 페이지의 이름 설정
               routes: {
                 //'/login': (BuildContext context) => const LoginPage(),
                 //'/homepage': (BuildContext context) => const HomePage(),
-                '/splash_screen': (BuildContext context) =>
-                const SplashScreen(),
+                // '/splash_screen': (BuildContext context) => const SplashScreen(),
                 '/splash/404_error' : (BuildContext context) => const Error404(),
                 '/splash/network_error' : (BuildContext context) => const NetworkError(),
                 '/splash/update_page' : (BuildContext context) => const UpdateSplashPage(),
@@ -142,10 +146,11 @@ class MyApp extends StatelessWidget {
                 const SnsWebView(url: '',),
               },
             );
-          } else //(snapshot.connectionState == ConnectionState.waiting) {
+          } 
+          else //(snapshot.connectionState == ConnectionState.waiting) {
               {
-            return const MaterialApp(
-                home: SplashScreen()); // 초기 로딩 시 Splash Screen
+            return MaterialApp(
+                home: SplashScreen(error_mes: "아직",)); // 초기 로딩 시 Splash Screen
           }
         });
   }
