@@ -75,12 +75,12 @@ public class SmsReceiver extends BroadcastReceiver {
 //                System.out.println(a);
                 if(a.equals(sender)) {
   //                  System.out.println("확인");
-                    flag = true;
+                    flag = true; // true로 해야됨
                 }
             }
             if(!flag) {//전화번호부에 없거나 등
-                System.out.println(Math.round(recentsms.score));
-                System.out.println(recentsms.category);
+                //System.out.println(Math.round(recentsms.score));
+                //System.out.println(recentsms.category);
                 if(registered==-1) { // 우리 연락처에 없는 문자
                     score=String.valueOf(Math.round(recentsms.score));//점수
                     type=String.valueOf(recentsms.category);
@@ -213,11 +213,7 @@ public class SmsReceiver extends BroadcastReceiver {
 }
 
 
-class SMS{
-    SMS(String smstext){
-        text = smstext;
-        getFeat(text);
-    }
+class SMS{ //전화 형식을 잘 맞춰야 할 듯 여러개로 fix시키는게 좋을듯
     private String text;
     private String [][] abaeKeyword = { //20*9 행렬
             {"아이디", "확인", "방식", "문의", "수리", "연락", "건강검진", "국제", "서류"},
@@ -247,6 +243,12 @@ class SMS{
     public float score = 0.0f;
     public int category=-1;
 
+    SMS(String smstext){
+        text = smstext;
+        getFeat(text);
+    }
+
+
     void getFeat(String text){
         array[0] = phone(text);
         array[1] = urls(text);
@@ -259,14 +261,23 @@ class SMS{
     }
 
     private float phone(String text){
-        Pattern pattern = Pattern.compile("^(\\d{2,4})?(-|\\s)?(\\d{3,4})(-|\\s)?(\\d{3,4})$");
-        if(pattern.matcher(text).matches()) return 1.0f;
+        String regex = "(\\d{2,4})?(-|\\s)?(\\d{3,4})(-|\\s)?(\\d{3,4})$";
+        Pattern pattern = Pattern.compile(regex); //
+        if(pattern.matcher(text).find()==true) {
+            System.out.println("phone check");
+            return 1.0f;
+        }
         else return 0.0f;
     }
     private float urls(String text){
-        Pattern pattern = Pattern.compile("(?i)\\\\b((?:[a-zA-Z][\\w-]+:(?:/{1,3}|[a-zA-Z0-9%])|www\\\\d{0,3}[.]|[a-zA-Z가-힣0-9.\\\\-]+[.][a-zA-Z]{2,4}/)(?:[^\\\\s()<>]+|\\\\(([^\\\\s()<>]+|(\\\\([^\\\\s()<>]+\\\\)))*\\\\))+(?:\\\\(([^\\\\s()<>]+|(\\\\([^\\\\s()<>]+\\\\)))*\\\\)|[^\\\\s`!()\\\\[\\\\]{};:\\'\\\".,<>?«»“”‘’가-힣]))");
-        if(pattern.matcher(text).matches()) return 1.0f;
-        else return 0.0f;
+        Pattern pattern = Pattern.compile("(http)?(s)?:?(\\/\\/)?([a-z0-9\\w]+\\.*)+[a-z0-9]{2,4}");
+        if(pattern.matcher(text).find()==true) {
+            System.out.println("url check");
+            return 1.0f;
+        }
+        else {
+            return 0.0f;
+        }
     }
     private float message_len(String text){
         if(text.length() >= 200) return 1.0f;
