@@ -55,7 +55,7 @@ class _HomePage extends State<HomePage> with TickerProviderStateMixin {
     });
     controller.repeat(reverse: true);
 
-    WidgetsBinding.instance?.addPostFrameCallback((_) async {
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
       int _userId = Provider.of<LaunchProvider>(context, listen: false)
           .getUserInfo()
           .userId;
