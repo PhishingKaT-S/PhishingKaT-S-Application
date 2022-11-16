@@ -4,6 +4,7 @@ import 'package:kakao_flutter_sdk/kakao_flutter_sdk.dart';
 import 'package:phishing_kat_pluss/kat_pages/attendance_page.dart';
 import 'package:phishing_kat_pluss/kat_pages/detect_load_page.dart';
 import 'package:phishing_kat_pluss/kat_pages/home_page.dart';
+import 'package:phishing_kat_pluss/launch/phone_certification.dart';
 import 'package:phishing_kat_pluss/menu/phishing_news.dart';
 import 'package:phishing_kat_pluss/menu/notice_page.dart';
 import 'package:phishing_kat_pluss/kat_pages/one_click_bank_page.dart';

@@ -194,6 +194,7 @@ class AppTheme {
     letterSpacing: 0.2,
     color: Colors.black, // was lightText
   );
+
   static const TextStyle caption_select = TextStyle(
     // Caption -> caption
     fontFamily: fontName,
@@ -430,8 +431,9 @@ class AppTheme {
   );
   static const TextStyle serviceAuth = TextStyle(
     // h6 -> title
-    fontFamily: 'applegothicBold',
-    fontSize: 19,
+    fontFamily: 'applegothicRegular',
+    fontWeight: FontWeight.bold,
+    fontSize: 21,
     height: 1.5,
     letterSpacing: 0.18,
     color: darkerText,
