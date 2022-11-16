@@ -50,6 +50,7 @@ public class MainActivity extends FlutterActivity {
     private static final int ACTION_MANAGE_OVERLAY_PERMISSION_REQUEST_CODE = 1;
     private static final String CHANNEL2 = "phishingkat.flutter.android"; //지원
     private static final String CHANNEL3 = "onestore";
+    private int num_of_sms_and_mms = 0 ;
     public static Interpreter lite_smish;
     public static Interpreter lite_category;
     ArrayList<String> sms = new ArrayList<String>();
@@ -69,18 +70,34 @@ public class MainActivity extends FlutterActivity {
                                     contact_permission == PackageManager.PERMISSION_GRANTED &&
                                     contact_state_permission == PackageManager.PERMISSION_GRANTED) {
                                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                                    sms.clear() ;
+                                    sms.clear();
+                                    num_of_sms_and_mms = 0 ;
 
-                                    this.readSMS(sms);
-                                    this.readMMS(sms);
+                                    Uri sms_uri = Uri.parse("content://sms/");
+
+                                    // SMS
+                                    Cursor cursor_sms = this.getContentResolver().query(sms_uri, null, null, null, "date DESC");
+
+                                    num_of_sms_and_mms += cursor_sms.getCount() ;
+
+                                    // MMS
+                                    Cursor cursor_mms = this.getContentResolver().query(Uri.parse("content://mms"),
+                                            new String[]{"_id", "thread_id", "date", "read"}, null, null, "date DESC");
+
+                                    num_of_sms_and_mms += cursor_mms.getCount() ;
+
+//                                    result.success("[NUM_OF_MSG]" + Integer.toString(num_of_sms_and_mms)) ;
+
+                                    cursor_sms = this.readSMS(sms, cursor_sms);
+                                    cursor_sms.close() ;
+
+
+                                    cursor_mms = this.readMMS(sms, cursor_mms) ;
+                                    cursor_mms.close() ;
                                 }
                             }
 
-                            if ((sms.isEmpty())) {
-                                result.success(sms);
-                            } else {
-                                result.success(sms);
-                            }// 결과 반환
+                            result.success(sms);
                         }
                 );
         new MethodChannel(flutterEngine.getDartExecutor().getBinaryMessenger(), CHANNEL2)
@@ -193,10 +210,11 @@ public class MainActivity extends FlutterActivity {
         return name;
     }
 
-    public boolean readSMS(ArrayList<String> _sms) {
-        Uri sms_uri = Uri.parse("content://sms/");
-        Cursor cursor = this.getContentResolver().query(sms_uri, null, null, null, "date DESC");
-        int count = cursor.getCount();
+    public Cursor readSMS(ArrayList<String> _sms, Cursor cursor) {
+//        Uri sms_uri = Uri.parse("content://sms/");
+//        Cursor cursor = this.getContentResolver().query(sms_uri, null, null, null, "date DESC");
+//        int count = cursor.getCount();
+
 //        Log.i(TAG, "SMS Count = " + count);
 //        ArrayList<MessageInfo> al_sms = new ArrayList<MessageInfo>();
 
@@ -215,8 +233,8 @@ public class MainActivity extends FlutterActivity {
                 _sms.add(name + "[sms_text]" + phone + "[sms_text]" + Long.toString(date) + "[sms_text]" + body);
             }
         }
-        cursor.close();
-        return true;
+//        cursor.close();
+        return cursor;
     }
 
     ////////////////////////////////////       MMS       ////////////////////////////////////////////////
@@ -343,11 +361,11 @@ public class MainActivity extends FlutterActivity {
         return messageBody;
     }
 
-    public boolean readMMS(ArrayList<String> _mms) {
-        Cursor cursor = this.getContentResolver().query(Uri.parse("content://mms"),
-                new String[]{"_id", "thread_id", "date", "read"},
-                null, null,
-                "date DESC");
+    public Cursor readMMS(ArrayList<String> _mms, Cursor cursor) {
+//        Cursor cursor = this.getContentResolver().query(Uri.parse("content://mms"),
+//                new String[]{"_id", "thread_id", "date", "read"},
+//                null, null,
+//                "date DESC");
 
         while (cursor.moveToNext()) {
             @SuppressLint("Range") String body = messageFromMms(cursor.getString(cursor.getColumnIndex("_id")));
@@ -365,8 +383,8 @@ public class MainActivity extends FlutterActivity {
                 _mms.add(name + "[sms_text]" + phone + "[sms_text]" + Long.toString(date) + "[sms_text]" + body);
             }
         }
-        cursor.close();
-        return true;
+//        cursor.close();
+        return cursor;
     }
 
 
@@ -403,7 +421,8 @@ public class MainActivity extends FlutterActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-
+        lite_smish.close();
+        lite_category.close();
     }
 
 
