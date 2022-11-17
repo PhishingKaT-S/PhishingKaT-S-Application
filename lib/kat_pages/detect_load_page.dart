@@ -52,11 +52,23 @@ class _DetectLoadPageState extends State<DetectLoadPage> with TickerProviderStat
   int num_of_total_sms = 0 ;
   int num_of_smishing_sms = 0 ;
   List<double> scoreList = [] ;
-
-  List<int> predictionList = [] ;
+  List<Sms> dataList = [];
   static const platform = MethodChannel('samples.flutter.dev/channel') ;
 
   List<String> msgs = [] ;
+
+  var ABAE_keywords=[
+    ["아이디", "확인", "방식", "문의", "수리", "연락", "건강검진", "국제", "서류"],      ["수리", "아이디", "비율", "확인", "규제", "아빠", "전화", "은행", "중도"],
+    ["국제", "배송", "확인", "요청", "아이디", "서류", "경감", "자산", "대한"],      ["일화", "번호", "오류", "규제", "모든", "대상", "안내", "조심", "국민"],
+    ["법령", "신고", "발급", "배송", "이상", "전산", "개인", "문의", "자산"],      ["제외", "노출", "아빠", "방문", "우대금리", "확인", "지정", "요청", "여기"],
+    ["수리", "발급", "방식", "최고", "국제", "확인", "심의", "자동", "신고"],      ["교통", "은행", "문의", "배송", "공인", "수리", "국제", "일치", "제공"],
+    ["국제", "원본", "일시", "원금", "문의", "노출", "참고", "코로나", "분할"],      ["긴급", "기타", "대출", "일부", "매출", "전화", "기준", "문의", "조회"],
+    ["당일", "확인", "기한", "천만", "아빠", "문의", "수리", "역시", "배송"],      ["긴급", "대한", "개인", "최저", "바로", "조회", "변경", "생활", "시간"],
+    ["수리", "정상처리", "확인", "노출", "우대금리", "요청", "카톡", "원금", "당일"],      ["확인", "지금", "일치", "문의", "대출", "은행", "안내", "생활", "수리"],
+    ["수시", "년도", "원금", "운영", "처리", "경감", "아빠", "안내", "일용직"],      ["문의", "대출", "매출", "국제", "역시", "중도", "안정", "이자", "원금"],
+    ["수리", "여기", "공단", "은행", "차등", "최초", "진시", "대한", "면책"],      ["노출", "일부", "마감", "자산", "확인", "국제", "처리", "문의", "연결"],
+    ["자산", "추가", "이자", "발급", "범위", "바로", "수리", "대한", "제외"],      ["확인", "이자", "수리", "문의", "연결", "당일", "국제", "최저", "발급"]
+  ];
 
   @override
   void initState() {
@@ -158,33 +170,11 @@ class _DetectLoadPageState extends State<DetectLoadPage> with TickerProviderStat
       0.0, 0.0, 0.0, 0.0, 0.0,
       0.0, 0.0, 0.0, 0.0, 0.0,
       0.0, 0.0, 0.0, 0.0, 0.0];
-    var keywords=[
-      ["아이디", "확인", "방식", "문의", "수리", "연락", "건강검진", "국제", "서류"],
-      ["수리", "아이디", "비율", "확인", "규제", "아빠", "전화", "은행", "중도"],
-      ["국제", "배송", "확인", "요청", "아이디", "서류", "경감", "자산", "대한"],
-      ["일화", "번호", "오류", "규제", "모든", "대상", "안내", "조심", "국민"],
-      ["법령", "신고", "발급", "배송", "이상", "전산", "개인", "문의", "자산"],
-      ["제외", "노출", "아빠", "방문", "우대금리", "확인", "지정", "요청", "여기"],
-      ["수리", "발급", "방식", "최고", "국제", "확인", "심의", "자동", "신고"],
-      ["교통", "은행", "문의", "배송", "공인", "수리", "국제", "일치", "제공"],
-      ["국제", "원본", "일시", "원금", "문의", "노출", "참고", "코로나", "분할"],
-      ["긴급", "기타", "대출", "일부", "매출", "전화", "기준", "문의", "조회"],
-      ["당일", "확인", "기한", "천만", "아빠", "문의", "수리", "역시", "배송"],
-      ["긴급", "대한", "개인", "최저", "바로", "조회", "변경", "생활", "시간"],
-      ["수리", "정상처리", "확인", "노출", "우대금리", "요청", "카톡", "원금", "당일"],
-      ["확인", "지금", "일치", "문의", "대출", "은행", "안내", "생활", "수리"],
-      ["수시", "년도", "원금", "운영", "처리", "경감", "아빠", "안내", "일용직"],
-      ["문의", "대출", "매출", "국제", "역시", "중도", "안정", "이자", "원금"],
-      ["수리", "여기", "공단", "은행", "차등", "최초", "진시", "대한", "면책"],
-      ["노출", "일부", "마감", "자산", "확인", "국제", "처리", "문의", "연결"],
-      ["자산", "추가", "이자", "발급", "범위", "바로", "수리", "대한", "제외"],
-      ["확인", "이자", "수리", "문의", "연결", "당일", "국제", "최저", "발급"]
-    ];
 
     for(int i =0; i<20; i++) {
       for(int j =0; j<8; j++){
-        print(keywords[i][j]);
-        if(text.contains(keywords[i][j])) {
+        print(ABAE_keywords[i][j]);
+        if(text.contains(ABAE_keywords[i][j])) {
           ret_keyword[i] = 1.0;
           break;
         }
@@ -208,18 +198,6 @@ class _DetectLoadPageState extends State<DetectLoadPage> with TickerProviderStat
       int type = 0;
       var ret_keyword=List.generate(20, (index) => 0.0);
       var ret = List.generate(25, (index) => 0.0);
-      var ABAE_keywords=[
-        ["아이디", "확인", "방식", "문의", "수리", "연락", "건강검진", "국제", "서류"],      ["수리", "아이디", "비율", "확인", "규제", "아빠", "전화", "은행", "중도"],
-        ["국제", "배송", "확인", "요청", "아이디", "서류", "경감", "자산", "대한"],      ["일화", "번호", "오류", "규제", "모든", "대상", "안내", "조심", "국민"],
-        ["법령", "신고", "발급", "배송", "이상", "전산", "개인", "문의", "자산"],      ["제외", "노출", "아빠", "방문", "우대금리", "확인", "지정", "요청", "여기"],
-        ["수리", "발급", "방식", "최고", "국제", "확인", "심의", "자동", "신고"],      ["교통", "은행", "문의", "배송", "공인", "수리", "국제", "일치", "제공"],
-        ["국제", "원본", "일시", "원금", "문의", "노출", "참고", "코로나", "분할"],      ["긴급", "기타", "대출", "일부", "매출", "전화", "기준", "문의", "조회"],
-        ["당일", "확인", "기한", "천만", "아빠", "문의", "수리", "역시", "배송"],      ["긴급", "대한", "개인", "최저", "바로", "조회", "변경", "생활", "시간"],
-        ["수리", "정상처리", "확인", "노출", "우대금리", "요청", "카톡", "원금", "당일"],      ["확인", "지금", "일치", "문의", "대출", "은행", "안내", "생활", "수리"],
-        ["수시", "년도", "원금", "운영", "처리", "경감", "아빠", "안내", "일용직"],      ["문의", "대출", "매출", "국제", "역시", "중도", "안정", "이자", "원금"],
-        ["수리", "여기", "공단", "은행", "차등", "최초", "진시", "대한", "면책"],      ["노출", "일부", "마감", "자산", "확인", "국제", "처리", "문의", "연결"],
-        ["자산", "추가", "이자", "발급", "범위", "바로", "수리", "대한", "제외"],      ["확인", "이자", "수리", "문의", "연결", "당일", "국제", "최저", "발급"]
-      ];
 
       setState(() {
         num_of_total_sms = smsData.length;
@@ -262,21 +240,23 @@ class _DetectLoadPageState extends State<DetectLoadPage> with TickerProviderStat
         // 0.5 이상 Smishing Data로 간주
         if (output_score[0][0] >= threshold ) {
           num_of_smishing_sms++;
+          if ( num_of_smishing_sms < 100 ) {
+            Sms _sms = Sms(id: cnt,
+                sender: smsData[i].phone,
+                text: smsData[i].body,
+                date: smsData[i].date,
+                type: type,
+                prediction: (output_score[0][0] * 100).toInt(),
+                smishing: 1);
+            dataList.add(_sms) ;
+          }
         }
-        Sms sms = Sms(id: cnt, sender: smsData[i].phone, text: smsData[i].body, date: smsData[i].date,
-                      type: type, prediction: (output_score[0][0] * 100).toInt(), smishing: 1);
         cnt++;
-        DBHelper().insertSMS(sms);
-
-        predictionList.add((output_score[0][0] * 100).toInt());
-
         setState(() {
           num_of_completed_sms++;
         });
       }
-
-      List<Sms> smsListSet = await DBHelper().getAllSMS() ;
-      print(smsListSet[0].text);
+      // print(dataList) ;
 
       context.read<SmsProvider>().setDangerSms(num_of_smishing_sms);
 
@@ -287,7 +267,16 @@ class _DetectLoadPageState extends State<DetectLoadPage> with TickerProviderStat
 
         // 처음 검사할 때 문자 메세지 다 가져오기
         if (_currScore == -1) {
-          await context.read<SmsProvider>().insertSMSList(context.read<SmsProvider>().getUnknownSmsList());
+          DBHelper().deleteAllSMS() ;
+          for (int i = 0 ; i < dataList.length; i++) {
+            DBHelper().insertSMS(dataList[i]);
+          }
+          // List<Sms> smsListSet = await DBHelper().getAllSMS() ;
+          // for (int i = 0 ; i < dataList.length; i++) {
+          //   print(smsListSet[i].text) ;
+          // }
+          // DBHelper().insertSMS(_sms);
+          // await context.read<SmsProvider>().insertSMSList(context.read<SmsProvider>().getUnknownSmsList());
         }
 
         context.read<LaunchProvider>().updateAnalysisDate(context.read<LaunchProvider>().getUserInfo().userId) ;
