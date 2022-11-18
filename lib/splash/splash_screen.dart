@@ -7,12 +7,22 @@
 import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:provider/provider.dart';
 import '../Theme.dart';
 import '../kat_pages/home_page.dart';
+import '../providers/launch_provider.dart';
 
-class SplashScreen extends StatelessWidget {
-  const SplashScreen({Key? key}) : super(key: key);
+class SplashScreen extends StatefulWidget {
+  //const SplashScreen({Key? key, required error_mes}) : super(key: key);
+  SplashScreen({required this.error_mes});
 
+  String error_mes;
+
+  @override
+  State<SplashScreen> createState() => _SplashScreenState();
+}
+
+class _SplashScreenState extends State<SplashScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(

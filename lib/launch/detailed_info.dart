@@ -132,7 +132,7 @@ class _detailed_infoState extends State<DetailInfo> {
     );
   }
 
-  Widget _category_button() {
+  Widget _categoryButtons() {
     return Container(
       child: ToggleButtons(
           splashColor: Colors.white,
@@ -148,20 +148,18 @@ class _detailed_infoState extends State<DetailInfo> {
                 }else{
                   _categorySelected[index] = false;
                 }
-
               }
             });
           },
           isSelected: _categorySelected,
-          children:List<Widget>.generate(4, (index)=>
-              Padding(padding: EdgeInsets.all(0),
+          children:List<Widget>.generate(4, (index)=> Padding(padding: EdgeInsets.all(0),
                 child: Padding(
                   padding: const EdgeInsets.only(left: 5, right: 5, top: 5),
                   child: Container(
-                      padding: EdgeInsets.only(left: MediaQuery.of(context).size.width*0.055, right:MediaQuery.of(context).size.width*0.055),
-                      height: double.infinity,
+                      padding: EdgeInsets.only(left: MediaQuery.of(context).size.width * 0.055, right:MediaQuery.of(context).size.width * 0.055),
+                      height: 35,
                       decoration: BoxDecoration(
-                          color: _categorySelected[index] ? Colors.blue: Colors.grey[200],
+                          color: _categorySelected[index] ? Colors.blue: AppTheme.whiteGrey,
                           borderRadius: BorderRadius.circular(35) ),
                       alignment: Alignment.center,
                       child:Text(
@@ -176,7 +174,7 @@ class _detailed_infoState extends State<DetailInfo> {
   Container _nickname() {
     return Container(
                 padding: EdgeInsets.only(right: 5),
-                height: 48,
+                height: MediaQuery.of(context).size.height * 0.07,
                 child: TextFormField(
                   inputFormatters: [
                     new LengthLimitingTextInputFormatter(6)
@@ -184,80 +182,78 @@ class _detailed_infoState extends State<DetailInfo> {
                   controller: nicknameController,
                   decoration: InputDecoration(
                     enabledBorder: OutlineInputBorder(
-                        borderSide: BorderSide( //테두리
-                            color:Colors.blue,
-                            width:1
-                        )
+                      borderSide: BorderSide( color:Colors.blue, width:2),
+                      borderRadius: BorderRadius.circular(10),
                     ),
                     fillColor: Colors.white,
                     hintText: '별명 (최대 6자)',
-                    hintStyle: AppTheme.serviceCaption,
+                    hintStyle: const TextStyle(fontFamily: 'applegothicMedium', fontSize: 17, color: AppTheme.lightGrey),
                     border: OutlineInputBorder(
-                      borderSide: BorderSide(color:Colors.blue, width:1.0),
+                      borderSide: BorderSide(color:Colors.blue, width:2.0),
+                      borderRadius: BorderRadius.circular(10),
                     ),
                     filled: true,
-
                   ),
                 ),
               );
   }
 
-  Align _over_fourteen() {
-    return Align(
-                alignment: Alignment.centerLeft,
-                  child:
-                      Text('만 14세 이상만 회원으로 가입할 수 있습니다.', style: AppTheme.caption,));
+  Align _overFourteen() {
+    return const Align(alignment: Alignment.centerLeft,
+                child: Text('만 14세 이상만 회원으로 가입할 수 있습니다.', style: TextStyle(
+                  // Caption -> caption
+                  fontFamily: 'applegothicRegular',
+                  fontWeight: FontWeight.bold,
+                  fontSize: 12,
+                  color: AppTheme.lightGrey, // was lightText
+                )));
   }
 
-  Widget _birth_gender() {
+  Widget _birthGender() {
     return Container(
                 width: double.infinity,
-                height: 50,
+                height: MediaQuery.of(context).size.height * 0.07,
                 child: Row(
                   children: <Widget>[
-                      Expanded( // 이어 피커
-                          child:
-                          GestureDetector(
+                      Expanded(
+                        child: GestureDetector(
                         onTap: yearPicker,
-                        child: AbsorbPointer(
-                          child:
-                          Container(
-                            padding: EdgeInsets.only(bottom:2, top:2),
-                            child: TextFormField(
-                              controller: yController,
-                              decoration: InputDecoration(
-                                enabledBorder: OutlineInputBorder(
-                                  borderSide: BorderSide(
-                                    color:Colors.blue,
-                                    width:1
-                                  )
-                                ), //border 아웃라인
-                                hintText: '출생년도',
-                                hintStyle: AppTheme.serviceCaption,
-                                border: OutlineInputBorder(
-                                  borderSide: BorderSide(color:Colors.blue, width:0.0),
+                          child: AbsorbPointer(
+                            child:
+                            Container(
+                              width: MediaQuery.of(context).size.width * 0.6,
+                              child: TextFormField(
+                                controller: yController,
+                                decoration: InputDecoration(
+                                  enabledBorder: OutlineInputBorder(
+                                    borderSide: BorderSide(color:Colors.blue, width:2),
+                                    borderRadius: BorderRadius.circular(10),
+                                  ), //border 아웃라인
+                                  hintText: '출생년도',
+                                  hintStyle: TextStyle(fontFamily: 'applegothicMedium', fontSize: 17, color: AppTheme.lightGrey),
+                                  border: OutlineInputBorder(
+                                    borderSide: BorderSide(color:Colors.blue, width:2.0),
+                                    borderRadius: BorderRadius.circular(10),
+                                  ),
+                                  filled: true,
+                                  fillColor: Colors.white,
                                 ),
-                                filled: true,
-                                fillColor: Colors.white,
-                              ),
-                              onSaved: (val){
-                                year = yController.text;
-                                print(yController.text);
+                                onSaved: (val){
+                                  year = yController.text;
                                 },
-                              validator: (val){
-                                if(val == null || val.isEmpty)
-                                  {
+                                validator: (val){
+                                  if(val == null || val.isEmpty) {
                                     return 'Year is necessary';
                                   }
-                                return null;
-                              },
-                            ),
-                          )
-                        ),
+                                  return null;
+                                },
+                              ),
+                            )
+                          ),
                       )
                       ),
-                      SizedBox(width: 10,),// 이어피커
 
+                      const SizedBox(width: 5,),// 이어피커
 
                       ToggleButtons(
                             splashColor: Colors.white,
@@ -279,23 +275,22 @@ class _detailed_infoState extends State<DetailInfo> {
                             },
                             isSelected: _isSelected,
                             children:List<Widget>.generate(2, (index)=>
-                              Padding(padding: EdgeInsets.all(0),
-                              child: Padding(
+                              Padding(
                                 padding: const EdgeInsets.only(left: 5, right: 5),
                                 child: Container(
-                                    padding: EdgeInsets.only(left: 20, right:20),
-                                    height: double.infinity,
+                                    padding: EdgeInsets.only(left: MediaQuery.of(context).size.width * 0.05, right:MediaQuery.of(context).size.width * 0.05),
+                                    height: MediaQuery.of(context).size.height * 0.07,
                                   decoration: BoxDecoration(
-                                    color: _isSelected[index] ? AppTheme.startBackground: Colors.white,
-                                    border: Border.all(color: AppTheme.startBackground, width: 1.0),
-                                    borderRadius: BorderRadius.circular(5) ),
+                                    color: _isSelected[index] ? Colors.blue : Colors.white,
+                                    border: Border.all(color: Colors.blue, width: 2.0),
+                                    borderRadius: BorderRadius.circular(10) ),
                                     alignment: Alignment.center,
                                   child:Text(
                                       (itemTypes[index]), style: _isSelected[index] ? AppTheme.selecttoggleGender :AppTheme.unselecttoggleGender
                                   )
                                   ),
                               ),
-                              ))
+                              )
                           ),
                       // 남자 버튼
                   ],
@@ -303,14 +298,10 @@ class _detailed_infoState extends State<DetailInfo> {
               );
   }
 
-  Align _guide_text() {
-    return Align(
-                alignment: Alignment.centerLeft,
-                child: const Text(
-                  '보다 정확한 스미싱 예방을 위해 \n정보를 입력해주세요',   //위의 안내글을 입력받아서 state를 변화시킴
-                  style: AppTheme.serviceAuth,  //스타일
-                ),
-              );
+  Align _guideText() {
+    return const Align(
+      alignment: Alignment.centerLeft,
+      child: Text('보다 정확한 스미싱 예방을 위해 \n정보를 입력해주세요', style: AppTheme.serviceAuth));
   }
 
   //DB
@@ -325,7 +316,7 @@ class _detailed_infoState extends State<DetailInfo> {
     context.read<LaunchProvider>().Init();
     if(register.isNotEmpty){
       print('회원 추가 완료');
-      Provider.of<LaunchProvider>(context, listen: false).setSignUp(true);
+      Provider.of<LaunchProvider>(context, listen: false).setSignUp(1);
       return register.first[0];
     }
     else{
@@ -373,10 +364,12 @@ class _detailed_infoState extends State<DetailInfo> {
         body: SingleChildScrollView(
           child:
           Container(
-            padding: EdgeInsets.fromLTRB(20, 0, 20, 10),
+            padding: EdgeInsets.fromLTRB(MediaQuery.of(context).size.width * 0.06, 0, MediaQuery.of(context).size.width * 0.06, 10),
             child: Column(
               children: <Widget>[
-                _guide_text(),//위의 안내글
+                SizedBox(height: 20,),//위 위젯과 거리 조절
+
+                _guideText(),//위의 안내글
 
                 SizedBox(height: 30,),//위 위젯과 거리 조절
 
@@ -386,27 +379,27 @@ class _detailed_infoState extends State<DetailInfo> {
                 * 출생년도 출력과 남 여 버튼 하나만 선택할 수 있게 해야됨
                 * */
 
-                _birth_gender(),
+                _birthGender(),
 
 
                 const SizedBox(height: 10,),
 
-                _over_fourteen(), //14세 이상 안내글
+                _overFourteen(), //14세 이상 안내글
 
-                const SizedBox(height: 10,),
+                const SizedBox(height: 20,),
 
                 //별명
                 _nickname(),
 
                 const SizedBox(height:20),
 
-                const Align(alignment: Alignment.bottomLeft,child: Text('나의 유형', style: AppTheme.title,),),
-
+                const Align(alignment: Alignment.bottomLeft,
+                            child: Text('나의 유형', style: TextStyle(fontFamily: 'applegothicRegular', fontWeight: FontWeight.bold, fontSize: 16,
+                                                                  height: 1.5, letterSpacing: 0.18, color: AppTheme.darkerText))),
                 const SizedBox(height: 10,),
 
                 //유형 중 하나만 선택할 수 있게 해야됨
-                _category_button()
-
+                _categoryButtons()
               ],
             ),
           ),

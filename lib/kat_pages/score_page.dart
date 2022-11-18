@@ -11,6 +11,7 @@ import 'package:mysql1/mysql1.dart';
 import 'package:phishing_kat_pluss/db_conn.dart';
 import 'package:phishing_kat_pluss/kat_widget/kat_appbar_back.dart';
 import 'package:phishing_kat_pluss/providers/launch_provider.dart';
+import 'package:syncfusion_flutter_charts/charts.dart';
 
 import '../theme.dart';
 import 'package:provider/provider.dart';
@@ -27,6 +28,40 @@ class _ScorePage extends State<ScorePage> {
   double score = 0.89;
   List<int> types_of_ranks = [0] ;
   List<int> num_of_sms_of_ranks = [0] ;
+  final List<_PieData> pieData = [
+
+    _PieData('기관사칭\n10개', 8, Colors.red.shade400),
+    _PieData('지인사칭\n50개', 16, Colors.red),
+    _PieData('URL 포함\n20개', 29, Colors.red.shade300),
+
+    _PieData('택배사칭\n5개', 1, Colors.red.shade200),
+    _PieData('진일짱\n15개', 3, Colors.red.shade100),
+  ];
+
+  Widget _pieChart(){
+    return Center(
+      child: SfCircularChart(
+          margin: EdgeInsets.zero,
+          // title: ChartTitle(text: 'Sales by sales person'),
+          borderWidth: 0,
+          // legend: Legend(isVisible: true),
+          series: <PieSeries<_PieData, String>>[
+            PieSeries<_PieData, String>(
+              explode: true,
+              explodeIndex: 0,
+              // sortingOrder: SortingOrder.ascending,
+              // sortFieldValueMapper: (_PieData data, _) => data.x,
+              dataSource: pieData,
+              xValueMapper: (_PieData data, _) => data.x,
+              yValueMapper: (_PieData data, _) => data.y,
+              dataLabelMapper: (_PieData data, _) => data.x,
+              pointColorMapper: (_PieData data, _) => data.color,
+              dataLabelSettings: DataLabelSettings(isVisible: true),
+
+            ),
+          ]),
+    );
+  }
 
   Future _get_rank_of_phishing_analysis() async {
     var user_id = context.watch<LaunchProvider>().getUserInfo().userId;
@@ -306,10 +341,19 @@ class _ScorePage extends State<ScorePage> {
             children: [
               _my_score(),
               _dividing_line(),
-              _risk_ranking(),
+              // _risk_ranking(),
+              _pieChart(),
             ],
           ),
         )
     );
   }
+}
+
+class _PieData {
+  _PieData(this.x, this.y, [this.color = Colors.blue]);
+
+  final String x;
+  final int y;
+  final Color color;
 }
