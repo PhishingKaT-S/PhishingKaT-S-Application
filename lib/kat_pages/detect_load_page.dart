@@ -286,8 +286,10 @@ class _DetectLoadPageState extends State<DetectLoadPage> with TickerProviderStat
 
       print("SMISH: " + num_of_smishing_sms.toString());
 
+      int _currScore = context.read<LaunchProvider>().getUserInfo().score ;
+
       if (num_of_completed_sms == num_of_total_sms) {
-        int _currScore = context
+        _currScore = context
             .read<LaunchProvider>()
             .getUserInfo()
             .score;
@@ -300,7 +302,7 @@ class _DetectLoadPageState extends State<DetectLoadPage> with TickerProviderStat
 
       context.read<LaunchProvider>().updateAnalysisDate(context.read<LaunchProvider>().getUserInfo().userId) ;
 
-      int _currScore = context.read<LaunchProvider>().getUserInfo().score ;
+      _currScore = context.read<LaunchProvider>().getUserInfo().score ;
 
 
         context.read<LaunchProvider>().setScore(Random(1234).nextInt(100));
