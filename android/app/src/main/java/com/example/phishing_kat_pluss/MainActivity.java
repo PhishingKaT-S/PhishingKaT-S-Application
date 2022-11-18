@@ -138,8 +138,8 @@ public class MainActivity extends FlutterActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        lite_smish = getTfliteInterpreter("smish_converted_model.tflite");
-        lite_category = getTfliteInterpreter("cate_converted_model.tflite");
+//        lite_smish = getTfliteInterpreter("smish_converted_model.tflite");
+//        lite_category = getTfliteInterpreter("cate_converted_model.tflite");
 //        OnCheckPermission();
     }
 
@@ -178,7 +178,7 @@ public class MainActivity extends FlutterActivity {
                     Toast.makeText(this, "앱 실행을 위한 권한이 설정되었습니다.", Toast.LENGTH_LONG).show();
                 } else {
                     Toast.makeText(this, "앱 실행을 위한 권한이 취소되었습니다.", Toast.LENGTH_LONG).show();
-                    finish();
+//                    finish();
                 }
 
                 break;
