@@ -262,8 +262,14 @@ class _DetectLoadPageState extends State<DetectLoadPage> with TickerProviderStat
 
     print("SMISH: " + num_of_smishing_sms.toString() + " " + num_of_completed_sms.toString());
 
+    int _currScore = context.read<LaunchProvider>().getUserInfo().score ;
+
     if (num_of_completed_sms == num_of_total_sms) {
-      int _currScore = context.read<LaunchProvider>().getUserInfo().score;
+      _currScore = context
+          .read<LaunchProvider>()
+          .getUserInfo()
+          .score;
+
 
       // 처음 검사할 때 문자 메세지 다 가져오기
       if (_currScore == -1) {
@@ -279,7 +285,10 @@ class _DetectLoadPageState extends State<DetectLoadPage> with TickerProviderStat
         // await context.read<SmsProvider>().insertSMSList(context.read<SmsProvider>().getUnknownSmsList());
       }
 
+
       context.read<LaunchProvider>().updateAnalysisDate(context.read<LaunchProvider>().getUserInfo().userId) ;
+
+      _currScore = context.read<LaunchProvider>().getUserInfo().score ;
 
       context.read<LaunchProvider>().setScore(Random(1234).nextInt(100));
 

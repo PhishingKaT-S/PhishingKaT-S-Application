@@ -76,6 +76,16 @@ class DBHelper {
     return list;
   }
 
+  Future<List<Sms>> getAllSMSFreq() async {
+    final db = await database;
+    var res = await db.rawQuery('SELECT * FROM $tableName, (select sender, count(*) as cnt from $tableName group by sender order by cnt desc) as b where $tableName.sender = b.cnt order by cnt desc');
+    List<Sms> list = res.isNotEmpty ? res.map((c) => Sms(id:int.parse(c['id'].toString()), sender: c['sender'].toString(), text:c['text'].toString(), date: c['date'].toString(),
+        type: int.parse(c['type'].toString()), prediction: int.parse(c['prediction'].toString()),
+        smishing: int.parse(c['smishing'].toString()))).toList() : [];
+
+    return list;
+  }
+
   //Delete
   deleteSMS(int id) async {
     final db = await database;
