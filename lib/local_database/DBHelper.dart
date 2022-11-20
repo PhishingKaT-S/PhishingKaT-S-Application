@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:sqflite/sqflite.dart';
 
 import 'dart:io';
@@ -18,12 +19,13 @@ class DBHelper {
   late Database _database ;
 
   Future<Database> get database async {
-    if ( _database.isOpen ) return _database ;
     _database = await initDB();
     return _database;
   }
 
   initDB() async {
+    WidgetsFlutterBinding.ensureInitialized();
+
     Directory documentsDirectory = await getApplicationDocumentsDirectory();
     String path = join(documentsDirectory.path, 'sms.db');
 
