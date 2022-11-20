@@ -182,7 +182,7 @@ class _DetectLoadPageState extends State<DetectLoadPage> with TickerProviderStat
       }
     }
     for(int i =0; i<20; i++) {
-        print(ret_keyword[i]);
+      print(ret_keyword[i]);
     }
     return ret_keyword;
   }
@@ -193,257 +193,257 @@ class _DetectLoadPageState extends State<DetectLoadPage> with TickerProviderStat
   }
 
   Future<void> _detectionSms() async {
-      //final url = Uri.parse('http://52.53.168.246:5000/api') ;
-      final List<SmsInfo> smsData = context.read<SmsProvider>().getUnknownSmsList();
-      int type = 0;
-      var ret_keyword=List.generate(20, (index) => 0.0);
-      var ret = List.generate(25, (index) => 0.0);
+    //final url = Uri.parse('http://52.53.168.246:5000/api') ;
+    final List<SmsInfo> smsData = context.read<SmsProvider>().getUnknownSmsList();
+    int type = 0;
+    var ret_keyword=List.generate(20, (index) => 0.0);
+    var ret = List.generate(25, (index) => 0.0);
 
-      setState(() {
-        num_of_total_sms = smsData.length;
-      });
+    setState(() {
+      num_of_total_sms = smsData.length;
+    });
 
-      print("Total: " + num_of_total_sms.toString());
+    print("Total: " + num_of_total_sms.toString());
 
-      int cnt = 1 ;
+    int cnt = 1 ;
 
-      for (int i = 0; i < smsData.length; i++) {
-        ret[0] = isPhone(smsData[i].body);
-        ret[1] = isUrl(smsData[i].body);
-        ret[2] = textLength(smsData[i].body);
-        ret[3] = textLength(smsData[i].body);
-        ret[4] = smishing_symbol(smsData[i].body);
-        for(int j =0; j < 20; j++) {
-          for(int k =0; k < 8; k++){
-            if(smsData[i].body.contains(ABAE_keywords[j][k])) {
-              ret_keyword[j] = 1.0;
-              ret[j+5]=1.0;
-              break;
-            }
-            ret[j+5]=0.0;
-            ret_keyword[j]=0.0;
+    for (int i = 0; i < smsData.length; i++) {
+      ret[0] = isPhone(smsData[i].body);
+      ret[1] = isUrl(smsData[i].body);
+      ret[2] = textLength(smsData[i].body);
+      ret[3] = textLength(smsData[i].body);
+      ret[4] = smishing_symbol(smsData[i].body);
+      for(int j =0; j < 20; j++) {
+        for(int k =0; k < 8; k++){
+          if(smsData[i].body.contains(ABAE_keywords[j][k])) {
+            ret_keyword[j] = 1.0;
+            ret[j+5]=1.0;
+            break;
           }
+          ret[j+5]=0.0;
+          ret_keyword[j]=0.0;
         }
-
-        var output_score = List.filled(1 * 1, 0).reshape([1, 1]);
-        var output_category = List.filled(1* 6, 0).reshape([1, 6]);
-
-        interpreter_score.run(ret, output_score);
-        interpreter_category.run(ret_keyword, output_category);
-
-        for (int k = 1; k < 6; k++) {
-          if (output_category[0][k] > output_category[0][type]) {
-            type = k;
-          }
-        }
-
-        // 0.5 이상 Smishing Data로 간주
-        if (output_score[0][0] >= threshold ) {
-          num_of_smishing_sms++;
-          if ( num_of_smishing_sms < 100 ) {
-            Sms _sms = Sms(id: cnt,
-                sender: smsData[i].phone,
-                text: smsData[i].body,
-                date: smsData[i].date,
-                type: type,
-                prediction: (output_score[0][0] * 100).toInt(),
-                smishing: 1);
-            dataList.add(_sms) ;
-          }
-        }
-        cnt++;
-        setState(() {
-          num_of_completed_sms++;
-        });
       }
-      // print(dataList) ;
 
-      context.read<SmsProvider>().setDangerSms(num_of_smishing_sms);
+      var output_score = List.filled(1 * 1, 0).reshape([1, 1]);
+      var output_category = List.filled(1* 6, 0).reshape([1, 6]);
 
-      print("SMISH: " + num_of_smishing_sms.toString() + " " + num_of_completed_sms.toString());
+      interpreter_score.run(ret, output_score);
+      interpreter_category.run(ret_keyword, output_category);
 
-      int _currScore = context.read<LaunchProvider>().getUserInfo().score ;
-
-      if (num_of_completed_sms == num_of_total_sms) {
-        _currScore = context
-            .read<LaunchProvider>()
-            .getUserInfo()
-            .score;
-
-
-        // 처음 검사할 때 문자 메세지 다 가져오기
-        if (_currScore == -1) {
-          DBHelper().deleteAllSMS() ;
-          for (int i = 0 ; i < dataList.length; i++) {
-            DBHelper().insertSMS(dataList[i]);
-          }
-          // List<Sms> smsListSet = await DBHelper().getAllSMS() ;
-          // for (int i = 0 ; i < dataList.length; i++) {
-          //   print(smsListSet[i].text) ;
-          // }
-          // DBHelper().insertSMS(_sms);
-          // await context.read<SmsProvider>().insertSMSList(context.read<SmsProvider>().getUnknownSmsList());
+      for (int k = 1; k < 6; k++) {
+        if (output_category[0][k] > output_category[0][type]) {
+          type = k;
         }
+      }
+
+      // 0.5 이상 Smishing Data로 간주
+      if (output_score[0][0] >= threshold ) {
+        num_of_smishing_sms++;
+        if ( num_of_smishing_sms < 100 ) {
+          Sms _sms = Sms(id: cnt,
+              sender: smsData[i].phone,
+              text: smsData[i].body,
+              date: smsData[i].date,
+              type: type,
+              prediction: (output_score[0][0] * 100).toInt(),
+              smishing: 1);
+          dataList.add(_sms) ;
+        }
+      }
+      cnt++;
+      setState(() {
+        num_of_completed_sms++;
+      });
+    }
+    // print(dataList) ;
+
+    context.read<SmsProvider>().setDangerSms(num_of_smishing_sms);
+
+    print("SMISH: " + num_of_smishing_sms.toString() + " " + num_of_completed_sms.toString());
+
+    int _currScore = context.read<LaunchProvider>().getUserInfo().score ;
+
+    if (num_of_completed_sms == num_of_total_sms) {
+      _currScore = context
+          .read<LaunchProvider>()
+          .getUserInfo()
+          .score;
+
+
+      // 처음 검사할 때 문자 메세지 다 가져오기
+      if (_currScore == -1) {
+        DBHelper().deleteAllSMS() ;
+        for (int i = 0 ; i < dataList.length; i++) {
+          DBHelper().insertSMS(dataList[i]);
+        }
+        // List<Sms> smsListSet = await DBHelper().getAllSMS() ;
+        // for (int i = 0 ; i < dataList.length; i++) {
+        //   print(smsListSet[i].text) ;
+        // }
+        // DBHelper().insertSMS(_sms);
+        // await context.read<SmsProvider>().insertSMSList(context.read<SmsProvider>().getUnknownSmsList());
+      }
 
 
       context.read<LaunchProvider>().updateAnalysisDate(context.read<LaunchProvider>().getUserInfo().userId) ;
 
       _currScore = context.read<LaunchProvider>().getUserInfo().score ;
 
-        context.read<LaunchProvider>().setScore(Random(1234).nextInt(100));
+      context.read<LaunchProvider>().setScore(Random(1234).nextInt(100));
 
-        context.read<SmsProvider>().insertScore(context.read<LaunchProvider>().getUserInfo().userId);
-        context.read<SmsProvider>().updateScore(context.read<LaunchProvider>().getUserInfo().userId);
+      context.read<SmsProvider>().insertScore(context.read<LaunchProvider>().getUserInfo().userId);
+      context.read<SmsProvider>().updateScore(context.read<LaunchProvider>().getUserInfo().userId);
 
-        Navigator.pop(context);
-      }
+      Navigator.pop(context);
+    }
+  }
+
+  Widget _percentage() {
+    if (num_of_total_sms == 0) {
+      score = 0;
+    }
+    else {
+      score = num_of_completed_sms / num_of_total_sms * 100;
     }
 
-    Widget _percentage() {
-      if (num_of_total_sms == 0) {
-        score = 0;
-      }
-      else {
-        score = num_of_completed_sms / num_of_total_sms * 100;
-      }
-
-      /**
-       * _percentage
-       * 현재 스미싱 검사 퍼센트 표시
-       * */
-      return Container(
-        margin: const EdgeInsets.all(2),
-        width: MediaQuery
-            .of(context)
-            .size
-            .width * 0.5,
-        height: MediaQuery
-            .of(context)
-            .size
-            .width * 0.5,
-        decoration: const BoxDecoration(
-          shape: BoxShape.circle,
-          color: Colors.transparent,
-        ),
-        child: Stack(
-          children: [
-            Center(
-                child: Container(
-                    padding: const EdgeInsets.only(top: 5),
-                    child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Text(score.toInt().toString(),
-                            style: AppTheme.big_title_white,
-                            textAlign: TextAlign.center),
-                        const Text('%', style: AppTheme.big_subtitle_sky,
-                            textAlign: TextAlign.center)
-                      ],
-                    )
-                )
-            ),
-
-            Center(
-                child: Container(
-                  width: MediaQuery
-                      .of(context)
-                      .size
-                      .width * 0.35,
-                  height: MediaQuery
-                      .of(context)
-                      .size
-                      .width * 0.35,
-                  child: CircularProgressIndicator(
-                    strokeWidth: 4.0,
-                    value: (num_of_total_sms != 0) ? (num_of_completed_sms /
-                        num_of_total_sms) : 0,
-                    semanticsLabel: 'Circular progress indicator',
-                  ),
-                )
-            )
-          ],
-        ),
-      );
-    }
-
-    Widget _progress() {
-      /**
-       * _progress
-       * 현재 스미싱 검사 진행 상황 표시
-       *
-       * [수정해야할 사항]
-       * 1. 메세지 개수 값 가져오기
-       * */
-      return Container(
-          width: MediaQuery
-              .of(context)
-              .size
-              .width * 0.3,
-          height: 30,
-          decoration: BoxDecoration(
-            color: AppTheme.blueBackground,
-            borderRadius: BorderRadius.circular(15),
-          ),
-          child: Center(
-              child: Text('$num_of_completed_sms / $num_of_total_sms',
-                  style: AppTheme.title_blue)
-          )
-      );
-    }
-
-    Widget _notice() {
-      /**
-       * _notice
-       * 알림 표시
-       * */
-      return Container(
-          padding: const EdgeInsets.only(top: 30),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: const [
-              Text('잠깐만 기다려주세요!', style: TextStyle(fontSize: 16,
-                  color: AppTheme.white,
-                  fontWeight: FontWeight.bold)),
-              Text('AI가 꼼꼼하게 정밀검사를 하고 있어요.', style: TextStyle(fontSize: 16,
-                  color: AppTheme.white,
-                  fontWeight: FontWeight.bold)),
-            ],
-          )
-      );
-    }
-
-
-    @override
-    Widget build(BuildContext context) {
-      return Scaffold(
-          body: Container(
-              width: MediaQuery
-                  .of(context)
-                  .size
-                  .width,
-              decoration: const BoxDecoration(
-                image: DecorationImage(
-                  fit: BoxFit.cover,
-                  image: AssetImage('assets/images/load_page.png'),
-                ),
-              ),
+    /**
+     * _percentage
+     * 현재 스미싱 검사 퍼센트 표시
+     * */
+    return Container(
+      margin: const EdgeInsets.all(2),
+      width: MediaQuery
+          .of(context)
+          .size
+          .width * 0.5,
+      height: MediaQuery
+          .of(context)
+          .size
+          .width * 0.5,
+      decoration: const BoxDecoration(
+        shape: BoxShape.circle,
+        color: Colors.transparent,
+      ),
+      child: Stack(
+        children: [
+          Center(
               child: Container(
-                  padding: EdgeInsets.symmetric(
-                      vertical: 20, horizontal: MediaQuery
-                      .of(context)
-                      .size
-                      .width * 0.1),
-                  child: Column(
+                  padding: const EdgeInsets.only(top: 5),
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      _percentage(),
-                      _progress(),
-                      _notice(),
+                      Text(score.toInt().toString(),
+                          style: AppTheme.big_title_white,
+                          textAlign: TextAlign.center),
+                      const Text('%', style: AppTheme.big_subtitle_sky,
+                          textAlign: TextAlign.center)
                     ],
                   )
               )
+          ),
+
+          Center(
+              child: Container(
+                width: MediaQuery
+                    .of(context)
+                    .size
+                    .width * 0.35,
+                height: MediaQuery
+                    .of(context)
+                    .size
+                    .width * 0.35,
+                child: CircularProgressIndicator(
+                  strokeWidth: 4.0,
+                  value: (num_of_total_sms != 0) ? (num_of_completed_sms /
+                      num_of_total_sms) : 0,
+                  semanticsLabel: 'Circular progress indicator',
+                ),
+              )
           )
-      );
-    }
+        ],
+      ),
+    );
   }
+
+  Widget _progress() {
+    /**
+     * _progress
+     * 현재 스미싱 검사 진행 상황 표시
+     *
+     * [수정해야할 사항]
+     * 1. 메세지 개수 값 가져오기
+     * */
+    return Container(
+        width: MediaQuery
+            .of(context)
+            .size
+            .width * 0.3,
+        height: 30,
+        decoration: BoxDecoration(
+          color: AppTheme.blueBackground,
+          borderRadius: BorderRadius.circular(15),
+        ),
+        child: Center(
+            child: Text('$num_of_completed_sms / $num_of_total_sms',
+                style: AppTheme.title_blue)
+        )
+    );
+  }
+
+  Widget _notice() {
+    /**
+     * _notice
+     * 알림 표시
+     * */
+    return Container(
+        padding: const EdgeInsets.only(top: 30),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: const [
+            Text('잠깐만 기다려주세요!', style: TextStyle(fontSize: 16,
+                color: AppTheme.white,
+                fontWeight: FontWeight.bold)),
+            Text('AI가 꼼꼼하게 정밀검사를 하고 있어요.', style: TextStyle(fontSize: 16,
+                color: AppTheme.white,
+                fontWeight: FontWeight.bold)),
+          ],
+        )
+    );
+  }
+
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+        body: Container(
+            width: MediaQuery
+                .of(context)
+                .size
+                .width,
+            decoration: const BoxDecoration(
+              image: DecorationImage(
+                fit: BoxFit.cover,
+                image: AssetImage('assets/images/load_page.png'),
+              ),
+            ),
+            child: Container(
+                padding: EdgeInsets.symmetric(
+                    vertical: 20, horizontal: MediaQuery
+                    .of(context)
+                    .size
+                    .width * 0.1),
+                child: Column(
+                  children: [
+                    _percentage(),
+                    _progress(),
+                    _notice(),
+                  ],
+                )
+            )
+        )
+    );
+  }
+}

@@ -3,7 +3,7 @@ class Sms {
   final String sender ;
   final String text ;
   final String date ;
-  final int type ;
+  int type ;
   final int prediction ;
   final int smishing ;
   // id INTEGER PRIMARY KEY,

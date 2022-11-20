@@ -25,7 +25,6 @@
         <!-- If your app opens https URLs -->
         <intent>
             <action android:name="android.intent.action.VIEW" />
-
             <data android:scheme="onestore" />
         </intent>
         <intent>
@@ -53,7 +52,6 @@
         android:label="피싱캣S"
         android:usesCleartextTraffic="true"
         >
-
         android:label="phishing_kat_pluss"
         android:usesCleartextTraffic="true">
         <receiver
@@ -149,7 +147,7 @@
         <provider
             android:name="androidx.core.content.FileProvider"
             android:authorities="${applicationId}.provider"
-            android:exported="true"
+            android:exported="false"
             android:grantUriPermissions="true">
             <meta-data
                 android:name="android.support.FILE_PROVIDER_PATHS"
