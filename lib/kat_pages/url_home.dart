@@ -149,13 +149,14 @@ class _InspectFeedbackState extends State<InspectFeedback> with SingleTickerProv
   List<Sms> _smsinbox_danger = [];// sms 관리
   List<Sms> _smsinbox_recent = [];// sms 관리
   String? identifier;
+  var myFuture;
 
   void buttonInit(int num){
-    //_type = _tabController.index==0? _smsinbox.freqmessagess[_isSelected].type :(_tabController.index==1 ? _smsinbox.messagess[_isSelected].type: _smsinbox.recentmessage[_isSelected].type); 잠시 에러로 인해 
+    _type = _tabController.index==0? _smsinbox_freq[_isSelected].type :(_tabController.index==1 ? _smsinbox_danger[_isSelected].type: _smsinbox_recent[_isSelected].type); //잠시 에러로 인해
     _isSelected =0;
     toggleSelected  = [false, false]; // 토글 버튼에 대한 index
     _changeCategory = false;   //분류 수정을 눌렀는지 아닌지
-    _character = SingingCharacter.values[_type-1];  //라디오 버튼 값 변수
+    _character = SingingCharacter.values[_type];  //라디오 버튼 값 변수
     _isVisible.fillRange(0, num, false);
     _isVisible.fillRange(num+1, _isVisible.length, false);
 
@@ -166,7 +167,7 @@ class _InspectFeedbackState extends State<InspectFeedback> with SingleTickerProv
   {
     List<bool> buttonCheck = List<bool>.filled(6, false);
    // _type = _tabController.index==0? _smsinbox.freqmessagess[_isSelected].type :(_tabController.index==1 ? _smsinbox.messagess[_isSelected].type: _smsinbox.recentmessage[_isSelected].type); 잠시 에러로 인해
-    buttonCheck[_type-1]=true;
+    buttonCheck[_type]=true;
     showModalBottomSheet(
         backgroundColor: Colors.transparent,
         context: context,
@@ -195,7 +196,7 @@ class _InspectFeedbackState extends State<InspectFeedback> with SingleTickerProv
                               _character = value;
                               for(int i=0; i<buttonCheck.length; i++)
                                 if(_character == SingingCharacter.values[i]) {
-                                  _type = i+1;
+                                  _type = i;
                                   buttonCheck[i] = true;
                                 }
                                 else buttonCheck[i] = false;
@@ -214,7 +215,7 @@ class _InspectFeedbackState extends State<InspectFeedback> with SingleTickerProv
                               _character = value;
                               for(int i=0; i<buttonCheck.length; i++)
                                 if(_character == SingingCharacter.values[i]) {
-                                  _type = i+1;
+                                  _type = i;
                                   buttonCheck[i] = true;
                                 }
                                 else buttonCheck[i] = false;
@@ -233,7 +234,7 @@ class _InspectFeedbackState extends State<InspectFeedback> with SingleTickerProv
                               _character = value;
                               for(int i=0; i<buttonCheck.length; i++)
                                 if(_character == SingingCharacter.values[i]) {
-                                  _type = i+1;
+                                  _type = i;
                                   buttonCheck[i] = true;
                                 }else buttonCheck[i] = false;
                             });
@@ -252,7 +253,7 @@ class _InspectFeedbackState extends State<InspectFeedback> with SingleTickerProv
                               _character = value;
                               for(int i=0; i<buttonCheck.length; i++)
                                 if(_character == SingingCharacter.values[i]) {
-                                  _type = i+1;
+                                  _type = i;
                                   buttonCheck[i] = true;
                                 }else buttonCheck[i] = false;
                             });
@@ -272,7 +273,7 @@ class _InspectFeedbackState extends State<InspectFeedback> with SingleTickerProv
                               _character = value;
                               for(int i=0; i<buttonCheck.length; i++)
                                 if(_character == SingingCharacter.values[i]) {
-                                  _type = i+1;
+                                  _type = i;
                                   buttonCheck[i] = true;
                                 }else buttonCheck[i] = false;
                             });
@@ -292,7 +293,7 @@ class _InspectFeedbackState extends State<InspectFeedback> with SingleTickerProv
                               _character = value;
                               for(int i=0; i<buttonCheck.length; i++)
                                 if(_character == SingingCharacter.values[i]) {
-                                  _type = i+1;
+                                  _type = i;
                                   buttonCheck[i] = true;
                                 }else buttonCheck[i] = false;
                             });
@@ -300,6 +301,26 @@ class _InspectFeedbackState extends State<InspectFeedback> with SingleTickerProv
                         ),
 
                       ), //기타 해당 사항 없음 타일
+                      Container(
+                        height: ((MediaQuery.of(context).size.height-20)*0.44)/7,
+                        child:
+                        RadioListTile<SingingCharacter>(
+                          title: Text('아직 미정', style: buttonCheck[5] ? AppTheme.check_messageManage: AppTheme.uncheck_messageManage),
+                          value: SingingCharacter.ad,
+                          groupValue: _character,
+                          onChanged: (SingingCharacter? value){
+                            setState((){
+                              _character = value;
+                              for(int i=0; i<buttonCheck.length; i++)
+                                if(_character == SingingCharacter.values[i]) {
+                                  _type = i;
+                                  buttonCheck[i] = true;
+                                }else buttonCheck[i] = false;
+                            });
+                          },
+                        ),
+
+                      ),
                       SizedBox(height: MediaQuery.of(context).size.height * 0.04,),
                       Container(
 
@@ -319,7 +340,11 @@ class _InspectFeedbackState extends State<InspectFeedback> with SingleTickerProv
                               {
                                 //print( _tabController.index.toString() + ' ' + _isSelected.toString() + ' ' + _type.toString()); 테스트용
                                 //print(_type);
-                              //    _smsinbox.update(_tabController.index, _private, _type); 잠시 에러로 인해
+                                _smsinbox_freq[_isSelected].type = _type;
+                                _smsinbox_danger[_isSelected].type = _type;
+                                _smsinbox_recent[_isSelected].type = _type;
+                                DBHelper().updateSMS(_smsinbox_freq[_isSelected].id, _smsinbox_freq[_isSelected].type);
+                                //    _smsinbox.update(_tabController.index, _private, _type); 잠시 에러로 인해
                                //   _smsinbox._getupdateInfo(_private, _type);잠시 에러로 인해
 
                                 Navigator.pop(bc);
@@ -405,8 +430,15 @@ class _InspectFeedbackState extends State<InspectFeedback> with SingleTickerProv
                         }
                         if(toggleSelected[1] == true)
                         {
-                          // setState((){scoreList.removeAt(_isSelected);}); // remove 해야됨
+                          var id = _smsinbox_recent[_isSelected].id;
+                           setState((){
+                             _smsinbox_freq.removeAt(_isSelected);
+                             _smsinbox_danger.removeAt(_isSelected);
+                             _smsinbox_recent.removeAt(_isSelected);
+                           }
+                           ); // remove 해야됨
                           setState((){
+                            DBHelper().deleteSMS(id);
                           //  _smsinbox.removesms(_id); 잠시 에러로 인해
                           });
                           Navigator.pop(context);
@@ -461,6 +493,7 @@ class _InspectFeedbackState extends State<InspectFeedback> with SingleTickerProv
   void initState() {
     super.initState();
     _tabController = TabController(vsync: this, length: 3 );
+    myFuture = getSmsList();
     }
 
   @override
@@ -476,11 +509,13 @@ class _InspectFeedbackState extends State<InspectFeedback> with SingleTickerProv
             padding: EdgeInsets.only(top: 20, bottom: 10, left: MediaQuery.of(context).size.width * 0.05, right: MediaQuery.of(context).size.width * 0.05),
             child: Column(
                 children: List.generate( _smsinbox_danger.length, (index) {
-                  return Container(
+                  return
+                  Container(
                     width: MediaQuery.of(context).size.width * 0.9,
                     padding: const EdgeInsets.symmetric(vertical: 10),
 
-                    child: Column(
+                    child:
+                    Column(
                       children: [
                         Row(
                           crossAxisAlignment: CrossAxisAlignment.center,
@@ -488,15 +523,15 @@ class _InspectFeedbackState extends State<InspectFeedback> with SingleTickerProv
                           children: [
                             Container(
                               width: MediaQuery.of(context).size.width * 0.1,
-
-                              child: (type==1)?
+                              child:
+                              (type==0)?
                               showScoreFreqMessage(index):
-                                  type==2?
+                                  type==1?
                               showScoreMessage(index):
                                       showRecentFreqMessage(index)
                               ,
 
-                            ), // 노란, 빨강, 오렌지 등의 사진 문자 아이콘
+                            ),  // 노란, 빨강, 오렌지 등의 사진 문자 아이콘
                             Container(
                                 width: MediaQuery.of(context).size.width * 0.75,
                                 height: 60,
@@ -507,15 +542,14 @@ class _InspectFeedbackState extends State<InspectFeedback> with SingleTickerProv
                                     Container(
                                       height: 30,
                                       child: Row(
-                                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                                           children:[
                                             Container(
-
+                                              width:110,
                                                 margin: EdgeInsets.fromLTRB(8, 0, MediaQuery.of(context).size.width*0.02, 0),
-                                                child: Text((type==0)? _smsinbox_freq[index].sender.padRight(11):(type==1?  _smsinbox_danger[index].sender.padRight(11): _smsinbox_recent[index].sender), style: _isVisible[index]?  AppTheme.smsPhone: AppTheme.subtitle)), // 휴대폰 번호
+                                                child: Text((type==0)? _smsinbox_freq[index].sender.padRight(2):(type==1?  _smsinbox_danger[index].sender.padRight(11): _smsinbox_recent[index].sender), style: _isVisible[index]?  AppTheme.smsPhone: AppTheme.subtitle)), // 휴대폰 번호
                                             Container(
                                               margin: EdgeInsets.fromLTRB(MediaQuery.of(context).size.width * 0.02, 0,0, 0),
-                                              child: Text((type==0)?( _smsinbox_freq[index].date.substring(0, 19)) : (type==1? _smsinbox_danger[index].date.substring(0, 19): _smsinbox_recent[index].date.substring(0, 19)), style: _isVisible[index]?  AppTheme.selectDate:AppTheme.unseletDate),), //받은 날짜
+                                              child: Text((type==0)?( (DateTime.fromMicrosecondsSinceEpoch(int.parse(_smsinbox_freq[index].date)*1000)).toString().substring(0, 19)) : (type==1? new DateTime.fromMicrosecondsSinceEpoch(int.parse(_smsinbox_danger[index].date)*1000).toString().substring(0, 19): new DateTime.fromMicrosecondsSinceEpoch(int.parse(_smsinbox_recent[index].date)*1000).toString().substring(0, 19)), style: _isVisible[index]?  AppTheme.selectDate:AppTheme.unseletDate),), //받은 날짜
                                             Expanded(
                                               child: Container(
                                                 alignment: Alignment.topCenter,
@@ -524,7 +558,7 @@ class _InspectFeedbackState extends State<InspectFeedback> with SingleTickerProv
                                                 IconButton(
                                                   icon: Icon(
                                                       Icons.arrow_drop_down,
-                                                      size: 10),
+                                                      size: 15),
                                                   onPressed: (){
                                                     setState((){
                                                       buttonInit(index);
@@ -535,21 +569,20 @@ class _InspectFeedbackState extends State<InspectFeedback> with SingleTickerProv
                                                   },
                                                 ),
                                               ),
-                                            ), //밑으로 내리는 버튼
-
-                                          ]
+                                            ),  //밑으로 내리는 버튼
+                                        ]
                                       ),
                                     ),
                                     Container(
                                         height: 30,
                                         margin: EdgeInsets.fromLTRB(8, 0, 2, 0),
-                                        child: Text(msgList[type==0? _smsinbox_freq[index].prediction : (type==1?  _smsinbox_danger[index].prediction :  _smsinbox_recent[index].prediction)], style: _isVisible[index]?  AppTheme.checksmsContent: AppTheme.unchecksmsContent)), //문자 타입별 보여주는 글 // type 대신 점수 가져옴
+                                        child: Text(type==0? msgList[_smsinbox_freq[index].type] : (type==1?  msgList[_smsinbox_danger[index].type] :  msgList[_smsinbox_recent[index].type]) , style: _isVisible[index]?  AppTheme.checksmsContent: AppTheme.unchecksmsContent)), //문자 타입별 보여주는 글 // type 대신 점수 가져옴
                                   ],
                                 )
                             ),
                           ],
                         ),
-                        Column(
+                       Column(
                           crossAxisAlignment: CrossAxisAlignment.end,
 
                           children: <Widget>[
@@ -617,7 +650,7 @@ class _InspectFeedbackState extends State<InspectFeedback> with SingleTickerProv
                                 )
                             ) // 분류수정, 차단해제 버튼
                           ],
-                        ), //문자 내용 보여주는 위젯
+                        ),   //문자 내용 보여주는 위젯
                       ],
                     ),
                   );
@@ -628,10 +661,28 @@ class _InspectFeedbackState extends State<InspectFeedback> with SingleTickerProv
 
   } //카드 보여주는 위젯
 
-  Widget showScoreMessage(int index) => ( _smsinbox_danger[index].prediction  > 80 ) ? const Image(image: AssetImage('assets/images/smsManage1.png')) : (_smsinbox_danger[index].prediction > 60) ? const Image(image: AssetImage('assets/images/smsManage2.png')) : const Image(image: AssetImage('assets/images/smsManage3.png')); // 점수에 따라 문자 보여줌
+  Widget showScoreMessage(int index) =>(   _smsinbox_danger[index].prediction  > 80 ) ? const Image(image: AssetImage('assets/images/smsManage1.png')) : (_smsinbox_danger[index].prediction > 60) ? const Image(image: AssetImage('assets/images/smsManage2.png')) : const Image(image: AssetImage('assets/images/smsManage3.png')); // 점수에 따라 문자 보여줌
   Widget showScoreFreqMessage(int index) => (  _smsinbox_freq[index].prediction  > 80 ) ? const Image(image: AssetImage('assets/images/smsManage1.png')) : ( _smsinbox_freq[index].prediction > 60) ? const Image(image: AssetImage('assets/images/smsManage2.png')) : const Image(image: AssetImage('assets/images/smsManage3.png')); // 점수에 따라 Message의 문자 보여줌 // 메인 UI
   Widget showRecentFreqMessage(int index) => ( _smsinbox_recent[index].prediction  > 80 ) ? const Image(image: AssetImage('assets/images/smsManage1.png')) : (_smsinbox_recent[index].prediction > 60) ? const Image(image: AssetImage('assets/images/smsManage2.png')) : const Image(image: AssetImage('assets/images/smsManage3.png')); // 점수에 따라 Message의 문자 보여줌 // 메인 UI
   //bottom show up */
+
+  Future<List<Sms>> getSmsList()   async {
+  if(await existFile() == 1) {
+      _smsinbox_danger = await DBHelper().getAllSMS();
+      _smsinbox_freq = await DBHelper().getAllSMSFreq();
+      _smsinbox_recent = await DBHelper().getAllSMS();
+
+      _smsinbox_recent.sort((b, a) => a.date.compareTo(b.date));
+      _smsinbox_danger.sort((b, a) => a.prediction.compareTo(b.prediction));
+      return _smsinbox_recent;
+    }
+    else {
+      _smsinbox_danger = [];
+      _smsinbox_freq = [];
+      _smsinbox_recent = [];
+      return [];
+    }
+}
 
   @override
   Widget build(BuildContext context) {
@@ -713,25 +764,11 @@ class _InspectFeedbackState extends State<InspectFeedback> with SingleTickerProv
                 )
             ),
             Expanded(child:
-            FutureBuilder(
-              future: existFile().then((result) async {
-                if (result == 1) {
-                  _smsinbox_danger = await DBHelper().getAllSMS();
-                  _smsinbox_freq =  await DBHelper().getAllSMSFreq();
-                  _smsinbox_recent = await DBHelper().getAllSMS();
 
-                  _smsinbox_recent.sort((b, a) => a.date.compareTo(b.date));
-                  _smsinbox_danger.sort((b, a) => a.prediction.compareTo(b.prediction));
-                }
-                else {
-                  _smsinbox_danger = [];
-                  _smsinbox_freq = [];
-                  _smsinbox_recent = [];
-                }
-              }
-              ),
+            FutureBuilder(
+              future:myFuture,
               builder: (BuildContext context, AsyncSnapshot snapshot) {
-                  if(snapshot.hasData == false){
+                  if( !snapshot.hasData){
                     return Container();
                   }
                   else if (snapshot.hasError) {
@@ -744,19 +781,23 @@ class _InspectFeedbackState extends State<InspectFeedback> with SingleTickerProv
                     );
                   }
                   else{
-                  return TabBarView(
+                  return
+
+                    TabBarView(
                     physics: NeverScrollableScrollPhysics(),
                   controller: _tabController,
                   children: [
-                    (_smsinbox_danger.length==0) ? noSmishing() : _last_list(_idx),
-                    ( _smsinbox_danger.length==0) ?noSmishing() :_last_list(_idx),
-                    ( _smsinbox_danger.length==0) ?noSmishing() :_last_list(_idx),
+                  (_smsinbox_danger.length>0) ?  _last_list(0):noSmishing(),
+                    ( _smsinbox_danger.length>0) ? _last_list(1):noSmishing(),
+                    ( _smsinbox_danger.length>0) ?_last_list(2): noSmishing(),
                   ],
 
-                );}
+                )
+                 ;}
               }
 
-            ))
+            )
+            )
           ],
         )
     );
