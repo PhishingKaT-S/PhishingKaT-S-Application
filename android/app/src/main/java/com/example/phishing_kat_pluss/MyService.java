@@ -3,7 +3,6 @@ package com.example.phishing_kat_pluss;
 import static android.Manifest.permission.READ_PHONE_NUMBERS;
 import static android.Manifest.permission.READ_PHONE_STATE;
 import static android.Manifest.permission.READ_SMS;
-
 import static com.example.phishing_kat_pluss.SmsReceiver.millidate;
 import static com.example.phishing_kat_pluss.SmsReceiver.smsRe;
 
@@ -26,6 +25,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RadioGroup;
 import android.widget.TextView;
@@ -64,7 +64,7 @@ public class MyService extends Service {
     TextView tv_type;
     RadioGroup radioGroup;
     WindowManager.LayoutParams params;
-
+    ImageView closeview;
     LinearLayout vis_layout;
     LinearLayout scoreLayout;
 
@@ -142,9 +142,33 @@ public class MyService extends Service {
             //Log.d("SelectBlack List log ", sender);
 
             //이벤트 설정
-            final Button bt = (Button) mView.findViewById(R.id.btn_cancel); // cancel
+            final Button bt = (Button) mView.findViewById(R.id.btn_cancel); // cancel 안전 버튼
             bt.setOnClickListener(v -> {
-                wm.removeView(mView);
+                int selectedId = radioGroup.getCheckedRadioButtonId();
+                switch (selectedId) {
+                    case R.id.radio_police:
+                        sms_type = type = "0";
+                        break;
+                    case R.id.radio_Minister:
+                        sms_type = type = "1";
+                        break;
+                    case R.id.radio_bank:
+                        sms_type = type = "2";
+                        break;
+                    case R.id.radio_corp:
+                        sms_type = type = "3";
+                        break;
+                    case R.id.radio_shipping:
+                        sms_type = type = "4";
+                        break;
+                    case R.id.radio_acquaint:
+                        sms_type = type = "5";
+                        break;
+                } // type 변경
+
+                updatesms(millidate, content, sender, Integer.parseInt(sms_type), recipient);
+
+                wm.removeView(mView); //작업이 끝났으므로 끔
                 smsRe = false;
             });
             final Button call = (Button) mView.findViewById(R.id.btn_call);
@@ -160,22 +184,22 @@ public class MyService extends Service {
                  * */
                 int selectedId = radioGroup.getCheckedRadioButtonId();
                 switch (selectedId) {
-                    case R.id.parcel:
+                    case R.id.radio_police:
                         sms_type = type = "0";
                         break;
-                    case R.id.radio_corp:
+                    case R.id.radio_Minister:
                         sms_type = type = "1";
                         break;
-                    case R.id.radio_acquaint:
+                    case R.id.radio_bank:
                         sms_type = type = "2";
                         break;
-                    case R.id.radio_pay:
+                    case R.id.radio_corp:
                         sms_type = type = "3";
                         break;
-                    case R.id.radio_ad:
+                    case R.id.radio_shipping:
                         sms_type = type = "4";
                         break;
-                    case R.id.radio_others:
+                    case R.id.radio_acquaint:
                         sms_type = type = "5";
                         break;
                 } // type 변경
@@ -191,6 +215,13 @@ public class MyService extends Service {
                         vis_layout.setVisibility(View.INVISIBLE);
                     }
             );
+
+            //close View
+            closeview=(ImageView)mView.findViewById(R.id.close);
+            closeview.setOnClickListener(v->{
+                wm.removeView(mView);
+                smsRe = false;
+            });
 
             //layout
             scorewithcolor(); // layout 설정
@@ -271,7 +302,9 @@ public class MyService extends Service {
         setTextScore = Integer.parseInt(score);
             if (setTextScore <0){
                 tv_type.setText(R.string.safe);
-                radioGroup.check(R.id.radio_others);
+                Button btn = (Button) mView.findViewById(R.id.btn_cancel);
+                btn.setEnabled(false);
+                radioGroup.check(R.id.radio_police);
                 smishing = 0;
             }
       //      if (setTextScore < 40) {
@@ -284,33 +317,33 @@ public class MyService extends Service {
                 Resources res = getResources();
                 switch (Integer.parseInt(type)) {
                     case 0:
-                        tv_type.setText(String.format(getString(R.string.parcel), score));
-                        radioGroup.check(R.id.parcel);
+                        tv_type.setText(String.format(getString(R.string.police), score));
+                        radioGroup.check(R.id.radio_police);
                         sms_type = "0";
                         break;
                     case 1:
-                        tv_type.setText(String.format(getString(R.string.corp), score));
-                        radioGroup.check(R.id.radio_corp);
+                        tv_type.setText(String.format(getString(R.string.Minister), score));
+                        radioGroup.check(R.id.radio_Minister);
                         sms_type = "1";
                         break;
                     case 2:
-                        tv_type.setText(String.format(getString(R.string.acquaint), score));
-                        radioGroup.check(R.id.radio_acquaint);
+                        tv_type.setText(String.format(getString(R.string.bank), score));
+                        radioGroup.check(R.id.radio_bank);
                         sms_type = "2";
                         break;
                     case 3:
-                        tv_type.setText(String.format(getString(R.string.pay), score));
-                        radioGroup.check(R.id.radio_pay);
+                        tv_type.setText(String.format(getString(R.string.corp), score));
+                        radioGroup.check(R.id.radio_corp);
                         sms_type = "3";
                         break;
                     case 4:
-                        tv_type.setText(String.format(getString(R.string.ad), score));
-                        radioGroup.check(R.id.radio_ad);
+                        tv_type.setText(String.format(getString(R.string.shipping), score));
+                        radioGroup.check(R.id.radio_shipping);
                         sms_type = "4";
                         break;
                     case 5:
-                        tv_type.setText(String.format(getString(R.string.others), score));
-                        radioGroup.check(R.id.radio_others);
+                        tv_type.setText(String.format(getString(R.string.acquaint), score));
+                        radioGroup.check(R.id.radio_acquaint);
                         sms_type = "5";
                         break;
                 }
