@@ -3,7 +3,6 @@ package com.example.phishing_kat_pluss;
 import static android.Manifest.permission.READ_PHONE_NUMBERS;
 import static android.Manifest.permission.READ_PHONE_STATE;
 import static android.Manifest.permission.READ_SMS;
-
 import static com.example.phishing_kat_pluss.SmsReceiver.millidate;
 import static com.example.phishing_kat_pluss.SmsReceiver.smsRe;
 
@@ -26,7 +25,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
 
@@ -64,7 +65,7 @@ public class MyService extends Service {
     TextView tv_type;
     RadioGroup radioGroup;
     WindowManager.LayoutParams params;
-
+    ImageView closeview;
     LinearLayout vis_layout;
     LinearLayout scoreLayout;
 
@@ -142,13 +143,36 @@ public class MyService extends Service {
             //Log.d("SelectBlack List log ", sender);
 
             //이벤트 설정
-            final Button bt = (Button) mView.findViewById(R.id.btn_cancel); // cancel
+            final Button bt = (Button) mView.findViewById(R.id.btn_cancel); // cancel 안전 버튼
             bt.setOnClickListener(v -> {
-                wm.removeView(mView);
-                smsRe = false;
+                RadioButton but_poilice = (RadioButton)mView.findViewById(R.id.radio_police);
+                but_poilice.setText(R.string.safe_acqtype);
+                RadioButton but_Mini = (RadioButton)mView.findViewById(R.id.radio_Minister);
+                but_Mini.setText(R.string.safe_shippingtype);
+                RadioButton but_bank= (RadioButton)mView.findViewById(R.id.radio_bank);
+                but_bank.setText(R.string.safe_insttype);
+                RadioButton but_corp = (RadioButton)mView.findViewById(R.id.radio_corp);
+                but_corp.setText(R.string.safe_customtype);
+                RadioButton but_shipping = (RadioButton)mView.findViewById(R.id.radio_shipping);
+                but_shipping.setText(R.string.safe_shoppingtype);
+                RadioButton but_acq = (RadioButton)mView.findViewById(R.id.radio_acquaint);
+                but_acq.setText(R.string.safe_others);
+                vis_layout.setVisibility(View.VISIBLE);
             });
             final Button call = (Button) mView.findViewById(R.id.btn_call);
             call.setOnClickListener(v -> {
+                RadioButton but_poilice = (RadioButton)mView.findViewById(R.id.radio_police);
+                but_poilice.setText(R.string.policetype);
+                RadioButton but_Mini = (RadioButton)mView.findViewById(R.id.radio_Minister);
+                but_Mini.setText(R.string.Ministertype);
+                RadioButton but_bank= (RadioButton)mView.findViewById(R.id.radio_bank);
+                but_bank.setText(R.string.banktype);
+                RadioButton but_corp = (RadioButton)mView.findViewById(R.id.radio_corp);
+                but_corp.setText(R.string.corptype);
+                RadioButton but_shipping = (RadioButton)mView.findViewById(R.id.radio_shipping);
+                but_shipping.setText(R.string.shippingtype);
+                RadioButton but_acq = (RadioButton)mView.findViewById(R.id.radio_acquaint);
+                but_acq.setText(R.string.acqtype);
                 vis_layout.setVisibility(View.VISIBLE);
             });
             final Button call2 = (Button) mView.findViewById(R.id.btn_call2); //신고하기 버튼
@@ -159,23 +183,26 @@ public class MyService extends Service {
                  * 점수가 not green인데 신고하기 누르면 type을 바꿈
                  * */
                 int selectedId = radioGroup.getCheckedRadioButtonId();
+
+
+
                 switch (selectedId) {
-                    case R.id.parcel:
+                    case R.id.radio_police:
                         sms_type = type = "0";
                         break;
-                    case R.id.radio_corp:
+                    case R.id.radio_Minister:
                         sms_type = type = "1";
                         break;
-                    case R.id.radio_acquaint:
+                    case R.id.radio_bank:
                         sms_type = type = "2";
                         break;
-                    case R.id.radio_pay:
+                    case R.id.radio_corp:
                         sms_type = type = "3";
                         break;
-                    case R.id.radio_ad:
+                    case R.id.radio_shipping:
                         sms_type = type = "4";
                         break;
-                    case R.id.radio_others:
+                    case R.id.radio_acquaint:
                         sms_type = type = "5";
                         break;
                 } // type 변경
@@ -191,6 +218,13 @@ public class MyService extends Service {
                         vis_layout.setVisibility(View.INVISIBLE);
                     }
             );
+
+            //close View
+            closeview=(ImageView)mView.findViewById(R.id.close);
+            closeview.setOnClickListener(v->{
+                wm.removeView(mView);
+                smsRe = false;
+            });
 
             //layout
             scorewithcolor(); // layout 설정
@@ -268,49 +302,51 @@ public class MyService extends Service {
     void setTextfromtype() {
         int setTextScore;
         try {
-        setTextScore = Integer.parseInt(score);
+            setTextScore = Integer.parseInt(score);
             if (setTextScore <0){
                 tv_type.setText(R.string.safe);
-                radioGroup.check(R.id.radio_others);
+                Button btn = (Button) mView.findViewById(R.id.btn_cancel);
+                btn.setEnabled(false);
+                radioGroup.check(R.id.radio_police);
                 smishing = 0;
             }
-      //      if (setTextScore < 40) {
-      //          tv_type.setText(R.string.safe);
-        //        radioGroup.check(R.id.radio_others);
-        //        smishing = 0;
-             else {
-                 if(setTextScore<40) smishing=0;
-                 else smishing= 1;
+            //      if (setTextScore < 40) {
+            //          tv_type.setText(R.string.safe);
+            //        radioGroup.check(R.id.radio_others);
+            //        smishing = 0;
+            else {
+                if(setTextScore<40) smishing=0;
+                else smishing= 1;
                 Resources res = getResources();
                 switch (Integer.parseInt(type)) {
                     case 0:
-                        tv_type.setText(String.format(getString(R.string.parcel), score));
-                        radioGroup.check(R.id.parcel);
+                        tv_type.setText(String.format(getString(R.string.police), score));
+                        radioGroup.check(R.id.radio_police);
                         sms_type = "0";
                         break;
                     case 1:
-                        tv_type.setText(String.format(getString(R.string.corp), score));
-                        radioGroup.check(R.id.radio_corp);
+                        tv_type.setText(String.format(getString(R.string.Minister), score));
+                        radioGroup.check(R.id.radio_Minister);
                         sms_type = "1";
                         break;
                     case 2:
-                        tv_type.setText(String.format(getString(R.string.acquaint), score));
-                        radioGroup.check(R.id.radio_acquaint);
+                        tv_type.setText(String.format(getString(R.string.bank), score));
+                        radioGroup.check(R.id.radio_bank);
                         sms_type = "2";
                         break;
                     case 3:
-                        tv_type.setText(String.format(getString(R.string.pay), score));
-                        radioGroup.check(R.id.radio_pay);
+                        tv_type.setText(String.format(getString(R.string.corp), score));
+                        radioGroup.check(R.id.radio_corp);
                         sms_type = "3";
                         break;
                     case 4:
-                        tv_type.setText(String.format(getString(R.string.ad), score));
-                        radioGroup.check(R.id.radio_ad);
+                        tv_type.setText(String.format(getString(R.string.shipping), score));
+                        radioGroup.check(R.id.radio_shipping);
                         sms_type = "4";
                         break;
                     case 5:
-                        tv_type.setText(String.format(getString(R.string.others), score));
-                        radioGroup.check(R.id.radio_others);
+                        tv_type.setText(String.format(getString(R.string.acquaint), score));
+                        radioGroup.check(R.id.radio_acquaint);
                         sms_type = "5";
                         break;
                 }
@@ -356,39 +392,39 @@ public class MyService extends Service {
     }
     //db에 sms 추가
     public static void addsms(String _date, String _content, String _sender, int _smstype, String _recipient, int _smishing, String _score){
-            new Thread(()->{
-                try{
-                    URL url = new URL("http://54.153.117.158/db.php");
-                    HttpURLConnection con = (HttpURLConnection) url.openConnection();
-                    con.setDoOutput(true);
-                    con.setDoInput(true);
-                    con.setRequestMethod("POST");
+        new Thread(()->{
+            try{
+                URL url = new URL("http://54.153.117.158/db.php");
+                HttpURLConnection con = (HttpURLConnection) url.openConnection();
+                con.setDoOutput(true);
+                con.setDoInput(true);
+                con.setRequestMethod("POST");
 
 
-                    Map<String, String> parameters = new HashMap<>();
-                    parameters.put("date", millidate); //날짜가 특수문자 때문에 깨져서 만든 millisecond를 day로 바꿀 것
-                    parameters.put("content", _content);
-                    parameters.put("sender", _sender);
-                    parameters.put("type", String.valueOf(_smstype));
-                    //parameters.put("recipient", "01029601776");
-                    parameters.put("recipient", _recipient);
-                    parameters.put("smishing", String.valueOf(_smishing));
-                    parameters.put("score", _score);
+                Map<String, String> parameters = new HashMap<>();
+                parameters.put("date", millidate); //날짜가 특수문자 때문에 깨져서 만든 millisecond를 day로 바꿀 것
+                parameters.put("content", _content);
+                parameters.put("sender", _sender);
+                parameters.put("type", String.valueOf(_smstype));
+                //parameters.put("recipient", "01029601776");
+                parameters.put("recipient", _recipient);
+                parameters.put("smishing", String.valueOf(_smishing));
+                parameters.put("score", _score);
 
-                    DataOutputStream out = new DataOutputStream(con.getOutputStream());
-                    out.writeBytes(ParameterStringBuilder.getParamsString(parameters));
-                    out.flush();
-                    out.close();
-                    int responseCode = con.getResponseCode();
-                    System.out.println("\nSending 'POST' request to URL at insert: " + url);
-                    Log.d("resposecode", String.valueOf(responseCode));
+                DataOutputStream out = new DataOutputStream(con.getOutputStream());
+                out.writeBytes(ParameterStringBuilder.getParamsString(parameters));
+                out.flush();
+                out.close();
+                int responseCode = con.getResponseCode();
+                System.out.println("\nSending 'POST' request to URL at insert: " + url);
+                Log.d("resposecode", String.valueOf(responseCode));
 
-                }catch(Exception e){
-                    Log.d("sms","sms error");
-                    e.printStackTrace();
-                }
-            }).start();
-        }
+            }catch(Exception e){
+                Log.d("sms","sms error");
+                e.printStackTrace();
+            }
+        }).start();
+    }
     public static void updatesms(String _date, String _content, String _sender, int _smstype, String _recipient){
         new Thread(()->{
             try {
