@@ -12,23 +12,20 @@ import android.database.Cursor;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.telephony.SmsMessage;
 import android.util.Log;
-import android.os.Build;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
-import org.tensorflow.lite.Interpreter;
 
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
-import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.nio.MappedByteBuffer;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -36,8 +33,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-import java.util.Random;
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class SmsReceiver extends BroadcastReceiver {
