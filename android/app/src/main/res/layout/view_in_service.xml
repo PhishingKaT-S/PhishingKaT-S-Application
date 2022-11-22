@@ -48,6 +48,15 @@
           android:textColor="#ffffff"
           android:layout_marginRight="10dp" />
 
+        <ImageView
+          android:id="@+id/close"
+          android:layout_height="wrap_content"
+          android:src="@drawable/ximage"
+            android:align_parentRight="true"
+           android:layout_width="12dp"
+            android:layout_marginEnd="10dp"
+            />
+
     </LinearLayout>
 
 
@@ -154,13 +163,35 @@
 
 
           <RadioButton
-              android:id="@+id/parcel"
+              android:id="@+id/radio_police"
               android:layout_width="match_parent"
               android:layout_height="0dp"
               android:layout_weight="1"
               android:buttonTint="@color/mylightblue"
               android:fontFamily="@font/adrameothic2"
-              android:text="택배유형"
+              android:text="수사기관 사칭"
+              android:textColor="@drawable/radioletter"
+              android:textSize="14dp" />
+
+          <RadioButton
+              android:id="@+id/radio_Minister"
+              android:layout_width="match_parent"
+              android:layout_height="0dp"
+              android:layout_weight="1"
+              android:buttonTint="@color/mylightblue"
+              android:fontFamily="@font/adrameothic2"
+              android:text="정부기관 사칭"
+              android:textColor="@drawable/radioletter"
+              android:textSize="14dp" />
+
+          <RadioButton
+              android:id="@+id/radio_bank"
+              android:layout_width="match_parent"
+              android:layout_height="0dp"
+              android:layout_weight="1"
+              android:buttonTint="@color/mylightblue"
+              android:fontFamily="@font/adrameothic2"
+              android:text="금융기관 사칭"
               android:textColor="@drawable/radioletter"
               android:textSize="14dp" />
 
@@ -171,50 +202,28 @@
               android:layout_weight="1"
               android:buttonTint="@color/mylightblue"
               android:fontFamily="@font/adrameothic2"
-              android:text="기관유형"
+              android:text="기업 사칭"
               android:textColor="@drawable/radioletter"
               android:textSize="14dp" />
 
           <RadioButton
+              android:id="@+id/radio_shipping"
+              android:layout_width="match_parent"
+              android:layout_height="0dp"
+              android:layout_weight="1"
+              android:buttonTint="@color/mylightblue"
+              android:fontFamily="@font/adrameothic2"
+              android:text="택배 사칭"
+              android:textColor="@drawable/radioletter"
+              android:textSize="14dp" />
+
+          <RadioButton
+              android:buttonTint="@color/mylightblue"
               android:id="@+id/radio_acquaint"
               android:layout_width="match_parent"
               android:layout_height="0dp"
               android:layout_weight="1"
-              android:buttonTint="@color/mylightblue"
-              android:fontFamily="@font/adrameothic2"
-              android:text="지인유형"
-              android:textColor="@drawable/radioletter"
-              android:textSize="14dp" />
-
-          <RadioButton
-              android:id="@+id/radio_pay"
-              android:layout_width="match_parent"
-              android:layout_height="0dp"
-              android:layout_weight="1"
-              android:buttonTint="@color/mylightblue"
-              android:fontFamily="@font/adrameothic2"
-              android:text="결제사칭"
-              android:textColor="@drawable/radioletter"
-              android:textSize="14dp" />
-
-          <RadioButton
-              android:id="@+id/radio_ad"
-              android:layout_width="match_parent"
-              android:layout_height="0dp"
-              android:layout_weight="1"
-              android:buttonTint="@color/mylightblue"
-              android:fontFamily="@font/adrameothic2"
-              android:text="광고사칭"
-              android:textColor="@drawable/radioletter"
-              android:textSize="14dp" />
-
-          <RadioButton
-              android:buttonTint="@color/mylightblue"
-              android:id="@+id/radio_others"
-              android:layout_width="match_parent"
-              android:layout_height="0dp"
-              android:layout_weight="1"
-              android:text="기타(해당사항없음)"
+              android:text="지인 사칭"
               android:textColor="@drawable/radioletter"
               android:fontFamily="@font/adrameothic2"
               android:textSize="14dp"
