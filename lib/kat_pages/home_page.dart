@@ -128,8 +128,9 @@ class _HomePage extends State<HomePage> with TickerProviderStateMixin {
           ),
         );
       }
+      _weekAttendance = _attendanceProvider.getWeekAttendance();
       setState(() {
-        _weekAttendance = _attendanceProvider.getWeekAttendance();
+
         // smish_detect_flag = Provider.of<LaunchProvider>(context, listen: false).getUserInfo().score == -1 ? false : true;
         // if(smish_detect_flag){
         //   score = Provider.of<LaunchProvider>(context, listen: false).getUserInfo().score.toDouble();

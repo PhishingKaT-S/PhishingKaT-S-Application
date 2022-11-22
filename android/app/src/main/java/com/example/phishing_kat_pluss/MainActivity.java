@@ -86,7 +86,7 @@ public class MainActivity extends FlutterActivity {
 
                                     num_of_sms_and_mms += cursor_mms.getCount() ;
 
-//                                    result.success("[NUM_OF_MSG]" + Integer.toString(num_of_sms_and_mms)) ;
+                                    result.success("[NUM_OF_MSG]" + Integer.toString(num_of_sms_and_mms)) ;
 
                                     cursor_sms = this.readSMS(sms, cursor_sms);
                                     cursor_sms.close() ;

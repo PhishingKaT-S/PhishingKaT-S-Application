@@ -5,6 +5,7 @@
  */
 
 
+import 'dart:async';
 import 'dart:math';
 import 'dart:convert';
 import 'dart:io';
@@ -43,6 +44,7 @@ class DetectLoadPage extends StatefulWidget {
 }
 
 class _DetectLoadPageState extends State<DetectLoadPage> with TickerProviderStateMixin {
+  late Timer _timer ;
   final double threshold = 0.4 ;
   late AnimationController controller; // progress
   var interpreter_score; //머신러닝 돌릴 때 모델 담을 그릇
@@ -94,6 +96,7 @@ class _DetectLoadPageState extends State<DetectLoadPage> with TickerProviderStat
 
   @override
   void dispose() {
+    _timer?.cancel();
     controller.dispose();
     interpreter_score.close() ;
     interpreter_category.close() ;
@@ -107,17 +110,26 @@ class _DetectLoadPageState extends State<DetectLoadPage> with TickerProviderStat
     try{
       var res = await platform.invokeMethod('getResult');
 
+      num_of_total_sms = 0 ;
+      num_of_completed_sms = 0 ;
+
       String size = '[NUM_OF_MSG]' ;
       if ( res.toString().startsWith(size)) {
         num_of_total_sms = int.parse(res.toString().substring(size.length)) ;
         print("TT: "+ num_of_total_sms.toString()) ;
+
+        _timer = Timer.periodic(Duration(milliseconds: 10), (timer) {
+          setState(() {
+            num_of_completed_sms++;
+            print(num_of_completed_sms);
+          });
+        });
+
       } else {
         ch = res.cast<String>() ;
 
         setState(() {
           msgs = ch ;
-          num_of_completed_sms = 0 ;
-          num_of_total_sms = 0 ;
         });
 
         await context.read<SmsProvider>().setSmsToSmsProvider(msgs);
@@ -253,7 +265,7 @@ class _DetectLoadPageState extends State<DetectLoadPage> with TickerProviderStat
       }
       cnt++;
       setState(() {
-        num_of_completed_sms++;
+        // num_of_completed_sms++;
       });
     }
     // print(dataList) ;
@@ -265,6 +277,7 @@ class _DetectLoadPageState extends State<DetectLoadPage> with TickerProviderStat
     int _currScore = context.read<LaunchProvider>().getUserInfo().score ;
 
     if (num_of_completed_sms == num_of_total_sms) {
+      _timer?.cancel();
       _currScore = context
           .read<LaunchProvider>()
           .getUserInfo()
