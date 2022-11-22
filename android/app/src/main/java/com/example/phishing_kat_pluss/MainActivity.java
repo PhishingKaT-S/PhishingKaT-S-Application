@@ -86,7 +86,7 @@ public class MainActivity extends FlutterActivity {
 
                                     num_of_sms_and_mms += cursor_mms.getCount() ;
 
-//                                    result.success("[NUM_OF_MSG]" + Integer.toString(num_of_sms_and_mms)) ;
+                                    result.success("[NUM_OF_MSG]" + Integer.toString(num_of_sms_and_mms)) ;
 
                                     cursor_sms = this.readSMS(sms, cursor_sms);
                                     cursor_sms.close() ;
@@ -138,8 +138,8 @@ public class MainActivity extends FlutterActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-//        lite_smish = getTfliteInterpreter("smish_converted_model.tflite");
-//        lite_category = getTfliteInterpreter("cate_converted_model.tflite");
+        lite_smish = getTfliteInterpreter("smish_converted_model.tflite");
+        lite_category = getTfliteInterpreter("cate_converted_model.tflite");
 //        OnCheckPermission();
     }
 

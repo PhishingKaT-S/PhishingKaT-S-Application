@@ -25,7 +25,6 @@
         <!-- If your app opens https URLs -->
         <intent>
             <action android:name="android.intent.action.VIEW" />
-
             <data android:scheme="onestore" />
         </intent>
         <intent>
@@ -53,7 +52,6 @@
         android:label="피싱캣S"
         android:usesCleartextTraffic="true"
         >
-
         android:label="phishing_kat_pluss"
         android:usesCleartextTraffic="true">
         <receiver
