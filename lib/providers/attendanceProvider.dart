@@ -38,7 +38,7 @@ class AttendanceProvider extends ChangeNotifier {
   Future<void> set30Attendance(int userId) async{
     await MySqlConnection.connect(Database.getConnection()).then((conn) async {
       await conn.query(
-          "SELECT COUNT(attendance) as num_of_30_attendance FROM attendance WHERE user_id = ? AND attendance >= ? ",
+          "SELECT COUNT(UNIQUE(attendance)) as num_of_30_attendance FROM attendance WHERE user_id = ? AND attendance >= ? ",
           [
             userId,
             DateFormat('yy-MM-dd').format(

@@ -173,7 +173,7 @@ class _PhishingAlarmPageState extends State<PhishingAlarmPage> {
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
-        icon: Icon(Icons.close, color: Colors.black),
+        icon: const Icon(Icons.close, color: Colors.black),
         onPressed: () => Navigator.of(context).pop(),
         ),
         title: Text('피싱알림', style: TextStyle(fontWeight: FontWeight.bold, color: AppTheme.blueText),),
@@ -195,10 +195,10 @@ class _PhishingAlarmPageState extends State<PhishingAlarmPage> {
           future: _getPhishingAlarmData(context.watch<LaunchProvider>().getUserInfo().userId),
           builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
             if ( snapshot.hasError ) {
-              return const Text('데이터를 불러 올 수 없습니다.') ;
+              return const Center(child:  Text('데이터를 불러 올 수 없습니다.') ) ;
             } else if ( snapshot.hasData ) {
               print(_dateList.length);
-              return Container(
+              return (_dateList.isNotEmpty ) ? Container(
                   padding: EdgeInsets.only(top: 30, left: MediaQuery.of(context).size.width * 0.1,
                                                     right: MediaQuery.of(context).size.width * 0.1),
                   child: Stack(
@@ -217,9 +217,18 @@ class _PhishingAlarmPageState extends State<PhishingAlarmPage> {
                       )
                     ],
                   )
+              ) : Container(
+                height: MediaQuery.of(context).size.height -AppBar().preferredSize.height,
+                  child: Center(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [ const Text('데이터가 없습니다.')],
+                    ),
+                  )
               );
             } else {
-              return Container() ;
+              return Container();
             }
           },
         ),
