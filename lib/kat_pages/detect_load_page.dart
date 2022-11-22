@@ -14,6 +14,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:phishing_kat_pluss/local_database/DBHelper.dart';
+import 'package:phishing_kat_pluss/providers/attendanceProvider.dart';
 import 'package:phishing_kat_pluss/providers/smsProvider.dart';
 import 'package:provider/provider.dart';
 import 'package:http/http.dart' as http;
@@ -194,7 +195,11 @@ class _DetectLoadPageState extends State<DetectLoadPage> with TickerProviderStat
 
   Future<void> _detectionSms() async {
       //final url = Uri.parse('http://52.53.168.246:5000/api') ;
-      final List<SmsInfo> smsData = context.read<SmsProvider>().getUnknownSmsList();
+    int _score = 0;
+    int _userId = context.read<LaunchProvider>().getUserInfo().userId;
+    int _attendance_30 = await context.read<AttendanceProvider>().get30Attendance(_userId);
+    int _analysis_30 = await context.read<SmsProvider>().get30Analysis(_userId);
+    final List<SmsInfo> smsData = context.read<SmsProvider>().getUnknownSmsList();
       int type = 0;
       var ret_keyword=List.generate(20, (index) => 0.0);
       var ret = List.generate(25, (index) => 0.0);
@@ -285,16 +290,18 @@ class _DetectLoadPageState extends State<DetectLoadPage> with TickerProviderStat
           // await context.read<SmsProvider>().insertSMSList(context.read<SmsProvider>().getUnknownSmsList());
         }
 
+        _score = ((1 - (num_of_smishing_sms/num_of_total_sms)) * 50).toInt();
+        _score += (((_attendance_30 + _analysis_30) / 30) * 25).toInt();
 
       context.read<LaunchProvider>().updateAnalysisDate(context.read<LaunchProvider>().getUserInfo().userId) ;
 
       _currScore = context.read<LaunchProvider>().getUserInfo().score ;
 
 
-        context.read<LaunchProvider>().setScore(Random(1234).nextInt(100));
+        context.read<LaunchProvider>().setScore(_score);
 
         context.read<SmsProvider>().insertScore(context.read<LaunchProvider>().getUserInfo().userId);
-        context.read<SmsProvider>().updateScore(context.read<LaunchProvider>().getUserInfo().userId);
+        // context.read<SmsProvider>().updateScore(context.read<LaunchProvider>().getUserInfo().userId);
 
         Navigator.pop(context);
       }

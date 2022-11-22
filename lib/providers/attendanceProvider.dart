@@ -28,29 +28,33 @@ class AttendanceProvider extends ChangeNotifier {
     return _week_attendance;
   }
 
+  int _attendance30 = 0;
+
   Future<int> get30Attendance(int userId) async{
+    await set30Attendance(userId);
+    return _attendance30;
+  }
+
+  Future<void> set30Attendance(int userId) async{
     await MySqlConnection.connect(Database.getConnection()).then((conn) async {
       await conn.query(
           "SELECT COUNT(attendance) as num_of_30_attendance FROM attendance WHERE user_id = ? AND attendance >= ? ",
           [
             userId,
             DateFormat('yy-MM-dd').format(
-                DateTime.now().subtract(Duration(days: DateTime.now().day - 30)))
+                DateTime.now().subtract(Duration(days: DateTime.now().month - 1)))
           ]).then((results) {
         if (results.isNotEmpty) {
-          return results.first["num_of_30_attendance"];
+          _attendance30 = results.first["num_of_30_attendance"];
         } else if (results.isEmpty) {
-          return 0;
         }
       }).onError((error, stackTrace) {
         print("error: $error");
-        return -1;
       });
       conn.close();
     }).onError((error, stackTrace) {
       print("error2: $error");
     });
-    return 0;
   }
 
   Future<bool> getTodayAttendance(int userId) async {

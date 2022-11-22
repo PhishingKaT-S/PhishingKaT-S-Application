@@ -91,9 +91,11 @@ class LaunchProvider extends ChangeNotifier {
   }
 
   void setScore(int score){
+    _userInfo.score = score;
+    notifyListeners();
     MySqlConnection.connect(Database.getConnection()).then((conn) async {
       await conn.query(
-          "INSERT INTO users (score) SELECT ? where id = ?",
+          "UPDATE users SET score = ? WHERE id = ?;",
           [
             score,
             _userInfo.userId
@@ -110,8 +112,8 @@ class LaunchProvider extends ChangeNotifier {
     }).onError((error, stackTrace) {
       print("error2: $error");
     });
-    _userInfo.score = score;
-    notifyListeners();
+    // _userInfo.score = score;
+    // notifyListeners();
   }
 
   void setUpdate(){
@@ -187,26 +189,6 @@ class LaunchProvider extends ChangeNotifier {
     }
   }
 
-  Future getPhoneInfo() async {
-    var status_permission = await Permission.phone.status;
-    if (status_permission.isGranted) {
-      try {
-        final platformVersion = await DeviceInformation.platformVersion;
-        final imeiNo = await DeviceInformation.deviceIMEINumber;
-        final modelName = await DeviceInformation.deviceModel;
-        final manufacturer = await DeviceInformation.deviceManufacturer;
-        final apiLevel = await DeviceInformation.apiLevel;
-        final deviceName = await DeviceInformation.deviceName;
-        final productName = await DeviceInformation.productName;
-        final cpuType = await DeviceInformation.cpuName;
-        final hardware = await DeviceInformation.hardware;
-      } on PlatformException {
-        final platformVersion = "Failed to get platform version";
-        print(platformVersion);
-      }
-    }
-  }
-
   Future request_permission() async {
     await [
       Permission.contacts,
@@ -223,15 +205,6 @@ class LaunchProvider extends ChangeNotifier {
       log("ERROR $e");
     }
   }
-
-  // Future getUserInfo() async {
-  //   var conn = await MySqlConnection.connect(Database.getConnection());
-  //   var results = await conn.query(
-  //       'SELECT * FROM users WHERE IMEI == ? AND phone_number = ?',
-  //       [userInfo?.imei, userInfo?.phoneNumber]);
-  //   conn.close();
-  //   return results;
-  // }
 
   Future getPhoneNumber() async {
     var status = await Permission.contacts.status;
@@ -301,11 +274,6 @@ class LaunchProvider extends ChangeNotifier {
   }
 }
 
-class SmsData {
-  SmsData({required this.sms});
-
-  String sms;
-}
 
 class UserInfo {
   // UserInfo({this.imei = "", this.phoneNumber = ""});
