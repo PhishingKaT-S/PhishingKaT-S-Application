@@ -136,23 +136,23 @@ class SmsProvider with ChangeNotifier {
     });
   }
 
-  Future<void> updateScore(int userId) async {
-    await MySqlConnection.connect(Database.getConnection()).then((conn) async {
-      await conn.query(
-          "UPDATE users SET score = ? WHERE id = ?", [
-        80,
-        userId,
-      ]).then((results) {
-        if (results.isNotEmpty) {
-        } else if (results.isEmpty) {}
-      }).onError((error, stackTrace) {
-        print("error: $error");
-      });
-      conn.close();
-    }).onError((error, stackTrace) {
-      print("error2: $error");
-    });
-  }
+  // Future<void> updateScore(int userId) async {
+  //   await MySqlConnection.connect(Database.getConnection()).then((conn) async {
+  //     await conn.query(
+  //         "UPDATE users SET score = ? WHERE id = ?", [
+  //       80,
+  //       userId,
+  //     ]).then((results) {
+  //       if (results.isNotEmpty) {
+  //       } else if (results.isEmpty) {}
+  //     }).onError((error, stackTrace) {
+  //       print("error: $error");
+  //     });
+  //     conn.close();
+  //   }).onError((error, stackTrace) {
+  //     print("error2: $error");
+  //   });
+  // }
 
   Future<bool> getContacts() async {
     var status = await Permission.contacts.status;
@@ -227,6 +227,36 @@ class SmsProvider with ChangeNotifier {
       }).onError((error, stackTrace) {});
       conn.close();
     }).onError((error, stackTrace) {});
+  }
+
+  int _alanalysis30 = 0;
+
+  Future<int> get30Analysis(int userId) async{
+    await set30Analysis(userId);
+    return _alanalysis30;
+
+  }
+
+  Future<void> set30Analysis(int userId) async{
+    await MySqlConnection.connect(Database.getConnection()).then((conn) async {
+      await conn.query(
+          "SELECT COUNT(UNIQUE(*)) as num_of_30_analysis FROM analysis_reports WHERE user_id = ? AND date >= ? ",
+          [
+            userId,
+            DateFormat('yy-MM-dd').format(
+                DateTime.now().subtract(Duration(days: DateTime.now().month - 1)))
+          ]).then((results) {
+        if (results.isNotEmpty) {
+          _alanalysis30 = results.first["num_of_30_analysis"];
+        } else if (results.isEmpty) {
+        }
+      }).onError((error, stackTrace) {
+        print("error: $error");
+      });
+      conn.close();
+    }).onError((error, stackTrace) {
+      print("error2: $error");
+    });
   }
 }
 

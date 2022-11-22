@@ -50,7 +50,7 @@ public class MainActivity extends FlutterActivity {
     private static final int ACTION_MANAGE_OVERLAY_PERMISSION_REQUEST_CODE = 1;
     private static final String CHANNEL2 = "phishingkat.flutter.android"; //지원
     private static final String CHANNEL3 = "onestore";
-    private int num_of_sms_and_mms = 0 ;
+    private int numOfSMSandMMS = 0 ;
     public static Interpreter lite_smish;
     public static Interpreter lite_category;
     ArrayList<String> sms = new ArrayList<String>();
@@ -62,43 +62,65 @@ public class MainActivity extends FlutterActivity {
         new MethodChannel(flutterEngine.getDartExecutor().getBinaryMessenger(), CHANNEL)
                 .setMethodCallHandler(
                         (call, result) -> {
-                            int sms_permission = ContextCompat.checkSelfPermission(this, Manifest.permission.READ_SMS);
-                            int contact_permission = ContextCompat.checkSelfPermission(this, Manifest.permission.READ_CONTACTS);
-                            int contact_state_permission = ContextCompat.checkSelfPermission(this, Manifest.permission.READ_PHONE_STATE);
 
-                            if (sms_permission == PackageManager.PERMISSION_GRANTED &&
-                                    contact_permission == PackageManager.PERMISSION_GRANTED &&
-                                    contact_state_permission == PackageManager.PERMISSION_GRANTED) {
-                                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                                    sms.clear();
-                                    num_of_sms_and_mms = 0 ;
+                            if ( call.method.equals("getSMSMMS")) {
+                                int sms_permission = ContextCompat.checkSelfPermission(this, Manifest.permission.READ_SMS);
+                                int contact_permission = ContextCompat.checkSelfPermission(this, Manifest.permission.READ_CONTACTS);
+                                int contact_state_permission = ContextCompat.checkSelfPermission(this, Manifest.permission.READ_PHONE_STATE);
 
-                                    Uri sms_uri = Uri.parse("content://sms/");
+                                if (sms_permission == PackageManager.PERMISSION_GRANTED &&
+                                        contact_permission == PackageManager.PERMISSION_GRANTED &&
+                                        contact_state_permission == PackageManager.PERMISSION_GRANTED) {
+                                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                                        sms.clear();
 
-                                    // SMS
-                                    Cursor cursor_sms = this.getContentResolver().query(sms_uri, null, null, null, "date DESC");
+                                        Uri sms_uri = Uri.parse("content://sms/");
 
-                                    num_of_sms_and_mms += cursor_sms.getCount() ;
+                                        // SMS
+                                        Cursor cursor_sms = this.getContentResolver().query(sms_uri, null, null, null, "date DESC");
 
-                                    // MMS
-                                    Cursor cursor_mms = this.getContentResolver().query(Uri.parse("content://mms"),
-                                            new String[]{"_id", "thread_id", "date", "read"}, null, null, "date DESC");
+                                        // MMS
+                                        Cursor cursor_mms = this.getContentResolver().query(Uri.parse("content://mms"),
+                                                new String[]{"_id", "thread_id", "date", "read"}, null, null, "date DESC");
 
-                                    num_of_sms_and_mms += cursor_mms.getCount() ;
+                                        cursor_sms = this.readSMS(sms, cursor_sms);
+                                        cursor_sms.close() ;
 
-                                    result.success("[NUM_OF_MSG]" + Integer.toString(num_of_sms_and_mms)) ;
-
-                                    cursor_sms = this.readSMS(sms, cursor_sms);
-                                    cursor_sms.close() ;
-
-
-                                    cursor_mms = this.readMMS(sms, cursor_mms) ;
-                                    cursor_mms.close() ;
+                                        cursor_mms = this.readMMS(sms, cursor_mms) ;
+                                        cursor_mms.close() ;
+                                    }
                                 }
-                            }
 
-                            result.success(sms);
+                                result.success(sms);
+                        } else if ( call.method.equals("getNumberOfSMSMMS") ) {
+                                int sms_permission = ContextCompat.checkSelfPermission(this, Manifest.permission.READ_SMS);
+                                int contact_permission = ContextCompat.checkSelfPermission(this, Manifest.permission.READ_CONTACTS);
+                                int contact_state_permission = ContextCompat.checkSelfPermission(this, Manifest.permission.READ_PHONE_STATE);
+
+                                if (sms_permission == PackageManager.PERMISSION_GRANTED &&
+                                        contact_permission == PackageManager.PERMISSION_GRANTED &&
+                                        contact_state_permission == PackageManager.PERMISSION_GRANTED) {
+                                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                                        numOfSMSandMMS = 0 ;
+
+                                        Uri sms_uri = Uri.parse("content://sms/");
+
+                                        // SMS
+                                        Cursor cursor_sms = this.getContentResolver().query(sms_uri, null, null, null, "date DESC");
+
+                                        numOfSMSandMMS += cursor_sms.getCount() ;
+
+                                        // MMS
+                                        Cursor cursor_mms = this.getContentResolver().query(Uri.parse("content://mms"),
+                                                new String[]{"_id", "thread_id", "date", "read"}, null, null, "date DESC");
+
+                                        numOfSMSandMMS += cursor_mms.getCount() ;
+
+                                        result.success(Integer.toString(numOfSMSandMMS)) ;
+                                    }
+                                }
                         }
+                    }
                 );
         new MethodChannel(flutterEngine.getDartExecutor().getBinaryMessenger(), CHANNEL2)
                 .setMethodCallHandler(

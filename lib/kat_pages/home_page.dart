@@ -2,6 +2,8 @@
 /// Homepage
 /// 최종 작성자: 김진일
 
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:line_chart/charts/line-chart.widget.dart';
 import 'package:line_chart/model/line-chart.model.dart';
@@ -27,7 +29,7 @@ class HomePage extends StatefulWidget {
 class _HomePage extends State<HomePage> with TickerProviderStateMixin {
   final _isSelected = [false, false, true];
   late AnimationController controller ;
-  int _score = 0;
+  double _score = 0;
   List<bool> _weekAttendance = [
     false,
     false,
@@ -41,19 +43,23 @@ class _HomePage extends State<HomePage> with TickerProviderStateMixin {
   @override
   void initState() {
     super.initState();
-
     controller = AnimationController(
       /// [AnimationController]s can be created with `vsync: this` because of
       /// [TickerProviderStateMixin].
       vsync: this,
-      duration: const Duration(microseconds: 100),
+      duration: const Duration(seconds: 3),
     )..addListener(() {
+      // if(controller.value > 0.98){
+      //   print("home_page: controller.value = ${controller.value}");
+      //   controller.dispose();
+      // }
       setState(() {
-        var k = Provider.of<LaunchProvider>(context, listen: false).getUserInfo().score ;
+        double k = (Provider.of<LaunchProvider>(context, listen: false).getUserInfo().score.toDouble()*0.01) ;
         if ( k != -1 && k >= _score ) _score++;
       });
     });
-    controller.repeat(reverse: true);
+    controller.repeat();
+
 
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       int _userId = Provider.of<LaunchProvider>(context, listen: false)
@@ -156,6 +162,7 @@ class _HomePage extends State<HomePage> with TickerProviderStateMixin {
   Widget _getCircularChart(double score) {
     setState(() {
       smish_detect_flag = (context.watch<LaunchProvider>().getUserInfo().score != -1) ? true : false;
+      controller.repeat();
     });
     score = context.watch<LaunchProvider>().getUserInfo().score.toDouble();
     smish_detect_flag = (context.watch<LaunchProvider>().getUserInfo().score != -1) ? true : false;
@@ -183,7 +190,7 @@ class _HomePage extends State<HomePage> with TickerProviderStateMixin {
                     height: SCORE_WIDTH_RANGE + 30,
                     child: CircularProgressIndicator(
                       strokeWidth: 6.0,
-                      value: _score * 0.01,
+                      value: _score * 0.01,// * context.watch<LaunchProvider>().getUserInfo().score * 0.01,
                       color: AppTheme.blueText,
                     )
                 )
