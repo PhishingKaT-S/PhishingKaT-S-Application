@@ -125,7 +125,7 @@ class _DetectLoadPageState extends State<DetectLoadPage> with TickerProviderStat
         print("TT: "+ num_of_total_sms.toString()) ;
 
         _timer = Timer.periodic(Duration(milliseconds: 80), (timer) {
-          setState(() {
+          setState(() async {
             if ( num_of_total_sms != 0 && num_of_completed_sms < num_of_total_sms ) {
               num_of_completed_sms++;
               print(num_of_completed_sms);
@@ -164,7 +164,10 @@ class _DetectLoadPageState extends State<DetectLoadPage> with TickerProviderStat
 
               context.read<LaunchProvider>().setScore(_score);
 
-              context.read<SmsProvider>().insertScore(context.read<LaunchProvider>().getUserInfo().userId);
+              context.read<LaunchProvider>().set_load_flag(true);
+
+              await context.read<SmsProvider>().insertScore(context.read<LaunchProvider>().getUserInfo().userId);
+              context.read<SmsProvider>().getInitialInfo(context.read<LaunchProvider>().getUserInfo().userId);
               // context.read<SmsProvider>().updateScore(context.read<LaunchProvider>().getUserInfo().userId);
 
               Navigator.pop(context);
