@@ -165,7 +165,7 @@ class _DetectLoadPageState extends State<DetectLoadPage> with TickerProviderStat
     else return 0.0;
   }
 
-  List<double> keyword(String text){
+  /*List<double> keyword(String text){
     var ret_keyword=[0.0, 0.0, 0.0, 0.0, 0.0,
       0.0, 0.0, 0.0, 0.0, 0.0,
       0.0, 0.0, 0.0, 0.0, 0.0,
@@ -185,7 +185,7 @@ class _DetectLoadPageState extends State<DetectLoadPage> with TickerProviderStat
       print(ret_keyword[i]);
     }
     return ret_keyword;
-  }
+  }*/
 
   void model_create() async {
     interpreter_score = await Interpreter.fromAsset('smish_converted_model.tflite');
