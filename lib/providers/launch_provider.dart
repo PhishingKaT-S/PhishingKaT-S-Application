@@ -90,6 +90,13 @@ class LaunchProvider extends ChangeNotifier {
 
   }
 
+  bool _load_flag = false;
+  bool get_load_flag() => _load_flag;
+  void set_load_flag(bool new_value){
+    _load_flag = new_value;
+    notifyListeners();
+  }
+
   void setScore(int score){
     _userInfo.score = score;
     notifyListeners();
