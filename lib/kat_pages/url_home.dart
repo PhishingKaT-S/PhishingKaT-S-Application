@@ -188,7 +188,7 @@ class _InspectFeedbackState extends State<InspectFeedback> with SingleTickerProv
                       Container(
                         height: ((MediaQuery.of(context).size.height-20)*0.44)/7,
                         child: RadioListTile<SingingCharacter>(
-                          title: Text('택배 사칭', style: buttonCheck[0] ? AppTheme.check_messageManage: AppTheme.uncheck_messageManage),
+                          title: Text('수사 기관 사칭', style: buttonCheck[0] ? AppTheme.check_messageManage: AppTheme.uncheck_messageManage),
                           value: SingingCharacter.parcel,
                           groupValue: _character,
                           onChanged: (SingingCharacter? value){
@@ -207,7 +207,7 @@ class _InspectFeedbackState extends State<InspectFeedback> with SingleTickerProv
                       Container(
                         height: ((MediaQuery.of(context).size.height-20)*0.44)/7,
                         child: RadioListTile<SingingCharacter>(
-                          title: Text('기관 사칭', style: buttonCheck[1] ? AppTheme.check_messageManage: AppTheme.uncheck_messageManage),
+                          title: Text('정부기관 사칭', style: buttonCheck[1] ? AppTheme.check_messageManage: AppTheme.uncheck_messageManage),
                           value: SingingCharacter.corp,
                           groupValue: _character,
                           onChanged: (SingingCharacter? value){
@@ -226,7 +226,7 @@ class _InspectFeedbackState extends State<InspectFeedback> with SingleTickerProv
                       Container(
                         height: ((MediaQuery.of(context).size.height-20)*0.44)/7,
                         child: RadioListTile<SingingCharacter>(
-                          title: Text('지인 사칭', style: buttonCheck[2] ? AppTheme.check_messageManage: AppTheme.uncheck_messageManage),
+                          title: Text('지인/가족 사칭', style: buttonCheck[2] ? AppTheme.check_messageManage: AppTheme.uncheck_messageManage),
                           value: SingingCharacter.acquaint,
                           groupValue: _character,
                           onChanged: (SingingCharacter? value){
@@ -245,7 +245,7 @@ class _InspectFeedbackState extends State<InspectFeedback> with SingleTickerProv
                         height: ((MediaQuery.of(context).size.height-20)*0.44)/7,
                         child:
                         RadioListTile<SingingCharacter>(
-                          title: Text('결제 사칭', style: buttonCheck[3] ? AppTheme.check_messageManage: AppTheme.uncheck_messageManage),
+                          title: Text('택배사 사칭', style: buttonCheck[3] ? AppTheme.check_messageManage: AppTheme.uncheck_messageManage),
                           value: SingingCharacter.pay,
                           groupValue: _character,
                           onChanged: (SingingCharacter? value){
@@ -265,7 +265,7 @@ class _InspectFeedbackState extends State<InspectFeedback> with SingleTickerProv
                         height: ((MediaQuery.of(context).size.height-20)*0.44)/7,
                         child:
                         RadioListTile<SingingCharacter>(
-                          title:  Text('광고 사칭', style: buttonCheck[4] ? AppTheme.check_messageManage: AppTheme.uncheck_messageManage),
+                          title:  Text('금융기관 사칭', style: buttonCheck[4] ? AppTheme.check_messageManage: AppTheme.uncheck_messageManage),
                           value: SingingCharacter.ad,
                           groupValue: _character,
                           onChanged: (SingingCharacter? value){
@@ -285,7 +285,7 @@ class _InspectFeedbackState extends State<InspectFeedback> with SingleTickerProv
                         height: ((MediaQuery.of(context).size.height-20)*0.44)/7,
                         child:
                         RadioListTile<SingingCharacter>(
-                          title: Text('기타(해당사항 없음)', style: buttonCheck[5] ? AppTheme.check_messageManage: AppTheme.uncheck_messageManage),
+                          title: Text('기업 사칭', style: buttonCheck[5] ? AppTheme.check_messageManage: AppTheme.uncheck_messageManage),
                           value: SingingCharacter.ad,
                           groupValue: _character,
                           onChanged: (SingingCharacter? value){
@@ -305,7 +305,7 @@ class _InspectFeedbackState extends State<InspectFeedback> with SingleTickerProv
                         height: ((MediaQuery.of(context).size.height-20)*0.44)/7,
                         child:
                         RadioListTile<SingingCharacter>(
-                          title: Text('아직 미정', style: buttonCheck[5] ? AppTheme.check_messageManage: AppTheme.uncheck_messageManage),
+                          title: Text('기타(해당사항 없음)', style: buttonCheck[5] ? AppTheme.check_messageManage: AppTheme.uncheck_messageManage),
                           value: SingingCharacter.ad,
                           groupValue: _character,
                           onChanged: (SingingCharacter? value){

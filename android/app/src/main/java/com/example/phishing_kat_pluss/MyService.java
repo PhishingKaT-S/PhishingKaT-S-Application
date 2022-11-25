@@ -194,16 +194,16 @@ public class MyService extends Service {
                         sms_type = type = "1";
                         break;
                     case R.id.radio_bank:
-                        sms_type = type = "2";
-                        break;
-                    case R.id.radio_corp:
-                        sms_type = type = "3";
-                        break;
-                    case R.id.radio_shipping:
                         sms_type = type = "4";
                         break;
-                    case R.id.radio_acquaint:
+                    case R.id.radio_corp:
                         sms_type = type = "5";
+                        break;
+                    case R.id.radio_shipping:
+                        sms_type = type = "3";
+                        break;
+                    case R.id.radio_acquaint:
+                        sms_type = type = "2";
                         break;
                 } // type 변경
 
@@ -329,25 +329,25 @@ public class MyService extends Service {
                         radioGroup.check(R.id.radio_Minister);
                         sms_type = "1";
                         break;
-                    case 2:
+                    case 4:
                         tv_type.setText(String.format(getString(R.string.bank), score));
                         radioGroup.check(R.id.radio_bank);
-                        sms_type = "2";
-                        break;
-                    case 3:
-                        tv_type.setText(String.format(getString(R.string.corp), score));
-                        radioGroup.check(R.id.radio_corp);
-                        sms_type = "3";
-                        break;
-                    case 4:
-                        tv_type.setText(String.format(getString(R.string.shipping), score));
-                        radioGroup.check(R.id.radio_shipping);
                         sms_type = "4";
                         break;
                     case 5:
+                        tv_type.setText(String.format(getString(R.string.corp), score));
+                        radioGroup.check(R.id.radio_corp);
+                        sms_type = "5";
+                        break;
+                    case 3:
+                        tv_type.setText(String.format(getString(R.string.shipping), score));
+                        radioGroup.check(R.id.radio_shipping);
+                        sms_type = "3";
+                        break;
+                    case 2:
                         tv_type.setText(String.format(getString(R.string.acquaint), score));
                         radioGroup.check(R.id.radio_acquaint);
-                        sms_type = "5";
+                        sms_type = "2";
                         break;
                 }
             }

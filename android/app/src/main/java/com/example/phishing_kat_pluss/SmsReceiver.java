@@ -31,6 +31,7 @@ import java.net.URL;
 import java.nio.MappedByteBuffer;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -215,31 +216,22 @@ public class SmsReceiver extends BroadcastReceiver {
 
 class SMS{ //전화 형식을 잘 맞춰야 할 듯 여러개로 fix시키는게 좋을듯
     private String text;
-    private String [][] abaeKeyword = { //20*9 행렬
-            {"아이디", "확인", "방식", "문의", "수리", "연락", "건강검진", "국제", "서류"},
-            {"수리", "아이디", "비율", "확인", "규제", "아빠", "전화", "은행", "중도"},
-            {"국제", "배송", "확인", "요청", "아이디", "서류", "경감", "자산", "대한"},
-            {"일화", "번호", "오류", "규제", "모든", "대상", "안내", "조심", "국민"},
-            {"법령", "신고", "발급", "배송", "이상", "전산", "개인", "문의", "자산"},
-            {"제외", "노출", "아빠", "방문", "우대금리", "확인", "지정", "요청", "여기"},
-            {"수리", "발급", "방식", "최고", "국제", "확인", "심의", "자동", "신고"},
-            {"교통", "은행", "문의", "배송", "공인", "수리", "국제", "일치", "제공"},
-            {"국제", "원본", "일시", "원금", "문의", "노출", "참고", "코로나", "분할"},
-            {"긴급", "기타", "대출", "일부", "매출", "전화", "기준", "문의", "조회"},
-            {"당일", "확인", "기한", "천만", "아빠", "문의", "수리", "역시", "배송"},
-            {"긴급", "대한", "개인", "최저", "바로", "조회", "변경", "생활", "시간"},
-            {"수리", "정상처리", "확인", "노출", "우대금리", "요청", "카톡", "원금", "당일"},
-            {"확인", "지금", "일치", "문의", "대출", "은행", "안내", "생활", "수리"},
-            {"수시", "년도", "원금", "운영", "처리", "경감", "아빠", "안내", "일용직"},
-            {"문의", "대출", "매출", "국제", "역시", "중도", "안정", "이자", "원금"},
-            {"수리", "여기", "공단", "은행", "차등", "최초", "진시", "대한", "면책"},
-            {"노출", "일부", "마감", "자산", "확인", "국제", "처리", "문의", "연결"},
-            {"자산", "추가", "이자", "발급", "범위", "바로", "수리", "대한", "제외"},
-            {"확인", "이자", "수리", "문의", "연결", "당일", "국제", "최저", "발급"}
-    };
-    private float[] array= new float[25];
+    private String[] keyword0= {"추가"};
+    private String[] keyword1= {"인증", "발신", "번호", "카톡"};
+    private String[] keyword2= {"권리", "차등", "이용", "전용", "거부","사고", "설명", "신청", "제외"};
+    private String[] keyword3= {"승인","오전"};
+    private String[] keyword4= {"빙자", "중층", "집행", "비대", "보건", "부처", "신한은행", "확보", "자영", "복지", "영업", "폐업", "수시", "운영", "카카오", "담당자", "부담", "인자", "감소", "상환", "직장인", "인원", "한도", "무관", "사항", "임차", "모두", "생계비", "연체", "지속", "중소", "일화", "시어", "위반", "국민", "현재", "충족", "기획재정부", "변동", "시작", "추가경정예산", "확산", "생활고", "이하", "매출", "대책", "천만원", "부지", "자료", "수료", "인상", "해당", "마지막", "운용", "재난", "개선", "입원", "적용", "보이스피싱", "휴직", "회복", "출발", "발송", "조건", "환자", "요약", "요구", "보증금", "하반기"};
+    private String[] keyword5= {"나야", "이번", "액정", "엄마", "여기", "휴대폰", "수리", "잠시", "사용", "먹통", "고장", "답장", "아빠", "화면", "바로"};
+    private String[] keyword6= {"오류", "해외", "국외", "정보", "안마", "부적정", "지불", "미만", "하락", "상담", "플러스", "제습기", "국내외", "한국", "화물", "일치", "유이", "최고", "원본", "카메라", "주문", "시불", "월간", "휘센", "번가", "소비자원", "약정", "변경", "지연", "주유", "이상", "조회", "소비자", "처리", "직구", "시신", "보류", "다음", "이자율", "주신", "노출", "가죽", "수정", "케이", "주소지", "대하", "일정", "시문", "에너지", "가산", "결제", "심의", "금지", "취소", "변제", "수령", "법정", "요망", "정상처리", "발급", "도로명", "의자", "코모", "접수", "예정", "최소", "플러스카드", "은행", "국민은행", "에어컨", "소파", "상환", "소니", "오류", "스파", "디몬", "기간", "금리", "익월", "연체", "모든", "이자", "여신", "로마", "수반", "현대", "국내", "물품", "소비자보호법", "하단", "완료", "통관", "위니", "세탁기", "입력", "냉장고", "국제", "전월", "실적", "아마존", "회비", "의무", "카톡", "이내", "신용카드", "유효","버터", "침대", "캐논", "포함", "불이익", "제한", "즉시", "원정", "지정", "본인"};
+    private String[] keyword7= {"심사", "전용", "생활", "동의", "부족", "설명", "창업", "법률", "제외", "금융", "권리", "차등", "주시", "여유", "인지세", "수료", "저축은행", "면책", "대출", "시기", "소상", "상이","사업자", "공인",  "무소득", "적용", "일부", "채무", "사고", "사기", "립니", "증빙"};
+    private String[] keyword8= {"방법", "등록", "정보", "시작", "분양", "재의", "예약", "오후", "축하", "일반", "채널", "기간", "시간", "인근", "포함", "승인", "수령", "오전", "아래", "이자", "책임", "중도", "개발", "경력", "임대", "예정"};
+    private String[] keyword9= {"검찰", "경찰", "공정", "사실", "상식", "선거법", "위반", "허위"};
 
-    private float[] ABAEwords = new float[20];
+    private float[] array= {0.0f,0.0f,0.0f,0.0f,0.0f,
+        0.0f,0.0f,0.0f,0.0f,0.0f,
+        0.0f,0.0f,0.0f,0.0f,0.0f};
+
+    private float[] ABAEwords = {0.0f,0.0f,0.0f,0.0f,0.0f,0.0f,0.0f,0.0f,0.0f,0.0f};
     public float score = 0.0f;
     public int category=-1;
 
@@ -261,10 +253,9 @@ class SMS{ //전화 형식을 잘 맞춰야 할 듯 여러개로 fix시키는게
     }
 
     private float phone(String text){
-        String regex = "(\\d{2,4})?(-|\\s)?(\\d{3,4})(-|\\s)?(\\d{3,4})$";
+        String regex = "(\\d{2,4})?(-|\\s)?(\\d{3,4})(-|\\s)?(\\d{3,4})";
         Pattern pattern = Pattern.compile(regex); //
         if(pattern.matcher(text).find()==true) {
-            System.out.println("phone check");
             return 1.0f;
         }
         else return 0.0f;
@@ -272,7 +263,6 @@ class SMS{ //전화 형식을 잘 맞춰야 할 듯 여러개로 fix시키는게
     private float urls(String text){
         Pattern pattern = Pattern.compile("(http)?(s)?:?(\\/\\/)?([a-z0-9\\w]+\\.*)+[a-z0-9]{2,4}");
         if(pattern.matcher(text).find()==true) {
-            System.out.println("url check");
             return 1.0f;
         }
         else {
@@ -285,7 +275,7 @@ class SMS{ //전화 형식을 잘 맞춰야 할 듯 여러개로 fix시키는게
     }
 
     private float mathematical_symbol(String text){
-        if(text.contains("+") || text.contains("-")|| text.contains("%") || text.contains("/")) return 1.0f;
+        if(text.contains("+") || text.contains("%") || text.contains("/")) return 1.0f;
         else return 0.0f;
     }
 
@@ -297,20 +287,84 @@ class SMS{ //전화 형식을 잘 맞춰야 할 듯 여러개로 fix시키는게
     }
 
     private void smishing_keywords(String text){
-        for(int i =5; i<5+20; i++){ //keywords 행개수
-            array[i]=0.0f;
-            ABAEwords[i-5]=0.0f;
-            for(int j=0; j<9; j++){ //keywords 열개수
-                if(text.contains(abaeKeyword[i-5][j])){
-                    array[i]=1.0f;
-                    ABAEwords[i-5]=1.0f;
-                    break;
-                }
+        int next_array_idx = 5;
+        int i=0;
+        for(int j =0; j<keyword0.length; j++)
+            if(text.contains(keyword0[j])){
+               array[next_array_idx+i]=1.0f;
+               ABAEwords[i]=1.0f;
+
+               break;
             }
-        }
+        i++;
+        for(int j =0; j<keyword1.length; j++)
+            if(text.contains(keyword1[j])){
+                array[next_array_idx+i]=1.0f;
+                ABAEwords[i]=1.0f;
+
+                break;
+            }
+        i++;
+        for(int j =0; j<keyword2.length; j++)
+            if(text.contains(keyword2[j])){
+                array[next_array_idx+i]=1.0f;
+                ABAEwords[i]=1.0f;
+                break;
+            }
+        i++;
+        for(int j =0; j<keyword3.length; j++)
+            if(text.contains(keyword3[j])){
+                array[next_array_idx+i]=1.0f;
+                ABAEwords[i]=1.0f;
+                break;
+            }
+        i++;
+        for(int j =0; j<keyword4.length; j++)
+            if(text.contains(keyword4[j])){
+                array[next_array_idx+i]=1.0f;
+                ABAEwords[i]=1.0f;
+                break;
+            }
+        i++;
+        for(int j =0; j<keyword5.length; j++)
+            if(text.contains(keyword5[j])){
+                array[next_array_idx+i]=1.0f;
+                ABAEwords[i]=1.0f;
+                break;
+            }
+        i++;
+        for(int j =0; j<keyword6.length; j++)
+            if(text.contains(keyword6[j])){
+                array[next_array_idx+i]=1.0f;
+                ABAEwords[i]=1.0f;
+                break;
+            }
+        i++;
+        for(int j =0; j<keyword7.length; j++)
+            if(text.contains(keyword7[j])){
+                array[next_array_idx+i]=1.0f;
+                ABAEwords[i]=1.0f;
+                break;
+            }
+        i++;
+        for(int j =0; j<keyword8.length; j++)
+            if(text.contains(keyword8[j])){
+                array[next_array_idx+i]=1.0f;
+                ABAEwords[i]=1.0f;
+                break;
+            }
+        i++;
+        for(int j =0; j<keyword9.length; j++)
+            if(text.contains(keyword9[j])){
+                array[next_array_idx+i]=1.0f;
+                ABAEwords[i]=1.0f;
+                break;
+            }
+        i++;
     }
     public float smsSmishScore(){
         float[][] ret= new float[1][1];
+        ret[0][0]=0;
         lite_smish.run(array, ret);
         Log.d("받아온 값 Score", ""+ret[0][0]);
         return ret[0][0]*100f;
@@ -321,10 +375,12 @@ class SMS{ //전화 형식을 잘 맞춰야 할 듯 여러개로 fix시키는게
         lite_category.run(ABAEwords,cat);
         float max_value = cat[0][0];
         System.out.println(cat[0][0]);
-        for(int i=1; i<6; i++) {
-            System.out.println(cat[0][i]);
-            if(cat[0][i] > max_value){
-                index_max=i;
+        for(int k=0; k<6; k++) {
+            System.out.println(cat[0][k]);
+            if(cat[0][k] > max_value){
+                max_value = cat[0][k];
+                index_max=k;
+                System.out.println(index_max);
             }
         }
         Log.d("받아온 값 category", ""+index_max);

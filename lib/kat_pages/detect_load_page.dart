@@ -5,6 +5,7 @@
  */
 
 
+import 'dart:async';
 import 'dart:math';
 import 'dart:convert';
 import 'dart:io';
@@ -14,6 +15,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:phishing_kat_pluss/local_database/DBHelper.dart';
+import 'package:phishing_kat_pluss/providers/attendanceProvider.dart';
 import 'package:phishing_kat_pluss/providers/smsProvider.dart';
 import 'package:provider/provider.dart';
 import 'package:http/http.dart' as http;
@@ -43,6 +45,7 @@ class DetectLoadPage extends StatefulWidget {
 }
 
 class _DetectLoadPageState extends State<DetectLoadPage> with TickerProviderStateMixin {
+  late Timer _timer ;
   final double threshold = 0.4 ;
   late AnimationController controller; // progress
   var interpreter_score; //머신러닝 돌릴 때 모델 담을 그릇
@@ -58,16 +61,16 @@ class _DetectLoadPageState extends State<DetectLoadPage> with TickerProviderStat
   List<String> msgs = [] ;
 
   var ABAE_keywords=[
-    ["아이디", "확인", "방식", "문의", "수리", "연락", "건강검진", "국제", "서류"],      ["수리", "아이디", "비율", "확인", "규제", "아빠", "전화", "은행", "중도"],
-    ["국제", "배송", "확인", "요청", "아이디", "서류", "경감", "자산", "대한"],      ["일화", "번호", "오류", "규제", "모든", "대상", "안내", "조심", "국민"],
-    ["법령", "신고", "발급", "배송", "이상", "전산", "개인", "문의", "자산"],      ["제외", "노출", "아빠", "방문", "우대금리", "확인", "지정", "요청", "여기"],
-    ["수리", "발급", "방식", "최고", "국제", "확인", "심의", "자동", "신고"],      ["교통", "은행", "문의", "배송", "공인", "수리", "국제", "일치", "제공"],
-    ["국제", "원본", "일시", "원금", "문의", "노출", "참고", "코로나", "분할"],      ["긴급", "기타", "대출", "일부", "매출", "전화", "기준", "문의", "조회"],
-    ["당일", "확인", "기한", "천만", "아빠", "문의", "수리", "역시", "배송"],      ["긴급", "대한", "개인", "최저", "바로", "조회", "변경", "생활", "시간"],
-    ["수리", "정상처리", "확인", "노출", "우대금리", "요청", "카톡", "원금", "당일"],      ["확인", "지금", "일치", "문의", "대출", "은행", "안내", "생활", "수리"],
-    ["수시", "년도", "원금", "운영", "처리", "경감", "아빠", "안내", "일용직"],      ["문의", "대출", "매출", "국제", "역시", "중도", "안정", "이자", "원금"],
-    ["수리", "여기", "공단", "은행", "차등", "최초", "진시", "대한", "면책"],      ["노출", "일부", "마감", "자산", "확인", "국제", "처리", "문의", "연결"],
-    ["자산", "추가", "이자", "발급", "범위", "바로", "수리", "대한", "제외"],      ["확인", "이자", "수리", "문의", "연결", "당일", "국제", "최저", "발급"]
+    ["추가"],
+    ["인증", "발신", "번호", "카톡"],
+    ["권리", "차등", "이용", "전용", "거부","사고", "설명", "신청", "제외"],
+    ["승인","오전"],
+    ["빙자", "중층", "집행", "비대", "보건", "부처", "신한은행", "확보", "자영", "복지", "영업", "폐업", "수시", "운영", "카카오", "담당자", "부담", "인자", "감소", "상환", "직장인", "인원", "한도", "무관", "사항", "임차", "모두", "생계비", "연체", "지속", "중소", "일화", "시어", "위반", "국민", "현재", "충족", "기획재정부", "변동", "시작", "추가경정예산", "확산", "생활고", "이하", "매출", "대책", "천만원", "부지", "자료", "수료", "인상", "해당", "마지막", "운용", "재난", "개선", "입원", "적용", "보이스피싱", "휴직", "회복", "출발", "발송", "조건", "환자", "요약", "요구", "보증금", "하반기"],
+    ["나야", "이번", "액정", "엄마", "여기", "휴대폰", "수리", "잠시", "사용", "먹통", "고장", "답장", "아빠", "화면", "바로"],
+    ["오류", "해외", "국외", "정보", "안마", "부적정", "지불", "미만", "하락", "상담", "플러스", "제습기", "국내외", "한국", "화물", "일치", "유이", "최고", "원본", "카메라", "주문", "시불", "월간", "휘센", "번가", "소비자원", "약정", "변경", "지연", "주유", "이상", "조회", "소비자", "처리", "직구", "시신", "보류", "다음", "이자율", "주신", "노출", "가죽", "수정", "케이", "주소지", "대하", "일정", "시문", "에너지", "가산", "결제", "심의", "금지", "취소", "변제", "수령", "법정", "요망", "정상처리", "발급", "도로명", "의자", "코모", "접수", "예정", "최소", "플러스카드", "은행", "국민은행", "에어컨", "소파", "상환", "소니", "오류", "스파", "디몬", "기간", "금리", "익월", "연체", "모든", "이자", "여신", "로마", "수반", "현대", "국내", "물품", "소비자보호법", "하단", "완료", "통관", "위니", "세탁기", "입력", "냉장고", "국제", "전월", "실적", "아마존", "회비", "의무", "카톡", "이내", "신용카드", "유효","버터", "침대", "캐논", "포함", "불이익", "제한", "즉시", "원정", "지정", "본인"],
+    ["심사", "전용", "생활", "동의", "부족", "설명", "창업", "법률", "제외", "금융", "권리", "차등", "주시", "여유", "인지세", "수료", "저축은행", "면책", "대출", "시기", "소상", "상이","사업자", "공인",  "무소득", "적용", "일부", "채무", "사고", "사기", "립니", "증빙"],
+    ["방법", "등록", "정보", "시작", "분양", "재의", "예약", "오후", "축하", "일반", "채널", "기간", "시간", "인근", "포함", "승인", "수령", "오전", "아래", "이자", "책임", "중도", "개발", "경력", "임대", "예정"],
+    ["검찰", "경찰", "공정", "사실", "상식", "선거법", "위반", "허위"]
   ];
 
   @override
@@ -94,6 +97,7 @@ class _DetectLoadPageState extends State<DetectLoadPage> with TickerProviderStat
 
   @override
   void dispose() {
+    _timer?.cancel();
     controller.dispose();
     interpreter_score.close() ;
     interpreter_category.close() ;
@@ -105,23 +109,81 @@ class _DetectLoadPageState extends State<DetectLoadPage> with TickerProviderStat
     List<String> ch = [];
     ch.clear();
     try{
-      var res = await platform.invokeMethod('getResult');
+
+      var getNumberOfSMSMMS = await platform.invokeMethod('getNumberOfSMSMMS') ;
+
+      num_of_total_sms = 0 ;
+      num_of_completed_sms = 0 ;
 
       String size = '[NUM_OF_MSG]' ;
-      if ( res.toString().startsWith(size)) {
-        num_of_total_sms = int.parse(res.toString().substring(size.length)) ;
-        print("TT: "+ num_of_total_sms.toString()) ;
-      } else {
-        ch = res.cast<String>() ;
+      if ( getNumberOfSMSMMS.length != 0 ) {
+        int _userId = context.read<LaunchProvider>().getUserInfo().userId;
+        int _attendance_30 = await context.read<AttendanceProvider>().get30Attendance(_userId);
+        int _analysis_30 = await context.read<SmsProvider>().get30Analysis(_userId);
 
-        setState(() {
-          msgs = ch ;
-          num_of_completed_sms = 0 ;
-          num_of_total_sms = 0 ;
+        num_of_total_sms = int.parse(getNumberOfSMSMMS.toString()) ;
+        print("TT: "+ num_of_total_sms.toString()) ;
+
+        _timer = Timer.periodic(Duration(milliseconds: 80), (timer) {
+          setState(() {
+            if ( num_of_total_sms != 0 && num_of_completed_sms < num_of_total_sms ) {
+              num_of_completed_sms++;
+              print(num_of_completed_sms);
+            } else if ( num_of_completed_sms == num_of_total_sms ) {
+
+              int _score = 0;
+              _timer?.cancel();
+
+              int _currScore = context.read<LaunchProvider>().getUserInfo().score ;
+
+              _currScore = context
+                  .read<LaunchProvider>()
+                  .getUserInfo()
+                  .score;
+
+              // 처음 검사할 때 문자 메세지 다 가져오기
+              if (_currScore == -1) {
+                DBHelper().deleteAllSMS() ;
+                for (int i = 0 ; i < dataList.length; i++) {
+                  DBHelper().insertSMS(dataList[i]);
+                }
+                // List<Sms> smsListSet = await DBHelper().getAllSMS() ;
+                // for (int i = 0 ; i < dataList.length; i++) {
+                //   print(smsListSet[i].text) ;
+                // }
+                // DBHelper().insertSMS(_sms);
+                // await context.read<SmsProvider>().insertSMSList(context.read<SmsProvider>().getUnknownSmsList());
+              }
+
+              _score = ((1 - (num_of_smishing_sms/num_of_total_sms)) * 50).toInt();
+              _score += (((_attendance_30 + _analysis_30) / 30) * 25).toInt();
+
+              context.read<LaunchProvider>().updateAnalysisDate(context.read<LaunchProvider>().getUserInfo().userId) ;
+
+              _currScore = context.read<LaunchProvider>().getUserInfo().score ;
+
+              context.read<LaunchProvider>().setScore(_score);
+
+              context.read<SmsProvider>().insertScore(context.read<LaunchProvider>().getUserInfo().userId);
+              // context.read<SmsProvider>().updateScore(context.read<LaunchProvider>().getUserInfo().userId);
+
+              Navigator.pop(context);
+            }
+          });
         });
 
-        await context.read<SmsProvider>().setSmsToSmsProvider(msgs);
+        var getSMSandMMS = await platform.invokeMethod('getSMSMMS');
+        if ( getSMSandMMS.length != 0 ){
+          ch = getSMSandMMS.cast<String>() ;
+
+          setState(() {
+            msgs = ch ;
+          });
+
+          await context.read<SmsProvider>().setSmsToSmsProvider(msgs);
+        }
       }
+
     } on PlatformException catch (e) {
       ch.add("No data") ;
     }
@@ -130,7 +192,7 @@ class _DetectLoadPageState extends State<DetectLoadPage> with TickerProviderStat
   }
 
   double isPhone(String Text){ //폰 번호 유무
-    RegExp basicReg = RegExp(r"(\\d{2,4})?(-|\\s)?(\\d{3,4})(-|\\s)?(\\d{3,4})$");
+    RegExp basicReg = RegExp(r"(\\d{2,4})?(-|\\s)?(\\d{3,4})(-|\\s)?(\\d{3,4})");
     if(basicReg.hasMatch(Text))
       return 1.0;
     else return 0.0;
@@ -167,21 +229,16 @@ class _DetectLoadPageState extends State<DetectLoadPage> with TickerProviderStat
 
   /*List<double> keyword(String text){
     var ret_keyword=[0.0, 0.0, 0.0, 0.0, 0.0,
-      0.0, 0.0, 0.0, 0.0, 0.0,
-      0.0, 0.0, 0.0, 0.0, 0.0,
       0.0, 0.0, 0.0, 0.0, 0.0];
 
-    for(int i =0; i<20; i++) {
-      for(int j =0; j<8; j++){
-        print(ABAE_keywords[i][j]);
-        if(text.contains(ABAE_keywords[i][j])) {
+    for(int i =0; i<10; i++) {
+      ABAE_keywords[i].forEach((value){
+        if(text.contains(value)){
           ret_keyword[i] = 1.0;
-          break;
         }
-        ret_keyword[i]=0.0;
-      }
+      });
     }
-    for(int i =0; i<20; i++) {
+    for(int i =0; i<10; i++) {
       print(ret_keyword[i]);
     }
     return ret_keyword;
@@ -193,11 +250,16 @@ class _DetectLoadPageState extends State<DetectLoadPage> with TickerProviderStat
   }
 
   Future<void> _detectionSms() async {
-    //final url = Uri.parse('http://52.53.168.246:5000/api') ;
+      //final url = Uri.parse('http://52.53.168.246:5000/api') ;
+    int _score = 0;
+    int _userId = context.read<LaunchProvider>().getUserInfo().userId;
+    int _attendance_30 = await context.read<AttendanceProvider>().get30Attendance(_userId);
+    int _analysis_30 = await context.read<SmsProvider>().get30Analysis(_userId);
     final List<SmsInfo> smsData = context.read<SmsProvider>().getUnknownSmsList();
     int type = 0;
-    var ret_keyword=List.generate(20, (index) => 0.0);
-    var ret = List.generate(25, (index) => 0.0);
+    var ret_keyword=List.generate(10, (index) => 0.0);
+    var ret = List.generate(15, (index) => 0.0);
+
 
     setState(() {
       num_of_total_sms = smsData.length;
@@ -213,7 +275,15 @@ class _DetectLoadPageState extends State<DetectLoadPage> with TickerProviderStat
       ret[2] = textLength(smsData[i].body);
       ret[3] = textLength(smsData[i].body);
       ret[4] = smishing_symbol(smsData[i].body);
-      for(int j =0; j < 20; j++) {
+      for(int j =0; j<10; j++) {
+        ABAE_keywords[j].forEach((value){
+          if(smsData[j].body.contains(value)){
+            ret_keyword[j] = 1.0;
+            ret[j+5]=1.0;
+          }
+        });
+
+      /*for(int j =0; j < 10; j++) {
         for(int k =0; k < 8; k++){
           if(smsData[i].body.contains(ABAE_keywords[j][k])) {
             ret_keyword[j] = 1.0;
@@ -222,7 +292,7 @@ class _DetectLoadPageState extends State<DetectLoadPage> with TickerProviderStat
           }
           ret[j+5]=0.0;
           ret_keyword[j]=0.0;
-        }
+        }*/
       }
 
       var output_score = List.filled(1 * 1, 0).reshape([1, 1]);
@@ -253,7 +323,7 @@ class _DetectLoadPageState extends State<DetectLoadPage> with TickerProviderStat
       }
       cnt++;
       setState(() {
-        num_of_completed_sms++;
+        // num_of_completed_sms++;
       });
     }
     // print(dataList) ;
@@ -262,41 +332,7 @@ class _DetectLoadPageState extends State<DetectLoadPage> with TickerProviderStat
 
     print("SMISH: " + num_of_smishing_sms.toString() + " " + num_of_completed_sms.toString());
 
-    int _currScore = context.read<LaunchProvider>().getUserInfo().score ;
-
-    if (num_of_completed_sms == num_of_total_sms) {
-      _currScore = context
-          .read<LaunchProvider>()
-          .getUserInfo()
-          .score;
-
-
-      // 처음 검사할 때 문자 메세지 다 가져오기
-      if (_currScore == -1) {
-        DBHelper().deleteAllSMS() ;
-        for (int i = 0 ; i < dataList.length; i++) {
-          DBHelper().insertSMS(dataList[i]);
-        }
-        // List<Sms> smsListSet = await DBHelper().getAllSMS() ;
-        // for (int i = 0 ; i < dataList.length; i++) {
-        //   print(smsListSet[i].text) ;
-        // }
-        // DBHelper().insertSMS(_sms);
-        // await context.read<SmsProvider>().insertSMSList(context.read<SmsProvider>().getUnknownSmsList());
-      }
-
-
-      context.read<LaunchProvider>().updateAnalysisDate(context.read<LaunchProvider>().getUserInfo().userId) ;
-
-      _currScore = context.read<LaunchProvider>().getUserInfo().score ;
-
-      context.read<LaunchProvider>().setScore(Random(1234).nextInt(100));
-
-      context.read<SmsProvider>().insertScore(context.read<LaunchProvider>().getUserInfo().userId);
-      context.read<SmsProvider>().updateScore(context.read<LaunchProvider>().getUserInfo().userId);
-
-      Navigator.pop(context);
-    }
+    //  밑에 코드 Timer 안에 넣음
   }
 
   Widget _percentage() {
