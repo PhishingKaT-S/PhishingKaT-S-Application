@@ -143,7 +143,7 @@ class _InspectFeedbackState extends State<InspectFeedback> with SingleTickerProv
   bool _changeCategory=false; // 분류수정이 눌렸는지에 대한 변수
   List<bool> toggleSelected=[false, false]; //토글 버튼 파랑색 회식
   SingingCharacter? _character = SingingCharacter.parcel;
-  List<String> msgList = ['위험 URL으로 분류된문자입니다.','원격제어 설치 유도로 분류된 문자입니다.','개인정보유출로 분류된 문자입니다.', '지인 및 기관 사칭으로 분류된 문자입니다.', '텔레마케팅으로 분류된 문자입니다.', '보험 및 대출 안내 설치 유도 문자입니다.', '기타로 분류된 문자입니다.'];
+  List<String> msgList = ['수시 기관 사칭으로 분류된 문자입니다.','정부기관 사칭으로 분류된 문자입니다.','지인/가족 사칭 분류된 문자입니다.', '택배사 사칭으로 분류된 문자입니다.', '금융기관 사칭으로 분류된 문자입니다.', '기업 사칭으로 분류된 문자입니다.'];
   int _type =0; // 나중에 type 수정을 위함, 카테고리 분류 변수
   List<Sms> _smsinbox_freq = [];// sms 관리
   List<Sms> _smsinbox_danger = [];// sms 관리
@@ -181,7 +181,7 @@ class _InspectFeedbackState extends State<InspectFeedback> with SingleTickerProv
                     ),
 
                   ),
-                  height: MediaQuery.of(context).size.height * 0.55,
+                  height: MediaQuery.of(context).size.height * 0.49,
                   child: Column(
                     //mainAxisAlignment: MainAxisAlignment.center,
                     children: <Widget>[
@@ -286,7 +286,7 @@ class _InspectFeedbackState extends State<InspectFeedback> with SingleTickerProv
                         child:
                         RadioListTile<SingingCharacter>(
                           title: Text('기업 사칭', style: buttonCheck[5] ? AppTheme.check_messageManage: AppTheme.uncheck_messageManage),
-                          value: SingingCharacter.ad,
+                          value: SingingCharacter.others,
                           groupValue: _character,
                           onChanged: (SingingCharacter? value){
                             setState((){
@@ -301,26 +301,26 @@ class _InspectFeedbackState extends State<InspectFeedback> with SingleTickerProv
                         ),
 
                       ), //기타 해당 사항 없음 타일
-                      Container(
-                        height: ((MediaQuery.of(context).size.height-20)*0.44)/7,
-                        child:
-                        RadioListTile<SingingCharacter>(
-                          title: Text('기타(해당사항 없음)', style: buttonCheck[5] ? AppTheme.check_messageManage: AppTheme.uncheck_messageManage),
-                          value: SingingCharacter.ad,
-                          groupValue: _character,
-                          onChanged: (SingingCharacter? value){
-                            setState((){
-                              _character = value;
-                              for(int i=0; i<buttonCheck.length; i++)
-                                if(_character == SingingCharacter.values[i]) {
-                                  _type = i;
-                                  buttonCheck[i] = true;
-                                }else buttonCheck[i] = false;
-                            });
-                          },
-                        ),
+                      // Container(
+                      //   height: ((MediaQuery.of(context).size.height-20)*0.44)/7,
+                      //   child:
+                      //   RadioListTile<SingingCharacter>(
+                      //     title: Text('기타(해당사항 없음)', style: buttonCheck[5] ? AppTheme.check_messageManage: AppTheme.uncheck_messageManage),
+                      //     value: SingingCharacter.ad,
+                      //     groupValue: _character,
+                      //     onChanged: (SingingCharacter? value){
+                      //       setState((){
+                      //         _character = value;
+                      //         for(int i=0; i<buttonCheck.length; i++)
+                      //           if(_character == SingingCharacter.values[i]) {
+                      //             _type = i;
+                      //             buttonCheck[i] = true;
+                      //           }else buttonCheck[i] = false;
+                      //       });
+                      //     },
+                      //   ),
 
-                      ),
+                     // ),
                       SizedBox(height: MediaQuery.of(context).size.height * 0.04,),
                       Container(
 
@@ -480,6 +480,7 @@ class _InspectFeedbackState extends State<InspectFeedback> with SingleTickerProv
     try{
       final file= await _localFile;
       if(await file.exists() ) {
+        print(file);
         return 1;
       } else {
         return 0;
@@ -667,7 +668,7 @@ class _InspectFeedbackState extends State<InspectFeedback> with SingleTickerProv
   //bottom show up */
 
   Future<List<Sms>> getSmsList()   async {
-  if(await existFile() == 1) {
+  if(await existFile() ==1) {
       _smsinbox_danger = await DBHelper().getAllSMS();
       _smsinbox_freq = await DBHelper().getAllSMSFreq();
       _smsinbox_recent = await DBHelper().getAllSMS();

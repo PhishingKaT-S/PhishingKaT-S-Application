@@ -192,14 +192,15 @@ class _DetectLoadPageState extends State<DetectLoadPage> with TickerProviderStat
   }
 
   double isPhone(String Text){ //폰 번호 유무
-    RegExp basicReg = RegExp(r"(\\d{2,4})?(-|\\s)?(\\d{3,4})(-|\\s)?(\\d{3,4})");
-    if(basicReg.hasMatch(Text))
+    RegExp basicReg = RegExp(r"(\d{2,4})?(-|\s)?(\d{3,4})(-|\s)?(\d{3,4})");
+    if(basicReg.hasMatch(Text)) {
       return 1.0;
+    }
     else return 0.0;
   }
 
   double isUrl(String Text){
-    RegExp basicReg = RegExp(r"(http)?(s)?:?(\\/\\/)?([a-z0-9\\w]+\\.*)+[a-z0-9]{2,4}");
+    RegExp basicReg = RegExp(r'(http)?(s)?:?(\/\/)?([a-z0-9\w]+\.*)+[a-z0-9]{2,4}');
     if(basicReg.hasMatch(Text)){
       return 1.0;
     }
@@ -273,7 +274,7 @@ class _DetectLoadPageState extends State<DetectLoadPage> with TickerProviderStat
       ret[0] = isPhone(smsData[i].body);
       ret[1] = isUrl(smsData[i].body);
       ret[2] = textLength(smsData[i].body);
-      ret[3] = textLength(smsData[i].body);
+      ret[3] = MathSymbol(smsData[i].body);
       ret[4] = smishing_symbol(smsData[i].body);
       for(int j =0; j<10; j++) {
         ABAE_keywords[j].forEach((value){
@@ -300,6 +301,8 @@ class _DetectLoadPageState extends State<DetectLoadPage> with TickerProviderStat
 
       interpreter_score.run(ret, output_score);
       interpreter_category.run(ret_keyword, output_category);
+
+      print(output_score[0][0]);
 
       for (int k = 1; k < 6; k++) {
         if (output_category[0][k] > output_category[0][type]) {
