@@ -320,7 +320,7 @@ class SMS{ //전화 형식을 잘 맞춰야 할 듯 여러개로 fix시키는게
         int index_max =0;
         lite_category.run(ABAEwords,cat);
         float max_value = cat[0][0];
-
+        System.out.println(cat[0][0]);
         for(int i=1; i<6; i++) {
             System.out.println(cat[0][i]);
             if(cat[0][i] > max_value){
