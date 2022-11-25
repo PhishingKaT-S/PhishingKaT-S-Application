@@ -103,4 +103,9 @@ class DBHelper {
     final db = await database;
     db.rawUpdate('UPDATE $tableName SET type = ? where id= ?', [_type, _id]);
   }
+
+  checkTable() async{
+    final db = await database;
+    db.rawQuery('select count(*) from sqlite_master Where Name = $tableName');
+  }
 }
