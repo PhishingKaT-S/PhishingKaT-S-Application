@@ -298,7 +298,7 @@ class _HomePage extends State<HomePage> with TickerProviderStateMixin {
                                         MediaQuery.of(context).size.width * 0.2,
                                     fit: BoxFit.contain)
                                 : (score >= 70)
-                                    ? Image.asset('assets/logo/score_70_80.png',
+                                    ? Image.asset('assets/logo/score_70_79.png',
                                         width:
                                             MediaQuery.of(context).size.width *
                                                 0.2,

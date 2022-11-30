@@ -287,18 +287,19 @@ class _OneClickPageState extends State<OneClickPage> {
               if ( index == 0 ) {
                 DateTime _now = DateTime.now();
 
-                if (_now.hour < 9 || _now.hour > 22) {
+                //if (_now.hour < 9 || _now.hour > 22) {
                   /**
                    * 서비스 이용 불가 표시
                    */
-                  _displayDialog(context);
-                } else {
+                //  _displayDialog(context);
+                //} else {
                   Navigator.push(context, MaterialPageRoute(
                       builder: (context) => KaTWebView(title: titleList[index], url: urlList[index])));
-                }
+                //}
               } else if (index == 1){
-                Navigator.push(context, MaterialPageRoute(
-                  builder: (context) => KaTWebView(title: titleList[index], url: urlList[index])));
+                _launchCaller('15778787');
+                // Navigator.push(context, MaterialPageRoute(
+                  //builder: (context) => KaTWebView(title: titleList[index], url: urlList[index])));
               } else if (index == 2) {
                 Navigator.push(context, MaterialPageRoute(
                     builder: (context) => const PrepaidPhonePage()));

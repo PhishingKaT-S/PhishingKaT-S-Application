@@ -124,8 +124,8 @@ class _DetectLoadPageState extends State<DetectLoadPage> with TickerProviderStat
         num_of_total_sms = int.parse(getNumberOfSMSMMS.toString()) ;
         print("TT: "+ num_of_total_sms.toString()) ;
 
-        _timer = Timer.periodic(Duration(milliseconds: 80), (timer) {
-          setState(() async {
+        _timer = Timer.periodic(Duration(milliseconds: 150), (timer) {
+          setState(() {
             if ( num_of_total_sms != 0 && num_of_completed_sms < num_of_total_sms ) {
               num_of_completed_sms++;
               print(num_of_completed_sms);
@@ -142,6 +142,7 @@ class _DetectLoadPageState extends State<DetectLoadPage> with TickerProviderStat
                   .score;
 
               // 처음 검사할 때 문자 메세지 다 가져오기
+              print(dataList);
               if (_currScore == -1) {
                 DBHelper().deleteAllSMS() ;
                 for (int i = 0 ; i < dataList.length; i++) {
@@ -166,9 +167,9 @@ class _DetectLoadPageState extends State<DetectLoadPage> with TickerProviderStat
 
               context.read<LaunchProvider>().set_load_flag(true);
 
-              await context.read<SmsProvider>().insertScore(context.read<LaunchProvider>().getUserInfo().userId);
+              context.read<SmsProvider>().insertScore(context.read<LaunchProvider>().getUserInfo().userId);
               context.read<SmsProvider>().getInitialInfo(context.read<LaunchProvider>().getUserInfo().userId);
-              // context.read<SmsProvider>().updateScore(context.read<LaunchProvider>().getUserInfo().userId);
+              //context.read<SmsProvider>().updateScore(context.read<LaunchProvider>().getUserInfo().userId);
 
               Navigator.pop(context);
             }
@@ -195,15 +196,24 @@ class _DetectLoadPageState extends State<DetectLoadPage> with TickerProviderStat
   }
 
   double isPhone(String Text){ //폰 번호 유무
-    RegExp basicReg = RegExp(r"(\\d{2,4})?(-|\\s)?(\\d{3,4})(-|\\s)?(\\d{3,4})");
-    if(basicReg.hasMatch(Text))
+    RegExp basicReg = RegExp(r'(\d{2,4})?(-|\s)?(\d{3,4})(-|\s)?(\d{3,4})');
+    if(basicReg.hasMatch(Text)) {
+      // Iterable<RegExpMatch> matches = basicReg.allMatches(Text);
+      // for (final m in matches) {
+      //   if(m[0].toString().length < 8) return 0.0;
+      // }
       return 1.0;
+    }
     else return 0.0;
   }
 
   double isUrl(String Text){
-    RegExp basicReg = RegExp(r"(http)?(s)?:?(\\/\\/)?([a-z0-9\\w]+\\.*)+[a-z0-9]{2,4}");
+    RegExp basicReg = RegExp(r'(http)?(s)?:?(\/\/)?([a-z0-9\w]+\.*)+[a-z0-9]{2,4}');
     if(basicReg.hasMatch(Text)){
+      // Iterable<RegExpMatch> matches = basicReg.allMatches(Text);
+      // for (final m in matches) {
+      //   if(!m[0].toString().contains('.')) return 0.0;
+      // }
       return 1.0;
     }
     else return 0.0;
@@ -219,18 +229,18 @@ class _DetectLoadPageState extends State<DetectLoadPage> with TickerProviderStat
   }
 
   double MathSymbol(String Text){
-    if(Text.contains("+")|Text.contains("-")|Text.contains("%")|Text.contains("/")) return 1.0;
+    if(Text.contains("+")|Text.contains("%")|Text.contains("/")) return 1.0;
     else return 0.0;
   }
 
   double smishing_symbol(String text){
     if(text.contains("만원") || text.contains("천원")|| text.contains("백원") || text.contains("십원")) return 1.0;
-    RegExp pattern = RegExp(r",(\\d{3})원");
+    RegExp pattern = RegExp(r",(\d{3})원");
     if(pattern.hasMatch(text)) return 1.0;
     else return 0.0;
   }
 
-  List<double> keyword(String text){
+  /*List<double> keyword(String text){
     var ret_keyword=[0.0, 0.0, 0.0, 0.0, 0.0,
       0.0, 0.0, 0.0, 0.0, 0.0];
 
@@ -245,7 +255,7 @@ class _DetectLoadPageState extends State<DetectLoadPage> with TickerProviderStat
       print(ret_keyword[i]);
     }
     return ret_keyword;
-  }
+  }*/
 
   void model_create() async {
     interpreter_score = await Interpreter.fromAsset('smish_converted_model.tflite');
@@ -259,9 +269,11 @@ class _DetectLoadPageState extends State<DetectLoadPage> with TickerProviderStat
     int _attendance_30 = await context.read<AttendanceProvider>().get30Attendance(_userId);
     int _analysis_30 = await context.read<SmsProvider>().get30Analysis(_userId);
     final List<SmsInfo> smsData = context.read<SmsProvider>().getUnknownSmsList();
-    int type = 0;
     var ret_keyword=List.generate(10, (index) => 0.0);
-    var ret = List.generate(15, (index) => 0.0);
+    var ret =List.generate(15, (index) => 0.0);
+    print("DATA"+smsData.length.toString());
+    int type = 0;
+
 
 
     setState(() {
@@ -276,26 +288,18 @@ class _DetectLoadPageState extends State<DetectLoadPage> with TickerProviderStat
       ret[0] = isPhone(smsData[i].body);
       ret[1] = isUrl(smsData[i].body);
       ret[2] = textLength(smsData[i].body);
-      ret[3] = textLength(smsData[i].body);
+      ret[3] = MathSymbol(smsData[i].body);
       ret[4] = smishing_symbol(smsData[i].body);
       for(int j =0; j<10; j++) {
-        ABAE_keywords[j].forEach((value){
-          if(smsData[j].body.contains(value)){
+        ret_keyword[j]=0.0;
+        ret[j+5]=0.0;
+        for (int p = 0 ; p < ABAE_keywords[j].length; p++) {
+          if(smsData[i].body.contains(ABAE_keywords[j][p])){
             ret_keyword[j] = 1.0;
             ret[j+5]=1.0;
           }
-        });
-
-      /*for(int j =0; j < 10; j++) {
-        for(int k =0; k < 8; k++){
-          if(smsData[i].body.contains(ABAE_keywords[j][k])) {
-            ret_keyword[j] = 1.0;
-            ret[j+5]=1.0;
-            break;
-          }
-          ret[j+5]=0.0;
-          ret_keyword[j]=0.0;
-        }*/
+        }
+        //print(ret[j]);
       }
 
       var output_score = List.filled(1 * 1, 0).reshape([1, 1]);
@@ -304,11 +308,18 @@ class _DetectLoadPageState extends State<DetectLoadPage> with TickerProviderStat
       interpreter_score.run(ret, output_score);
       interpreter_category.run(ret_keyword, output_category);
 
+     print(smsData[i].body + ":     " +output_score[0][0].toString());
+
+      int max_index=0;
+      double max_value=output_category[0][0];
       for (int k = 1; k < 6; k++) {
-        if (output_category[0][k] > output_category[0][type]) {
-          type = k;
+        print(output_category[0][k]);
+        if (max_value < output_category[0][k]) {
+          max_index=k;
+          max_value=output_category[0][k];
         }
       }
+      type=max_index;
 
       // 0.5 이상 Smishing Data로 간주
       if (output_score[0][0] >= threshold ) {
@@ -323,6 +334,7 @@ class _DetectLoadPageState extends State<DetectLoadPage> with TickerProviderStat
               smishing: 1);
           dataList.add(_sms) ;
         }
+
       }
       cnt++;
       setState(() {

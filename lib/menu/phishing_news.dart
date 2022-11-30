@@ -83,7 +83,7 @@ class _NewsWebViewState extends State<NewsWebView> {
           Container(
             width: MediaQuery.of(context).size.width,
             height: MediaQuery.of(context).size.height * 0.35,
-            color: Colors.grey, // child: Image.asset('assets/images/voicephishing.jpeg', fit: BoxFit.fill,),
+            child: Image.asset('assets/images/phishing_news_background.png', fit: BoxFit.fill,),
           ),
 
           /// TITLE
@@ -91,6 +91,7 @@ class _NewsWebViewState extends State<NewsWebView> {
             width: MediaQuery.of(context).size.width,
             height: MediaQuery.of(context).size.height * 0.1,
             padding: EdgeInsets.only(left: MediaQuery.of(context).size.width * 0.05, right: MediaQuery.of(context).size.width * 0.05),
+
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
