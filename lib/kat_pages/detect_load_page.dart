@@ -122,56 +122,55 @@ class _DetectLoadPageState extends State<DetectLoadPage> with TickerProviderStat
         int _analysis_30 = await context.read<SmsProvider>().get30Analysis(_userId);
 
         num_of_total_sms = int.parse(getNumberOfSMSMMS.toString()) ;
-        print("TT: "+ num_of_total_sms.toString()) ;
 
-        _timer = Timer.periodic(Duration(milliseconds: 150), (timer) {
+        _timer = Timer.periodic(Duration(milliseconds: 150), (timer) async {
           setState(() {
             if ( num_of_total_sms != 0 && num_of_completed_sms < num_of_total_sms ) {
               num_of_completed_sms++;
               print(num_of_completed_sms);
             } else if ( num_of_completed_sms == num_of_total_sms ) {
-
-              int _score = 0;
               _timer?.cancel();
 
-              int _currScore = context.read<LaunchProvider>().getUserInfo().score ;
+              if ( num_of_completed_sms == num_of_total_sms ) {
+                int _score = 0;
+                int _currScore = context.read<LaunchProvider>().getUserInfo().score ;
 
-              _currScore = context
-                  .read<LaunchProvider>()
-                  .getUserInfo()
-                  .score;
+                _currScore = context
+                    .read<LaunchProvider>()
+                    .getUserInfo()
+                    .score;
 
-              // 처음 검사할 때 문자 메세지 다 가져오기
-              print(dataList);
-              if (_currScore == -1) {
-                DBHelper().deleteAllSMS() ;
-                for (int i = 0 ; i < dataList.length; i++) {
-                  DBHelper().insertSMS(dataList[i]);
+                // 처음 검사할 때 문자 메세지 다 가져오기
+                print(dataList);
+                if (_currScore == -1) {
+                  DBHelper().deleteAllSMS() ;
+                  for (int i = 0 ; i < dataList.length; i++) {
+                    DBHelper().insertSMS(dataList[i]);
+                  }
+                  // List<Sms> smsListSet = await DBHelper().getAllSMS() ;
+                  // for (int i = 0 ; i < dataList.length; i++) {
+                  //   print(smsListSet[i].text) ;
+                  // }
+                  // DBHelper().insertSMS(_sms);
+                  context.read<SmsProvider>().insertSMSList(context.read<SmsProvider>().getUnknownSmsList());
+                  print("TEST") ;
                 }
-                // List<Sms> smsListSet = await DBHelper().getAllSMS() ;
-                // for (int i = 0 ; i < dataList.length; i++) {
-                //   print(smsListSet[i].text) ;
-                // }
-                // DBHelper().insertSMS(_sms);
-                // await context.read<SmsProvider>().insertSMSList(context.read<SmsProvider>().getUnknownSmsList());
+
+                _score = ((1 - (num_of_smishing_sms/num_of_total_sms)) * 50).toInt();
+                _score += (((_attendance_30 + _analysis_30) / 30) * 25).toInt();
+
+                context.read<LaunchProvider>().updateAnalysisDate(context.read<LaunchProvider>().getUserInfo().userId) ;
+
+                context.read<LaunchProvider>().setScore(_score);
+
+                context.read<LaunchProvider>().set_load_flag(true);
+
+                context.read<SmsProvider>().insertScore(context.read<LaunchProvider>().getUserInfo().userId, _score);
+                context.read<SmsProvider>().getInitialInfo(context.read<LaunchProvider>().getUserInfo().userId);
+                //context.read<SmsProvider>().updateScore(context.read<LaunchProvider>().getUserInfo().userId);
+
+                Navigator.pop(context);
               }
-
-              _score = ((1 - (num_of_smishing_sms/num_of_total_sms)) * 50).toInt();
-              _score += (((_attendance_30 + _analysis_30) / 30) * 25).toInt();
-
-              context.read<LaunchProvider>().updateAnalysisDate(context.read<LaunchProvider>().getUserInfo().userId) ;
-
-              _currScore = context.read<LaunchProvider>().getUserInfo().score ;
-
-              context.read<LaunchProvider>().setScore(_score);
-
-              context.read<LaunchProvider>().set_load_flag(true);
-
-              context.read<SmsProvider>().insertScore(context.read<LaunchProvider>().getUserInfo().userId);
-              context.read<SmsProvider>().getInitialInfo(context.read<LaunchProvider>().getUserInfo().userId);
-              //context.read<SmsProvider>().updateScore(context.read<LaunchProvider>().getUserInfo().userId);
-
-              Navigator.pop(context);
             }
           });
         });
