@@ -545,9 +545,9 @@ class _InspectFeedbackState extends State<InspectFeedback> with SingleTickerProv
                                       child: Row(
                                           children:[
                                             Container(
-                                              width:110,
+                                              width:115,
                                                 margin: EdgeInsets.fromLTRB(8, 0, MediaQuery.of(context).size.width*0.02, 0),
-                                                child: Text((type==0)? _smsinbox_freq[index].sender.padRight(2):(type==1?  _smsinbox_danger[index].sender.padRight(11): _smsinbox_recent[index].sender), style: _isVisible[index]?  AppTheme.smsPhone: AppTheme.subtitle)), // 휴대폰 번호
+                                                child: Text((type==0)? (_smsinbox_freq[index].sender.contains("#"))?"알 수 없음":_smsinbox_freq[index].sender.padRight(2):(type==1?  ((_smsinbox_danger[index].sender.contains('#CMAS')?"알 수 없음":_smsinbox_danger[index].sender)).padRight(11): (_smsinbox_recent[index].sender.contains("#CMAS")?"알 수 없음":_smsinbox_recent[index].sender)), style: _isVisible[index]?  AppTheme.smsPhone: AppTheme.subtitle)), // 휴대폰 번호
                                             Container(
                                               margin: EdgeInsets.fromLTRB(MediaQuery.of(context).size.width * 0.02, 0,0, 0),
                                               child: Text((type==0)?( (DateTime.fromMicrosecondsSinceEpoch(int.parse(_smsinbox_freq[index].date)*1000)).toString().substring(0, 19)) : (type==1? new DateTime.fromMicrosecondsSinceEpoch(int.parse(_smsinbox_danger[index].date)*1000).toString().substring(0, 19): new DateTime.fromMicrosecondsSinceEpoch(int.parse(_smsinbox_recent[index].date)*1000).toString().substring(0, 19)), style: _isVisible[index]?  AppTheme.selectDate:AppTheme.unseletDate),), //받은 날짜
@@ -675,6 +675,7 @@ class _InspectFeedbackState extends State<InspectFeedback> with SingleTickerProv
 
       _smsinbox_recent.sort((b, a) => a.date.compareTo(b.date));
       _smsinbox_danger.sort((b, a) => a.prediction.compareTo(b.prediction));
+
       return _smsinbox_recent;
     }
     else {

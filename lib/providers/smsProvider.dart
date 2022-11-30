@@ -240,7 +240,7 @@ class SmsProvider with ChangeNotifier {
   Future<void> set30Analysis(int userId) async{
     await MySqlConnection.connect(Database.getConnection()).then((conn) async {
       await conn.query(
-          "SELECT COUNT(UNIQUE(*)) as num_of_30_analysis FROM analysis_reports WHERE user_id = ? AND date >= ? ",
+          "SELECT COUNT(*) as num_of_30_analysis FROM analysis_reports WHERE user_id = ? AND date >= ? ",
           [
             userId,
             DateFormat('yy-MM-dd').format(
