@@ -167,9 +167,9 @@ class _DetectLoadPageState extends State<DetectLoadPage> with TickerProviderStat
 
               context.read<LaunchProvider>().set_load_flag(true);
 
-              context.read<SmsProvider>().insertScore(context.read<LaunchProvider>().getUserInfo().userId);
+              await context.read<SmsProvider>().insertScore(context.read<LaunchProvider>().getUserInfo().userId);
               context.read<SmsProvider>().getInitialInfo(context.read<LaunchProvider>().getUserInfo().userId);
-              //context.read<SmsProvider>().updateScore(context.read<LaunchProvider>().getUserInfo().userId);
+              // context.read<SmsProvider>().updateScore(context.read<LaunchProvider>().getUserInfo().userId);
 
               Navigator.pop(context);
             }
