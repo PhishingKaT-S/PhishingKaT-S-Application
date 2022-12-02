@@ -97,7 +97,8 @@ class SmsProvider with ChangeNotifier {
           SmsInfo _smsInfo = _unknownSmsList[i];
           await conn.query(
               "INSERT INTO smsData VALUES (NULL, ?, ?)", [
-            _smsInfo.body, DateTime.now()
+            _smsInfo.body, DateFormat('yyyy-MM-dd HH:mm:ss').format(
+                DateTime.now()),
           ]).then((results) {
             if (results.isNotEmpty) {} else if (results.isEmpty) {}
           }).onError((error, stackTrace) {

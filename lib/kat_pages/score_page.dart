@@ -31,11 +31,9 @@ class _ScorePage extends State<ScorePage> {
   final List<_PieData> pieData = [
 
     _PieData('기관사칭\n10개', 8, Colors.red.shade400),
-    _PieData('지인사칭\n50개', 16, Colors.red),
+    _PieData('지인사칭\n7개', 16, Colors.red),
     _PieData('URL 포함\n20개', 29, Colors.red.shade300),
-
     _PieData('택배사칭\n5개', 1, Colors.red.shade200),
-    _PieData('진일짱\n15개', 3, Colors.red.shade100),
   ];
 
   Widget _pieChart(){
