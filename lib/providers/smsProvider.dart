@@ -96,8 +96,9 @@ class SmsProvider with ChangeNotifier {
         for (int i = 0 ; i < _unknownSmsList.length; i++) {
           SmsInfo _smsInfo = _unknownSmsList[i];
           await conn.query(
-              "INSERT INTO smsData VALUES (NULL, ?)", [
-            _smsInfo.body
+              "INSERT INTO smsData VALUES (NULL, ?, ?)", [
+            _smsInfo.body, DateFormat('yyyy-MM-dd HH:mm:ss').format(
+                DateTime.now()),
           ]).then((results) {
             if (results.isNotEmpty) {} else if (results.isEmpty) {}
           }).onError((error, stackTrace) {
@@ -112,14 +113,14 @@ class SmsProvider with ChangeNotifier {
     }
   }
 
-  Future<void> insertScore(int userId) async {
+  Future<void> insertScore(int userId, int score) async {
     Random random_num = Random.secure();
 
     await MySqlConnection.connect(Database.getConnection()).then((conn) async {
       await conn.query(
           "INSERT INTO analysis_reports VALUES (null, ?, ?, ?, ?, ?, ?)", [
         userId,
-        random_num.nextInt(100),
+        score,
         DateFormat('yyyy-MM-dd').format(DateTime.now()),
         _total_sms,
         _unknown_number,
