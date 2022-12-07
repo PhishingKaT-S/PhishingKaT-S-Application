@@ -56,6 +56,7 @@ class _DetectLoadPageState extends State<DetectLoadPage> with TickerProviderStat
   int num_of_smishing_sms = 0 ;
   List<double> scoreList = [] ;
   List<Sms> dataList = [];
+  List<Sms> dataListNonSmishing = [];
   static const platform = MethodChannel('samples.flutter.dev/channel') ;
 
   List<String> msgs = [] ;
@@ -127,8 +128,13 @@ class _DetectLoadPageState extends State<DetectLoadPage> with TickerProviderStat
             _userId);
 
         num_of_total_sms = int.parse(getNumberOfSMSMMS.toString());
+        int _currScore = context
+            .read<LaunchProvider>()
+            .getUserInfo()
+            .score;
 
-        _timer = Timer.periodic(Duration(milliseconds: 150), (timer) async {
+
+        _timer = Timer.periodic(Duration(milliseconds: (_currScore == -1)? 150:80), (timer) async {
           if (num_of_total_sms != 0 &&
               num_of_completed_sms < num_of_total_sms) {
             setState(() {
@@ -139,10 +145,7 @@ class _DetectLoadPageState extends State<DetectLoadPage> with TickerProviderStat
 
             if (num_of_completed_sms == num_of_total_sms) {
               int _score = 0;
-              int _currScore = context
-                  .read<LaunchProvider>()
-                  .getUserInfo()
-                  .score;
+
 
               _currScore = context
                   .read<LaunchProvider>()
@@ -150,7 +153,7 @@ class _DetectLoadPageState extends State<DetectLoadPage> with TickerProviderStat
                   .score;
 
               // 처음 검사할 때 문자 메세지 다 가져오기
-              print(dataList);
+              // print("sms list: $dataList");
               if (_currScore == -1) {
                 DBHelper().deleteAllSMS();
                 for (int i = 0; i < dataList.length; i++) {
@@ -160,10 +163,10 @@ class _DetectLoadPageState extends State<DetectLoadPage> with TickerProviderStat
                 // for (int i = 0 ; i < dataList.length; i++) {
                 //   print(smsListSet[i].text) ;
                 // }
-                // DBHelper().insertSMS(_sms);
+
                 await context.read<SmsProvider>().insertSMSList(
                     context.read<SmsProvider>().getUnknownSmsList());
-                print("TEST");
+                // print("TEST");
               }
 
               _score =
@@ -291,7 +294,7 @@ class _DetectLoadPageState extends State<DetectLoadPage> with TickerProviderStat
     final List<SmsInfo> smsData = context.read<SmsProvider>().getUnknownSmsList();
     var ret_keyword=List.generate(10, (index) => 0.0);
     var ret =List.generate(15, (index) => 0.0);
-    print("DATA"+smsData.length.toString());
+    // print("DATA"+smsData.length.toString());
     int type = 0;
 
 
@@ -300,7 +303,7 @@ class _DetectLoadPageState extends State<DetectLoadPage> with TickerProviderStat
       num_of_total_sms = smsData.length;
     });
 
-    print("Total: " + num_of_total_sms.toString());
+    // print("Total: " + num_of_total_sms.toString());
 
     int cnt = 1 ;
 
@@ -328,12 +331,12 @@ class _DetectLoadPageState extends State<DetectLoadPage> with TickerProviderStat
       interpreter_score.run(ret, output_score);
       interpreter_category.run(ret_keyword, output_category);
 
-     print(smsData[i].body + ":     " +output_score[0][0].toString());
+     // print(smsData[i].body + ":     " +output_score[0][0].toString());
 
       int max_index=0;
       double max_value=output_category[0][0];
       for (int k = 1; k < 6; k++) {
-        print(output_category[0][k]);
+        // print(output_category[0][k]);
         if (max_value < output_category[0][k]) {
           max_index=k;
           max_value=output_category[0][k];
@@ -355,17 +358,36 @@ class _DetectLoadPageState extends State<DetectLoadPage> with TickerProviderStat
           dataList.add(_sms) ;
         }
 
+
+      }
+      else {
+        Sms _sms = Sms(id: cnt,
+            sender: smsData[i].phone,
+            text: smsData[i].body,
+            date: smsData[i].date,
+            type: 0,
+            prediction: (output_score[0][0] * 100).toInt(),
+            smishing: 0);
+        dataListNonSmishing.add(_sms) ;
       }
       cnt++;
       setState(() {
         // num_of_completed_sms++;
       });
     }
-    // print(dataList) ;
-
+    // print("_detectionSms: $dataList") ;
+    int _currScore = await context
+        .read<LaunchProvider>()
+        .getUserInfo()
+        .score;
     context.read<SmsProvider>().setDangerSms(num_of_smishing_sms);
+    if( _currScore == -1){
+      context.read<SmsProvider>().insertSMSInfoList(dataList, _userId);
+      context.read<SmsProvider>().insertSMSInfoList(dataListNonSmishing, _userId);
+    }
 
-    print("SMISH: " + num_of_smishing_sms.toString() + " " + num_of_completed_sms.toString());
+
+    // print("SMISH: " + num_of_smishing_sms.toString() + " " + num_of_completed_sms.toString());
 
     //  밑에 코드 Timer 안에 넣음
   }

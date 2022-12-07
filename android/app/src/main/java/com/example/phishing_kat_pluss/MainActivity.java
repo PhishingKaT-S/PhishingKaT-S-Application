@@ -40,6 +40,11 @@ import io.flutter.embedding.engine.FlutterEngine;
 import io.flutter.plugin.common.MethodChannel;
 import io.flutter.plugins.GeneratedPluginRegistrant;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
+
 public class MainActivity extends FlutterActivity {
     static final int PERMISSION_REQUEST_READ_SMS = 0x000001;
     String myPhoneNum = "01041609587";
@@ -251,8 +256,12 @@ public class MainActivity extends FlutterActivity {
                 String name = phoneToName_sms(phone);
                 @SuppressLint("Range") long date = cursor.getLong(cursor.getColumnIndex("date"));
                 if (date < 10000000000L) date = date * 1000;
+
+                Date _date = new Date(date);
+                SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+
 //                al_sms.add(new MessageInfo(name, phone, date, body));
-                _sms.add(name + "[sms_text]" + phone + "[sms_text]" + Long.toString(date) + "[sms_text]" + body);
+                _sms.add(name + "[sms_text]" + phone + "[sms_text]" + sdf.format(_date) + "[sms_text]" + body);
             }
         }
 //        cursor.close();
@@ -402,7 +411,11 @@ public class MainActivity extends FlutterActivity {
 
                 @SuppressLint("Range") long date = cursor.getLong(cursor.getColumnIndex("date"));
                 if (date < 10000000000L) date = date * 1000;
-                _mms.add(name + "[sms_text]" + phone + "[sms_text]" + Long.toString(date) + "[sms_text]" + body);
+
+                Date _date = new Date(date);
+                SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+
+                _mms.add(name + "[sms_text]" + phone + "[sms_text]" + sdf.format(_date)  + "[sms_text]" + body);
             }
         }
 //        cursor.close();

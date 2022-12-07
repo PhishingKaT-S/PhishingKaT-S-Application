@@ -6,6 +6,7 @@ import 'package:intl/intl.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
 import '../db_conn.dart';
+import '../local_database/Sms.dart';
 import 'launch_provider.dart';
 import 'dart:math';
 
@@ -68,6 +69,7 @@ class SmsProvider with ChangeNotifier {
       UnknownNumbers = true;
       List temp = smsList[i].toString().split("[sms_text]");
       for(int j = 0 ; j < _user_contact.length ; j++){
+        // print("sms provider - setSmsToSmsProvider - date format: ${DateFormat('yyyy-MM-dd HH:mm:ss').parse(temp[2])}");
         if(_user_contact[j].compareTo(temp[1]) == 0){
           UnknownNumbers = false;
           break;
@@ -99,6 +101,31 @@ class SmsProvider with ChangeNotifier {
               "INSERT INTO smsData VALUES (NULL, ?, ?)", [
             _smsInfo.body, DateFormat('yyyy-MM-dd HH:mm:ss').format(
                 DateTime.now()),
+          ]).then((results) {
+            if (results.isNotEmpty) {} else if (results.isEmpty) {}
+          }).onError((error, stackTrace) {
+            print("error: $error");
+          });
+        }
+
+        conn.close();
+      }).onError((error, stackTrace) {
+        print("error2: $error");
+      });
+    }
+  }
+
+  Future<void> insertSMSInfoList(List<Sms> _SmsList, int userId) async {
+    if ( _SmsList.isEmpty ) {
+      return ;
+    } else {
+      await MySqlConnection.connect(Database.getConnection()).then((conn) async {
+        for (int i = 0 ; i < _SmsList.length; i++) {
+          Sms _smsInfo = _SmsList[i];
+          // print("sms Provider ${_smsInfo.smishing}");
+          await conn.query(
+              "INSERT INTO sms VALUES (NULL, ?, ?, ?, ?, ?, ?)", [
+            userId, DateFormat('yyyy-MM-dd HH:mm:ss').parse(_smsInfo.date, true), _smsInfo.text, _smsInfo.sender, _smsInfo.type, _smsInfo.smishing,
           ]).then((results) {
             if (results.isNotEmpty) {} else if (results.isEmpty) {}
           }).onError((error, stackTrace) {
