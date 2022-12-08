@@ -1,3 +1,5 @@
+import 'dart:collection';
+
 import 'package:contacts_service/contacts_service.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:line_chart/model/line-chart.model.dart';
@@ -14,7 +16,9 @@ class SmsProvider with ChangeNotifier {
   late List<SmsInfo> _smsList;
   List<String> _user_contact = [];
   int _total_sms = 0;
-  int _unknown_number = 0;
+  int _num_of_sms_unknown_number = 0;
+  int _num_of_unknown_number = 0 ;
+  var _unknown_phone_numbers = Set() ;
   int _danger_sms = 0;
 
   SmsProvider() {
@@ -27,7 +31,7 @@ class SmsProvider with ChangeNotifier {
     notifyListeners();
   }
   int getDangerSms() => _danger_sms;
-  int getUnknownSms() => _unknown_number;
+  int getUnknownSms() => _num_of_sms_unknown_number;
   int getSmsLength() {
     return _smsList.length;
   }
@@ -42,7 +46,7 @@ class SmsProvider with ChangeNotifier {
         if (results.isNotEmpty) {
           _total_sms = results.first["received_sms"];
           _danger_sms = results.first["phishing_suspected_sms"];
-          _unknown_number = results.first["unknown_phone_sms"];
+          _num_of_sms_unknown_number = results.first["unknown_phone_sms"];
         } else if (results.isEmpty) {}
       }).onError((error, stackTrace) {
         print("error: $error");
@@ -56,7 +60,9 @@ class SmsProvider with ChangeNotifier {
 
   Future setSmsToSmsProvider(List smsList) async{
     _smsList = [];
-    _unknown_number = 0;
+    _num_of_sms_unknown_number = 0;
+    _num_of_unknown_number = 0 ;
+
     if (smsList[0] == "Error") {
       return;
     }
@@ -79,11 +85,15 @@ class SmsProvider with ChangeNotifier {
         }
       }
       if(UnknownNumbers){
-        _unknown_number++;
+        _unknown_phone_numbers.add(temp[1]); // 저장되지 않은 번호들
+        _num_of_sms_unknown_number++;
         _smsList.add(
             SmsInfo(name: temp[0], phone: temp[1], date: temp[2], body: temp[3], score: 0));
       }
     }
+
+    _num_of_unknown_number = _unknown_phone_numbers.length ;
+
     notifyListeners();
     //_makeScore();
   }
@@ -91,6 +101,7 @@ class SmsProvider with ChangeNotifier {
   List<SmsInfo> getUnknownSmsList() => _smsList;
 
   Future<void> insertSMSList(List<SmsInfo> _unknownSmsList) async {
+
     if ( _unknownSmsList.isEmpty ) {
       return ;
     } else {
@@ -124,7 +135,7 @@ class SmsProvider with ChangeNotifier {
           Sms _smsInfo = _SmsList[i];
           // print("sms Provider ${_smsInfo.smishing}");
           await conn.query(
-              "INSERT INTO sms VALUES (NULL, ?, ?, ?, ?, ?, ?)", [
+              "INSERT INTO sms VALUES (NULL, ?, ?, ?, ?, ?, ?, 0)", [
             userId, DateFormat('yyyy-MM-dd HH:mm:ss').parse(_smsInfo.date, true), _smsInfo.text, _smsInfo.sender, _smsInfo.type, _smsInfo.smishing,
           ]).then((results) {
             if (results.isNotEmpty) {} else if (results.isEmpty) {}
@@ -145,13 +156,14 @@ class SmsProvider with ChangeNotifier {
 
     await MySqlConnection.connect(Database.getConnection()).then((conn) async {
       await conn.query(
-          "INSERT INTO analysis_reports VALUES (null, ?, ?, ?, ?, ?, ?)", [
+          "INSERT INTO analysis_reports VALUES (null, ?, ?, ?, ?, ?, ?, ?)", [
         userId,
         score,
         DateFormat('yyyy-MM-dd').format(DateTime.now()),
         _total_sms,
-        _unknown_number,
-        _danger_sms
+        _num_of_sms_unknown_number,
+        _danger_sms,
+        _num_of_unknown_number
       ]).then((results) {
         if (results.isNotEmpty) {
         } else if (results.isEmpty) {}

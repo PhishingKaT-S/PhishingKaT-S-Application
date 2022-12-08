@@ -159,18 +159,13 @@ class _DetectLoadPageState extends State<DetectLoadPage> with TickerProviderStat
                 for (int i = 0; i < dataList.length; i++) {
                   DBHelper().insertSMS(dataList[i]);
                 }
-                // List<Sms> smsListSet = await DBHelper().getAllSMS() ;
-                // for (int i = 0 ; i < dataList.length; i++) {
-                //   print(smsListSet[i].text) ;
-                // }
 
                 await context.read<SmsProvider>().insertSMSList(
                     context.read<SmsProvider>().getUnknownSmsList());
                 // print("TEST");
               }
 
-              _score =
-                  ((1 - (num_of_smishing_sms / num_of_total_sms)) * 50).toInt();
+              _score = ((1 - (num_of_smishing_sms / num_of_total_sms)) * 50).toInt();
               _score += (((_attendance_30 + _analysis_30) / 30) * 25).toInt();
 
               context.read<LaunchProvider>().updateAnalysisDate(context
@@ -180,7 +175,7 @@ class _DetectLoadPageState extends State<DetectLoadPage> with TickerProviderStat
 
               context.read<LaunchProvider>().setScore(_score);
               context.read<LaunchProvider>().set_load_flag(true);
-              await context.read<SmsProvider>().insertScore(context.read<LaunchProvider>().getUserInfo().userId);
+              await context.read<SmsProvider>().insertScore(context.read<LaunchProvider>().getUserInfo().userId, _score);
               context.read<SmsProvider>().getInitialInfo(context.read<LaunchProvider>().getUserInfo().userId);
               // context.read<SmsProvider>().updateScore(context.read<LaunchProvider>().getUserInfo().userId);
 
@@ -338,7 +333,7 @@ class _DetectLoadPageState extends State<DetectLoadPage> with TickerProviderStat
       // 0.5 이상 Smishing Data로 간주
       if (output_score[0][0] >= threshold ) {
         num_of_smishing_sms++;
-        if ( num_of_smishing_sms < 100 ) {
+        if ( num_of_smishing_sms <= 100 ) {
           Sms _sms = Sms(id: cnt,
               sender: smsData[i].phone,
               text: smsData[i].body,
@@ -356,7 +351,7 @@ class _DetectLoadPageState extends State<DetectLoadPage> with TickerProviderStat
             sender: smsData[i].phone,
             text: smsData[i].body,
             date: smsData[i].date,
-            type: 0,
+            type: -1,
             prediction: (output_score[0][0] * 100).toInt(),
             smishing: 0);
         dataListNonSmishing.add(_sms) ;
