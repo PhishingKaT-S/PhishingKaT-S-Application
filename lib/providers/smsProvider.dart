@@ -135,8 +135,8 @@ class SmsProvider with ChangeNotifier {
           Sms _smsInfo = _SmsList[i];
           // print("sms Provider ${_smsInfo.smishing}");
           await conn.query(
-              "INSERT INTO sms VALUES (NULL, ?, ?, ?, ?, ?, ?, 0)", [
-            userId, DateFormat('yyyy-MM-dd HH:mm:ss').parse(_smsInfo.date, true), _smsInfo.text, _smsInfo.sender, _smsInfo.type, _smsInfo.smishing,
+              "INSERT INTO sms VALUES (NULL, ?, ?, ?, ?, ?, 0)", [
+            userId, DateFormat('yyyy-MM-dd HH:mm:ss').parse(_smsInfo.date, true),_smsInfo.sender, _smsInfo.type, _smsInfo.smishing,
           ]).then((results) {
             if (results.isNotEmpty) {} else if (results.isEmpty) {}
           }).onError((error, stackTrace) {
@@ -152,7 +152,6 @@ class SmsProvider with ChangeNotifier {
   }
 
   Future<void> insertScore(int userId, int score) async {
-    Random random_num = Random.secure();
 
     await MySqlConnection.connect(Database.getConnection()).then((conn) async {
       await conn.query(
