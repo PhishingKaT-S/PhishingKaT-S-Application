@@ -24,48 +24,60 @@ class ScorePage extends StatefulWidget {
 }
 
 class _ScorePage extends State<ScorePage> {
-  List<String> types = ['', '공공기관 사칭', '070번호/해외발신', '[web]발신', '보험/금융상품', 'url/jpg\n파일 포함'] ; // 처음 ''은 0건 일 경우
+  List<String> types = ['수사기관 사칭', '정부기관 사칭', '지인/가족 사칭', '택배 사칭', '금융기관 사칭', '기업 사칭'] ;
   double score = 0.89;
-  List<int> types_of_ranks = [0] ;
-  List<int> num_of_sms_of_ranks = [0] ;
-  final List<_PieData> pieData = [
-
-    _PieData('기관사칭\n10개', 8, Colors.red.shade400),
-    _PieData('지인사칭\n50개', 16, Colors.red),
-    _PieData('URL 포함\n20개', 29, Colors.red.shade300),
-
-    _PieData('택배사칭\n5개', 1, Colors.red.shade200),
-    _PieData('진일짱\n15개', 3, Colors.red.shade100),
-  ];
+  List<int> types_of_ranks = [] ;
+  List<int> num_of_sms_of_ranks = [] ;
+  List<Color> chart_colors = [Colors.red, Colors.orange, Colors.yellow, Colors.green, Colors.blue, Colors.purple] ;
+  List<_PieData> pieData = [] ;
+  // final List<_PieData> pieData = [
+  //
+  //   _PieData('기관사칭\n10개', 8, Colors.red.shade400),
+  //   _PieData('지인사칭\n7개', 16, Colors.red),
+  //   _PieData('URL 포함\n20개', 29, Colors.red.shade300),
+  //   _PieData('택배사칭\n5개', 1, Colors.red.shade200),
+  // ];
 
   Widget _pieChart(){
-    return Center(
-      child: SfCircularChart(
-          margin: EdgeInsets.zero,
-          // title: ChartTitle(text: 'Sales by sales person'),
-          borderWidth: 0,
-          // legend: Legend(isVisible: true),
-          series: <PieSeries<_PieData, String>>[
-            PieSeries<_PieData, String>(
-              explode: true,
-              explodeIndex: 0,
-              // sortingOrder: SortingOrder.ascending,
-              // sortFieldValueMapper: (_PieData data, _) => data.x,
-              dataSource: pieData,
-              xValueMapper: (_PieData data, _) => data.x,
-              yValueMapper: (_PieData data, _) => data.y,
-              dataLabelMapper: (_PieData data, _) => data.x,
-              pointColorMapper: (_PieData data, _) => data.color,
-              dataLabelSettings: DataLabelSettings(isVisible: true),
+    return FutureBuilder(
+      future: _get_rank_of_phishing_analysis(),
+        builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
+          if ( snapshot.hasError) {
+            return const Text('네트워크가 연결되어있지 않아 불러올 수 없습니다.');
+          } else if ( snapshot.hasData ) {
+            return Center(
+              child: SfCircularChart(
+                  margin: EdgeInsets.zero,
+                  // title: ChartTitle(text: 'Sales by sales person'),
+                  borderWidth: 0,
+                  // legend: Legend(isVisible: true),
+                  series: <PieSeries<_PieData, String>>[
+                    PieSeries<_PieData, String>(
+                      explode: true,
+                      explodeIndex: 0,
+                      // sortingOrder: SortingOrder.ascending,
+                      // sortFieldValueMapper: (_PieData data, _) => data.x,
+                      dataSource: pieData,
+                      xValueMapper: (_PieData data, _) => data.x,
+                      yValueMapper: (_PieData data, _) => data.y,
+                      dataLabelMapper: (_PieData data, _) => data.x,
+                      pointColorMapper: (_PieData data, _) => data.color,
+                      dataLabelSettings: DataLabelSettings(isVisible: true),
 
-            ),
-          ]),
+                    ),
+                  ]),
+            );
+          } else {
+            return Container() ;
+          }
+        }
     );
   }
 
   Future _get_rank_of_phishing_analysis() async {
+    pieData.clear();
     var user_id = context.watch<LaunchProvider>().getUserInfo().userId;
-
+    int t = 0 ;
     await MySqlConnection.connect(Database.getConnection())
         .then((conn) async {
       await conn.query("SELECT type, COUNT(*) AS num_of_sms FROM sms WHERE user_id = ? AND smishing = 1 GROUP BY type ORDER BY COUNT(*) DESC LIMIT 5", [user_id])
@@ -75,10 +87,11 @@ class _ScorePage extends State<ScorePage> {
             int type = res['type'] as int;
             int num_of_sms = res['num_of_sms'] as int;
 
-            print(type.toString() + " " + num_of_sms.toString()) ;
+            print(types[type]+ " " + num_of_sms.toString()) ;
 
             types_of_ranks.add(type) ;
             num_of_sms_of_ranks.add(num_of_sms) ;
+            pieData.add( _PieData(types[type] + "\n${num_of_sms}건", num_of_sms, chart_colors[t++]));
           }
         } else {
           print("No data") ;
@@ -221,109 +234,6 @@ class _ScorePage extends State<ScorePage> {
         ],
       )
     );
-  }
-
-  Widget _content_in_pie_chart(double width, double margin_top, double margin_left, String rank, String num, String content ) {
-
-    return Container(
-      width: width,
-      margin: EdgeInsets.only(top: margin_top, left: margin_left),
-      child: Column(
-        children: [
-          Text(rank, style: AppTheme.score_rank_white),
-          Padding(padding: EdgeInsets.only(top:3)),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Text(num, style: AppTheme.num_of_cases_black),
-              Text('건', style: AppTheme.caption2_black) ,
-            ],
-          ),
-          Padding(padding: EdgeInsets.only(top:1)),
-          Center(
-            child: Text(content, style: AppTheme.rank_content_black, textAlign: TextAlign.center,)
-          )
-        ],
-      )
-    );
-  }
-
-  Widget _score_pie_chart() {
-    return FutureBuilder(
-      future: _get_rank_of_phishing_analysis(),
-      builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
-        if ( snapshot.hasError) {
-          return Text('${snapshot.error}') ;
-        } else if ( snapshot.hasData ) {
-          return Container(
-              padding: const EdgeInsets.only(top: 20),
-              height: MediaQuery.of(context).size.height * 0.43,
-              width: MediaQuery.of(context).size.height * 0.43,
-              child: Center(
-                child: Stack(
-                  children: [
-                    Image.asset('assets/images/pie_chart.png'),
-
-                    Container(
-                      width: MediaQuery.of(context).size.width * 0.3,
-                      margin: EdgeInsets.only(top: MediaQuery.of(context).size.height * 0.43 * 0.31, left: MediaQuery.of(context).size.height * 0.43 * 0.295),
-                      child: Column(
-                        children: [
-                          const Text('1위', style: TextStyle(fontFamily: AppTheme.fontName, fontSize: 20, fontWeight: FontWeight.bold, ), textAlign: TextAlign.center,),
-                          const Padding(padding: EdgeInsets.only(top:3)),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Text((types_of_ranks.length < 6) ? num_of_sms_of_ranks[0].toString() : num_of_sms_of_ranks[1].toString(),
-                                  style: TextStyle(fontFamily: AppTheme.fontName, fontSize: 24, fontWeight: FontWeight.bold)),
-                              const Text('건', style: TextStyle(fontFamily: AppTheme.fontName, fontSize: 14,)) ,
-                            ],
-                          ),
-                          const Padding(padding: EdgeInsets.only(top:1)),
-                          Text((types_of_ranks.length < 6) ? types[types_of_ranks[0]] : types[types_of_ranks[1]], style: TextStyle(fontFamily: AppTheme.fontName, fontSize: 14)),
-                        ],
-                      ),
-                    ),
-
-                    _content_in_pie_chart(MediaQuery.of(context).size.width * 0.15, MediaQuery.of(context).size.height * 0.43 * 0.015,
-                        MediaQuery.of(context).size.height * 0.43 * 0.16, '5위',
-                        (types_of_ranks.length < 6) ? num_of_sms_of_ranks[0].toString() : num_of_sms_of_ranks[5].toString(),
-                        (types_of_ranks.length < 6) ? types[types_of_ranks[0]] : types[types_of_ranks[5]]),
-                    _content_in_pie_chart(MediaQuery.of(context).size.width * 0.2, MediaQuery.of(context).size.height * 0.43 * 0.13,
-                        MediaQuery.of(context).size.height * 0.43 * 0.72, '2위',
-                        (types_of_ranks.length < 3) ? num_of_sms_of_ranks[0].toString() : num_of_sms_of_ranks[2].toString(),
-                        (types_of_ranks.length < 3) ? types[types_of_ranks[0]] : types[types_of_ranks[2]]),
-                    _content_in_pie_chart(MediaQuery.of(context).size.width * 0.18, MediaQuery.of(context).size.height * 0.43 * 0.55,
-                        0, '4위', (types_of_ranks.length < 5) ? num_of_sms_of_ranks[0].toString() : num_of_sms_of_ranks[4].toString(),
-                        (types_of_ranks.length < 5) ? types[types_of_ranks[0]] : types[types_of_ranks[4]]),
-                    _content_in_pie_chart(MediaQuery.of(context).size.width * 0.2, MediaQuery.of(context).size.height * 0.43 * 0.68,
-                        MediaQuery.of(context).size.height * 0.43 * 0.62, '3위',
-                        (types_of_ranks.length < 4) ? num_of_sms_of_ranks[0].toString() : num_of_sms_of_ranks[3].toString(),
-                        (types_of_ranks.length < 4) ? types[types_of_ranks[0]] : types[types_of_ranks[3]]),
-                  ],
-                ),
-              )
-          );
-        } else {
-          return Container() ;
-        }
-      },
-    );
-  }
-
-  Widget _risk_ranking() {
-    return Container(
-      padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width * 0.1, vertical: 30),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        mainAxisAlignment: MainAxisAlignment.start,
-        children: [
-          const Text('이번달 피싱분석 위험도 순위', style: AppTheme.title),
-          const Text('피싱 위험도가 높은 문자를 유형별로 확인할 수 있어요.', style: AppTheme.caption),
-          _score_pie_chart(),
-        ],
-      )
-    ) ;
   }
 
   @override
