@@ -75,7 +75,7 @@ public class SmsReceiver extends BroadcastReceiver {
                 String a = phoneBooks.get(i).getTel().replaceAll("-", "");
 //                System.out.println(a);
                 if(a.equals(sender)) {
-  //                  System.out.println("확인");
+                    //                  System.out.println("확인");
                     flag = true; // true로 해야됨
                 }
             }
@@ -228,8 +228,8 @@ class SMS{ //전화 형식을 잘 맞춰야 할 듯 여러개로 fix시키는게
     private String[] keyword9= {"검찰", "경찰", "공정", "사실", "상식", "선거법", "위반", "허위"};
 
     private float[] array= {0.0f,0.0f,0.0f,0.0f,0.0f,
-        0.0f,0.0f,0.0f,0.0f,0.0f,
-        0.0f,0.0f,0.0f,0.0f,0.0f};
+            0.0f,0.0f,0.0f,0.0f,0.0f,
+            0.0f,0.0f,0.0f,0.0f,0.0f};
 
     private float[] ABAEwords = {0.0f,0.0f,0.0f,0.0f,0.0f,0.0f,0.0f,0.0f,0.0f,0.0f};
     public float score = 0.0f;
@@ -291,10 +291,10 @@ class SMS{ //전화 형식을 잘 맞춰야 할 듯 여러개로 fix시키는게
         int i=0;
         for(int j =0; j<keyword0.length; j++)
             if(text.contains(keyword0[j])){
-               array[next_array_idx+i]=1.0f;
-               ABAEwords[i]=1.0f;
+                array[next_array_idx+i]=1.0f;
+                ABAEwords[i]=1.0f;
 
-               break;
+                break;
             }
         i++;
         for(int j =0; j<keyword1.length; j++)
