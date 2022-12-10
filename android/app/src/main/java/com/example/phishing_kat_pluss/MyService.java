@@ -487,4 +487,3 @@ class ParameterStringBuilder {
                 : resultString;
     }
 }
-
