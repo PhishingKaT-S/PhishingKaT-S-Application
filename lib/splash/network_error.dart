@@ -2,6 +2,8 @@ import 'package:connectivity/connectivity.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../kat_pages/home_page.dart';
+import '../launch/login_page.dart';
 import '../providers/launch_provider.dart';
 
 class NetworkError extends StatefulWidget {
@@ -15,10 +17,7 @@ class _NetworkErrorState extends State<NetworkError> {
   final _messengerKey = GlobalKey<ScaffoldMessengerState>();
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      scaffoldMessengerKey: _messengerKey,
-      home: const networkErrorMain(),
-    );
+    return const networkErrorMain();
   }
 }
 
@@ -78,8 +77,8 @@ class networkErrorMain extends StatelessWidget {
                       duration: Duration(seconds: 2)));
                 } else if (connectivityResult == ConnectivityResult.wifi || connectivityResult == ConnectivityResult.mobile) {
                   // I am connected to a wifi network.
-                  Provider.of<LaunchProvider>(context, listen: false).Init();
-                  Navigator.pop(context);
+                  int result = await Provider.of<LaunchProvider>(context, listen: false).Init();
+                  Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => result== 1? const HomePage() : const LoginPage()), (route) => false);
 
                 }
                 else{
