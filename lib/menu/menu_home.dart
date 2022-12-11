@@ -118,11 +118,12 @@ class _MenuHomeState extends State<MenuHome> {
   }
 
   Future<void> share() async {
+    String ph_nuimber = await context.read<LaunchProvider>().getUserInfo().phoneNumber;
     await FlutterShare.share(
-        title: 'PhishingKaT-S+',
-        text: 'phishingkat-s',
-        linkUrl: 'app url',
-        chooserTitle: 'PhishingKaT-s+');
+        title: '피싱캣S',
+        text: '(피싱캣S) 나와 내 이웃을 지키는 스미싱 지킴이 \n\n${ph_nuimber} 님이 이웃신청하셨습니다. \n서비스 요청에 수락하시면 스미싱 방지 서비스를 받으실 수 있습니다.\n\n * 안드로이드만 이용 가능합니다.\n * 최신버젼 피싱캣을 이용해주세요. ',
+        linkUrl: 'https://phishingkat.com/app/',
+        chooserTitle: '피싱캣S');
   }
 
   @override
