@@ -490,4 +490,3 @@ class ParameterStringBuilder {
                 : resultString;
     }
 }
-
