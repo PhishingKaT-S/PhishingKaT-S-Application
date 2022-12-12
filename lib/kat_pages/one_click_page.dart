@@ -121,7 +121,7 @@ class _OneClickPageState extends State<OneClickPage> {
                 /// 입력한 은행을 찾지 못하였을 경우
                 if ( !isSearched ) {
                   Navigator.push(context, MaterialPageRoute(
-                      builder: (context) => const ServiceCenter(title: "원클릭 신고", content: "원하시는 은행명을 남겨주시면 빠른 시일 내에 \n업데이트하겠습니다.")
+                      builder: (context) => const BankQuestionsCenter()
                   ));
                 }
               },

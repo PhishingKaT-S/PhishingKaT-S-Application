@@ -51,6 +51,25 @@ class _MenuHomeState extends State<MenuHome> {
 
   static const platform = MethodChannel('onestore');
 
+  // ListTile menu_list_tile_nevigation(
+  //     String tileTitle, IconData leadingIcon, String page) {
+  //   return ListTile(
+  //     title: Text(
+  //       tileTitle,
+  //       style: AppTheme.menu_list,
+  //     ),
+  //     leading: Icon(
+  //       leadingIcon,
+  //       color: Colors.grey,
+  //     ),
+  //     onTap: () => Navigator.push(context,
+  //       MaterialPageRoute(
+  //         builder: (context) => const ServiceCenter(title: "고객센터", content: "궁금하신 사항을 문의로 남겨주시면\n하루 이내로 빠른 답변을 받을 수 있습니다.",
+  //       ))),
+  //     dense: true,
+  //   );
+  // }
+
   ListTile menu_list_tile_nevigation(
       String tileTitle, IconData leadingIcon, String page) {
     return ListTile(
@@ -62,10 +81,7 @@ class _MenuHomeState extends State<MenuHome> {
         leadingIcon,
         color: Colors.grey,
       ),
-      onTap: () => Navigator.push(context,
-        MaterialPageRoute(
-          builder: (context) => const ServiceCenter(title: "고객센터", content: "궁금하신 사항을 문의로 남겨주시면\n하루 이내로 빠른 답변을 받을 수 있습니다.",
-        ))),
+      onTap: () => Navigator.pushNamed(context, page),
       dense: true,
     );
   }
@@ -516,7 +532,7 @@ class _MenuHomeState extends State<MenuHome> {
                                   Text(
                                       (_setting_contact_sync != null)
                                           ? ('${_setting_contact_sync?.year}년 ${_setting_contact_sync?.month}월 ${_setting_contact_sync?.day}일')
-                                          : ('No date'),
+                                          : (''),
                                       style: AppTheme.caption),
                                 ],
                               ),

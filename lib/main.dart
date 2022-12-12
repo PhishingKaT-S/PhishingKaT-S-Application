@@ -101,6 +101,8 @@ class MyApp extends StatelessWidget {
         '/kat_pages/url_home': (BuildContext context) =>
             InspectFeedback(),
         '/menu/menu_home': (BuildContext context) => const MenuHome(),
+        '/menu/service_center': (BuildContext context) =>
+        const ServiceCenter(),
         '/menu/alarm': (BuildContext context) =>
         const PhishingAlarmPage(),
         '/menu/notice': (BuildContext context) => const NoticePage(),
