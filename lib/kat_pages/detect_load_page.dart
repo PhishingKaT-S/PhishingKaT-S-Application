@@ -175,8 +175,9 @@ class _DetectLoadPageState extends State<DetectLoadPage> with TickerProviderStat
 
               context.read<LaunchProvider>().setScore(_score);
               context.read<LaunchProvider>().set_load_flag(true);
-              await context.read<SmsProvider>().insertScore(context.read<LaunchProvider>().getUserInfo().userId, _score);
-              context.read<SmsProvider>().getInitialInfo(context.read<LaunchProvider>().getUserInfo().userId);
+              await context.read<SmsProvider>().insertScore(_userId, _score);
+              context.read<SmsProvider>().getInitialInfo(_userId);
+              context.read<SmsProvider>().getReportDate(_userId);
               // context.read<SmsProvider>().updateScore(context.read<LaunchProvider>().getUserInfo().userId);
 
 
@@ -272,7 +273,7 @@ class _DetectLoadPageState extends State<DetectLoadPage> with TickerProviderStat
   }
 
   Future<void> _detectionSms() async {
-      //final url = Uri.parse('http://52.53.168.246:5000/api') ;
+    //final url = Uri.parse('http://52.53.168.246:5000/api') ;
     int _score = 0;
     int _userId = context.read<LaunchProvider>().getUserInfo().userId;
     int _attendance_30 = await context.read<AttendanceProvider>().get30Attendance(_userId);
@@ -317,7 +318,7 @@ class _DetectLoadPageState extends State<DetectLoadPage> with TickerProviderStat
       interpreter_score.run(ret, output_score);
       interpreter_category.run(ret_keyword, output_category);
 
-     // print(smsData[i].body + ":     " +output_score[0][0].toString());
+      // print(smsData[i].body + ":     " +output_score[0][0].toString());
 
       int max_index=0;
       double max_value=output_category[0][0];

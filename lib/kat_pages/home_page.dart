@@ -835,14 +835,14 @@ class _HomePage extends State<HomePage> with TickerProviderStateMixin {
               width: MediaQuery.of(context).size.width,
               height: 200,
               padding: EdgeInsets.only(
-                top: 30,
+                top: 0,
                 left: MediaQuery.of(context).size.width * 0.08,
                 right: MediaQuery.of(context).size.width * 0.08,
               ),
               child: (smish_detect_flag)
                   ? LineChart(
                       width: MediaQuery.of(context).size.width * 0.95,
-                      height: 100,
+                      height: 130,
                       data: data,
                       linePaint: linePaint,
                       circlePaint: circlePaint,

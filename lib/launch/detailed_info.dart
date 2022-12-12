@@ -5,6 +5,8 @@
 *   7/30: modifying the category of the jobs and outline was changed
 * */
 
+import 'dart:io';
+
 import 'package:device_information/device_information.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -312,6 +314,8 @@ class _detailed_infoState extends State<DetailInfo> {
         'insert into users (phone_number, IMEI, nickname, year, gender, profession, score) select ?, ?, ?,?, ?, ?, ? where not exists (select * from users where phone_number like (?))', [user.phone, user.IMEI, user.nickname, user.year, user.gender, user.type, -1, user.phone]);
 
     conn.close();
+
+
     Provider.of<LaunchProvider>(context, listen: false).set_userinfo(user.nickname, user.year, user.gender, user.type.toString());
     context.read<LaunchProvider>().Init();
     if(register.isNotEmpty){
@@ -340,7 +344,8 @@ class _detailed_infoState extends State<DetailInfo> {
               print(users.nickname + " " + users.gender.toString() + " " +
                   users.phone + " " + users.type.toString() + " " + users.year);
               var ret = await main(users);
-              print(ret);
+
+
               Navigator.pop(context);
               Navigator.pop(context);
               Navigator.push(context,
