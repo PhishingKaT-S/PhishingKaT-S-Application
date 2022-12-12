@@ -17,6 +17,7 @@ import 'package:url_launcher/url_launcher.dart';
 
 import '../kat_widget/kat_appbar_back.dart';
 import '../kat_widget/kat_webview.dart';
+import '../menu/service_center.dart';
 import '../theme.dart';
 import 'one_click_bank_page.dart';
 
@@ -107,19 +108,20 @@ class _OneClickPageState extends State<OneClickPage> {
               onSubmitted: (text) {
                 bool isSearched = false;
                 for (var bank in _banks) {
-                  if ( bank.name.contains(text)) {
+                  if ( text.isNotEmpty && bank.name.contains(text)) {
                     isSearched = true;
                     Navigator.push(context, MaterialPageRoute(
                                   builder: (context) => OneClickBank(bank_name: bank.name,
                                     phone_list: bank.phones,
                                     image: bank.image,)));
+                    break ;
                   }
                 }
 
                 /// 입력한 은행을 찾지 못하였을 경우
                 if ( !isSearched ) {
                   Navigator.push(context, MaterialPageRoute(
-                      builder: (context) => const BankQuestionsCenter()
+                      builder: (context) => const ServiceCenter(title: "원클릭 신고", content: "원하시는 은행명을 남겨주시면 빠른 시일 내에 \n업데이트하겠습니다.")
                   ));
                 }
               },

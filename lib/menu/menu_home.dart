@@ -5,6 +5,7 @@
  */
 
 import 'dart:io';
+import 'package:phishing_kat_pluss/menu/service_center.dart';
 import 'package:rolling_switch/rolling_switch.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -61,7 +62,10 @@ class _MenuHomeState extends State<MenuHome> {
         leadingIcon,
         color: Colors.grey,
       ),
-      onTap: () => Navigator.pushNamed(context, page),
+      onTap: () => Navigator.push(context,
+        MaterialPageRoute(
+          builder: (context) => const ServiceCenter(title: "고객센터", content: "궁금하신 사항을 문의로 남겨주시면\n하루 이내로 빠른 답변을 받을 수 있습니다.",
+        ))),
       dense: true,
     );
   }
@@ -387,7 +391,7 @@ class _MenuHomeState extends State<MenuHome> {
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                  builder: (context) => const SnsWebView(
+                                  builder: (context) => SnsWebView(
                                       url:
                                           "https://www.instagram.com/phishingkat/"),
                                 ),
@@ -406,7 +410,7 @@ class _MenuHomeState extends State<MenuHome> {
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                  builder: (context) => const SnsWebView(
+                                  builder: (context) => SnsWebView(
                                       url:
                                           "https://blog.naver.com/jubileeline21"),
                                 ),

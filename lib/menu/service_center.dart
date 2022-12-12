@@ -6,12 +6,13 @@ import 'package:phishing_kat_pluss/kat_widget/kat_appbar_back.dart';
 import '../theme.dart';
 
 class ServiceCenter extends StatelessWidget {
-  const ServiceCenter({Key? key}) : super(key: key);
+  final String title, content;
+  const ServiceCenter({Key? key, required this.title, required this.content}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: const AppBarBack(title: '원클릭 신고'),
+        appBar: AppBarBack(title: title),
         body: SingleChildScrollView(
           child: Column(
             children: [
@@ -35,7 +36,8 @@ class ServiceCenter extends StatelessWidget {
                       ],
                     ),
                     SizedBox(height: MediaQuery.of(context).size.height * 0.03,),
-                    const Text("원하시는 은행명을 남겨주시면 빠른 시일 내에 \n업데이트하겠습니다.", style: AppTheme.service_center,),
+                    // const Text("원하시는 은행명을 남겨주시면 빠른 시일 내에 \n업데이트하겠습니다.", style: AppTheme.service_center,),
+                    Text(content, style: AppTheme.service_center,),
                     SizedBox(height: MediaQuery.of(context).size.height * 0.03,),
                     const Text("운영시간은 평일 10:00~18:00입니다.", style: AppTheme.service_center_blue,)
                   ],
