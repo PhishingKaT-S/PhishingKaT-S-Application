@@ -78,6 +78,7 @@ class MyApp extends StatelessWidget {
      * 앱의 초기 데이터를 불러오는 시간을 벌기위한 Splash Screen 화면은 FutureBuilder로 구현.
      */
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
       routes: {
         //'/login': (BuildContext context) => const LoginPage(),
         //'/homepage': (BuildContext context) => const HomePage(),
