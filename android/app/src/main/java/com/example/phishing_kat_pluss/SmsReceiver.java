@@ -79,6 +79,14 @@ public class SmsReceiver extends BroadcastReceiver {
                     flag = true; // true로 해야됨
                 }
             }
+
+            try {
+                Thread.sleep(1000); //1초 대기
+
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+
             if(!flag) {//전화번호부에 없거나 등
                 //System.out.println(Math.round(recentsms.score));
                 //System.out.println(recentsms.category);

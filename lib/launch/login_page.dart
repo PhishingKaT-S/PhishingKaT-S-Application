@@ -26,11 +26,17 @@ class LoginPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        bottomNavigationBar: Container(
+        bottomNavigationBar:
+        Container(
+          decoration: BoxDecoration(
+              color:AppTheme.startBackground,
+            border:Border.all(color:AppTheme.startBackground,
+            width:0)
+          ),
           width: double.infinity,
           height: 50,
           alignment: Alignment.topCenter,
-          color: AppTheme.startBackground,
+          //color: AppTheme.startBackground,
           padding: const EdgeInsets.fromLTRB(0, 0, 0, 20),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
@@ -57,7 +63,11 @@ class LoginPage extends StatelessWidget {
           ),
         ),
         body: Container(
-          color: AppTheme.startBackground,
+          decoration: BoxDecoration(
+              color:AppTheme.startBackground,
+              border:Border.all(color:AppTheme.startBackground,
+                  width:0)
+          ),
           child: Center(child: _start_view(context)),
         ));
   }
