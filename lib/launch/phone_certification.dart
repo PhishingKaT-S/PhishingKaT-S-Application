@@ -117,7 +117,7 @@ class _Phone_CRTState extends State<PhoneCRT> {
           bottomNavigationBar: bottomBar(
               title: '다음',
               onPress: () {
-
+                flag = (_certificationController.text==verification? true : false);
                 /*각 경우에 따라서 알림을 날릴꺼임*/
                 if(_certificationController.text.length == 0){
                   flag=false;
