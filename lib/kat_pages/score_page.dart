@@ -209,8 +209,20 @@ class _ScorePage extends State<ScorePage> {
     ) ;
   }
 
+  Widget _comment(int _score) {
+    return (_score > 90) ? const Text('휴대폰이 매우 안전해요!', style: TextStyle(color: AppTheme.skyBackground, fontWeight: FontWeight.bold)) :
+           (_score > 80) ? const Text('휴대폰이 안전해요!', style: TextStyle(color: AppTheme.greenBackground, fontWeight: FontWeight.bold)) :
+           (_score > 70) ? const Text('보안에 조금 더 신경써주세요!', style: TextStyle(color: AppTheme.orangeBackground, fontWeight: FontWeight.bold)) :
+                           const Text('보안에 신경써주세요!', style: TextStyle(color: AppTheme.redBackground, fontWeight: FontWeight.bold)) ;
+
+  }
   Widget _my_score() {
     score = context.watch<LaunchProvider>().getUserInfo().score.toDouble() * 0.01;
+    UserInfo _userInfo = context.watch<LaunchProvider>().getUserInfo() ;
+    int _age = DateTime.now().year - int.parse(_userInfo.year) + 1 ;
+    String _gender = (_userInfo.gender == false) ? "남성" : "여성" ;
+    List<String> _job=['일반', '직장인','실버','주부'];
+
     return Container(
       padding: EdgeInsets.symmetric(
           horizontal: MediaQuery.of(context).size.width * 0.1,
@@ -224,8 +236,8 @@ class _ScorePage extends State<ScorePage> {
             children: [
               const Text('나의 안심점수 순위는?', style: AppTheme.subtitle,),
               _score(),
-              const Text('보안에 조금 더 신경 써주세요!', ),
-              Text('다른 유저들의 평균점수 : 30대 : 남성 : 직장인 : ' + (score * 100).toInt().toString() + '점'),
+              _comment(_userInfo.score),
+              Text('다른 유저들의 평균점수 : ${_age.toString()[0] + '0'}대 : $_gender : ${_job[int.parse(_userInfo.profession)]} : ' + (score * 100).toInt().toString() + '점'),
             ],
           ),
 
@@ -235,6 +247,23 @@ class _ScorePage extends State<ScorePage> {
       )
     );
   }
+
+  Widget _risk_ranking() {
+    return Container(
+        padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width * 0.1, vertical: 30),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: [
+            const Text('이번달 피싱분석 위험도 순위', style: AppTheme.title),
+            const Text('피싱 위험도가 높은 문자를 유형별로 확인할 수 있어요.', style: AppTheme.caption),
+            const Padding(padding: EdgeInsets.only(top: 30)),
+            _pieChart(),
+          ],
+        )
+    ) ;
+  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -251,8 +280,9 @@ class _ScorePage extends State<ScorePage> {
             children: [
               _my_score(),
               _dividing_line(),
-              // _risk_ranking(),
-              _pieChart(),
+              _risk_ranking(),
+              // const Padding(padding: EdgeInsets.only(top: 15)),
+              // _pieChart(),
             ],
           ),
         )

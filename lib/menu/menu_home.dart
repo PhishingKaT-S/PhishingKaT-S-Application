@@ -5,6 +5,7 @@
  */
 
 import 'dart:io';
+import 'package:phishing_kat_pluss/menu/service_center.dart';
 import 'package:rolling_switch/rolling_switch.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -49,6 +50,25 @@ class _MenuHomeState extends State<MenuHome> {
   // }
 
   static const platform = MethodChannel('onestore');
+
+  // ListTile menu_list_tile_nevigation(
+  //     String tileTitle, IconData leadingIcon, String page) {
+  //   return ListTile(
+  //     title: Text(
+  //       tileTitle,
+  //       style: AppTheme.menu_list,
+  //     ),
+  //     leading: Icon(
+  //       leadingIcon,
+  //       color: Colors.grey,
+  //     ),
+  //     onTap: () => Navigator.push(context,
+  //       MaterialPageRoute(
+  //         builder: (context) => const ServiceCenter(title: "고객센터", content: "궁금하신 사항을 문의로 남겨주시면\n하루 이내로 빠른 답변을 받을 수 있습니다.",
+  //       ))),
+  //     dense: true,
+  //   );
+  // }
 
   ListTile menu_list_tile_nevigation(
       String tileTitle, IconData leadingIcon, String page) {
@@ -118,11 +138,12 @@ class _MenuHomeState extends State<MenuHome> {
   }
 
   Future<void> share() async {
+    String ph_nuimber = await context.read<LaunchProvider>().getUserInfo().phoneNumber;
     await FlutterShare.share(
-        title: 'PhishingKaT-S+',
-        text: 'phishingkat-s',
-        linkUrl: 'app url',
-        chooserTitle: 'PhishingKaT-s+');
+        title: '피싱캣S',
+        text: '(피싱캣S) 나와 내 이웃을 지키는 스미싱 지킴이 \n\n${ph_nuimber} 님이 이웃신청하셨습니다. \n서비스 요청에 수락하시면 스미싱 방지 서비스를 받으실 수 있습니다.\n\n * 안드로이드만 이용 가능합니다.\n * 최신버젼 피싱캣을 이용해주세요. ',
+        linkUrl: 'https://phishingkat.com/app/',
+        chooserTitle: '피싱캣S');
   }
 
   @override
@@ -511,7 +532,7 @@ class _MenuHomeState extends State<MenuHome> {
                                   Text(
                                       (_setting_contact_sync != null)
                                           ? ('${_setting_contact_sync?.year}년 ${_setting_contact_sync?.month}월 ${_setting_contact_sync?.day}일')
-                                          : ('No date'),
+                                          : (''),
                                       style: AppTheme.caption),
                                 ],
                               ),

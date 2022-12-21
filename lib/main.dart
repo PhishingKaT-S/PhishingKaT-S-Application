@@ -77,82 +77,76 @@ class MyApp extends StatelessWidget {
      * FutureBuilder
      * 앱의 초기 데이터를 불러오는 시간을 벌기위한 Splash Screen 화면은 FutureBuilder로 구현.
      */
-    return FutureBuilder(
-      ///future: 앱의 초기 설정및 데이터를 불러오는 곳
-        future: context.read<LaunchProvider>().Init(),
-        /// future의 상태에 따라 보여주는 화면이 다르다.
-        /// future를 기다리는 중이면 Splash화면을 보여준다.
-        builder: (context, AsyncSnapshot snapshot) {
-          ///future에서 데이터를 불러오는 중에 에러가 발생하면 에러 메시지를 띄워준다.
-          // else if (snapshot.hasError) {
-          //   return MaterialApp(home: ErrorScreen()); // 초기 로딩 에러 시 Error Screen
-          // }
-          ///future에서 데이터를 불러온 다음 home page로 이동
-          if (snapshot.connectionState == ConnectionState.done) {
-            if(snapshot.data == -1){
-              return const MaterialApp(
-                home: NetworkError(),
-              );
+    return MaterialApp(
+      debugShowCheckedModeBanner: false,
+      routes: {
+        //'/login': (BuildContext context) => const LoginPage(),
+        //'/homepage': (BuildContext context) => const HomePage(),
+        // '/splash_screen': (BuildContext context) => const SplashScreen(),
+        '/splash/404_error' : (BuildContext context) => const Error404(),
+        '/splash/network_error' : (BuildContext context) => const NetworkError(),
+        '/splash/update_page' : (BuildContext context) => const UpdateSplashPage(),
+        '/kat_pages/attendance': (BuildContext context) =>
+        const AttendancePage(),
+        '/kat_pages/score': (BuildContext context) => const ScorePage(),
+        '/kat_pages/one_click': (BuildContext context) =>
+        const OneClickPage(),
+        '/kat_pages/info_check': (BuildContext context) =>
+        const InfoCheckPage(),
+        '/kat_pages/url_check': (BuildContext context) =>
+        const UrlCheckPage(),
+        '/kat_pages/detect_load': (BuildContext context) =>
+        const DetectLoadPage(),
+        '/launch/login': (BuildContext context) => const LoginPage(),
+        '/splash/test': (BuildContext context) => const SplashTest(),
+        '/kat_pages/url_home': (BuildContext context) =>
+            InspectFeedback(),
+        '/menu/menu_home': (BuildContext context) => const MenuHome(),
+        '/menu/service_center': (BuildContext context) =>
+        const ServiceCenter(),
+        '/menu/alarm': (BuildContext context) =>
+        const PhishingAlarmPage(),
+        '/menu/notice': (BuildContext context) => const NoticePage(),
+        '/menu/alarm/setting': (BuildContext context) =>
+        const SettingPage(),
+        '/menu/news': (BuildContext context) =>
+        const NewsWebView(),
+        '/menu/sns': (BuildContext context) =>
+        const SnsWebView(url: '',),
+      },
+      theme: ThemeData(
+        primarySwatch: Colors.blue,
+        // fontFamily: 'Noto_Serif_KR',
+        brightness: Brightness.light,
+        backgroundColor: Colors.white,
+        visualDensity: VisualDensity.adaptivePlatformDensity,
+        primaryColor: Colors.blueGrey,
+        scaffoldBackgroundColor: Colors.white,
+      ),
+      title: 'PhishingKaT+s',
+      home: FutureBuilder(
+        ///future: 앱의 초기 설정및 데이터를 불러오는 곳
+          future: context.read<LaunchProvider>().Init(),
+          /// future의 상태에 따라 보여주는 화면이 다르다.
+          /// future를 기다리는 중이면 Splash화면을 보여준다.
+          builder: (context, AsyncSnapshot snapshot) {
+            ///future에서 데이터를 불러오는 중에 에러가 발생하면 에러 메시지를 띄워준다.
+            // else if (snapshot.hasError) {
+            //   return MaterialApp(home: ErrorScreen()); // 초기 로딩 에러 시 Error Screen
+            // }
+            ///future에서 데이터를 불러온 다음 home page로 이동
+            if (snapshot.connectionState == ConnectionState.done) {
+              if(snapshot.data == -1){
+                return NetworkError();
+              }
+              print(snapshot.data);
+              return snapshot.data == 1? const HomePage() : const LoginPage();
             }
-            print(snapshot.data);
-            return MaterialApp(
-              title: 'PhishingKaT+s', // 앱 이름
-              ///전체앱의 theme 설정
-              theme: ThemeData(
-                primarySwatch: Colors.blue,
-                // fontFamily: 'Noto_Serif_KR',
-                brightness: Brightness.light,
-                backgroundColor: Colors.white,
-                visualDensity: VisualDensity.adaptivePlatformDensity,
-                primaryColor: Colors.blueGrey,
-                scaffoldBackgroundColor: Colors.white,
-              ),
-              home: snapshot.data == 1? const HomePage() : const LoginPage(),
-
-              // initialRoute: snapshot.data? '/homepage' : '/launch/login',
-              ///앱에서 이동할 페이지의 이름 설정
-              routes: {
-                //'/login': (BuildContext context) => const LoginPage(),
-                //'/homepage': (BuildContext context) => const HomePage(),
-                // '/splash_screen': (BuildContext context) => const SplashScreen(),
-                '/splash/404_error' : (BuildContext context) => const Error404(),
-                '/splash/network_error' : (BuildContext context) => const NetworkError(),
-                '/splash/update_page' : (BuildContext context) => const UpdateSplashPage(),
-                '/kat_pages/attendance': (BuildContext context) =>
-                const AttendancePage(),
-                '/kat_pages/score': (BuildContext context) => const ScorePage(),
-                '/kat_pages/one_click': (BuildContext context) =>
-                const OneClickPage(),
-                '/kat_pages/info_check': (BuildContext context) =>
-                const InfoCheckPage(),
-                '/kat_pages/url_check': (BuildContext context) =>
-                const UrlCheckPage(),
-                '/kat_pages/detect_load': (BuildContext context) =>
-                const DetectLoadPage(),
-                '/launch/login': (BuildContext context) => const LoginPage(),
-                '/splash/test': (BuildContext context) => const SplashTest(),
-                '/kat_pages/url_home': (BuildContext context) =>
-                    InspectFeedback(),
-                '/menu/menu_home': (BuildContext context) => const MenuHome(),
-                '/menu/service_center': (BuildContext context) =>
-                const ServiceCenter(),
-                '/menu/alarm': (BuildContext context) =>
-                const PhishingAlarmPage(),
-                '/menu/notice': (BuildContext context) => const NoticePage(),
-                '/menu/alarm/setting': (BuildContext context) =>
-                const SettingPage(),
-                '/menu/news': (BuildContext context) =>
-                const NewsWebView(),
-                '/menu/sns': (BuildContext context) =>
-                const SnsWebView(url: '',),
-              },
-            );
-          } 
-          else //(snapshot.connectionState == ConnectionState.waiting) {
-              {
-            return MaterialApp(
-                home: SplashScreen(error_mes: "아직",)); // 초기 로딩 시 Splash Screen
-          }
-        });
+            else //(snapshot.connectionState == ConnectionState.waiting) {
+                {
+              return SplashScreen(error_mes: "아직",); // 초기 로딩 시 Splash Screen
+            }
+          }),
+    );
   }
 }

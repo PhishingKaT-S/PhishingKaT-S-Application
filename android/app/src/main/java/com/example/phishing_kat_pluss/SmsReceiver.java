@@ -234,6 +234,9 @@ class SMS{ //전화 형식을 잘 맞춰야 할 듯 여러개로 fix시키는게
     private float[] ABAEwords = {0.0f,0.0f,0.0f,0.0f,0.0f,0.0f,0.0f,0.0f,0.0f,0.0f};
     public float score = 0.0f;
     public int category=-1;
+    private Pattern phoneNumberPattern = Pattern.compile("(\\d{2,4})?(-|\\s)?(\\d{3,4})(-|\\s)?(\\d{3,4})");
+    private Pattern URLPattern = Pattern.compile("(http)?(s)?:?(\\/\\/)?([a-z0-9\\w]+\\.*)+[a-z0-9]{2,4}");
+    private Pattern moneyPattern = Pattern.compile(",(\\d{3})원");
 
     SMS(String smstext){
         text = smstext;
@@ -253,16 +256,16 @@ class SMS{ //전화 형식을 잘 맞춰야 할 듯 여러개로 fix시키는게
     }
 
     private float phone(String text){
-        String regex = "(\\d{2,4})?(-|\\s)?(\\d{3,4})(-|\\s)?(\\d{3,4})";
-        Pattern pattern = Pattern.compile(regex); //
-        if(pattern.matcher(text).find()==true) {
+//        String regex = "(\\d{2,4})?(-|\\s)?(\\d{3,4})(-|\\s)?(\\d{3,4})";
+//        Pattern pattern = Pattern.compile(regex); //
+        if(phoneNumberPattern.matcher(text).find()==true) {
             return 1.0f;
         }
         else return 0.0f;
     }
     private float urls(String text){
-        Pattern pattern = Pattern.compile("(http)?(s)?:?(\\/\\/)?([a-z0-9\\w]+\\.*)+[a-z0-9]{2,4}");
-        if(pattern.matcher(text).find()==true) {
+//        Pattern pattern = Pattern.compile("(http)?(s)?:?(\\/\\/)?([a-z0-9\\w]+\\.*)+[a-z0-9]{2,4}");
+        if(URLPattern.matcher(text).find()==true) {
             return 1.0f;
         }
         else {
@@ -281,8 +284,8 @@ class SMS{ //전화 형식을 잘 맞춰야 할 듯 여러개로 fix시키는게
 
     private float smishing_symbol(String text){
         if(text.contains("만원") || text.contains("천원")|| text.contains("백원") || text.contains("십원")) return 1.0f;
-        Pattern pattern = Pattern.compile(",(\\d{3})원");
-        if(pattern.matcher(text).matches()) return 1.0f;
+//        Pattern pattern = Pattern.compile(",(\\d{3})원");
+        if(moneyPattern.matcher(text).matches()) return 1.0f;
         else return 0.0f;
     }
 

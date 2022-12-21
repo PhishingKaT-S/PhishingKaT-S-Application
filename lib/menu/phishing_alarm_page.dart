@@ -150,7 +150,9 @@ class _PhishingAlarmPageState extends State<PhishingAlarmPage> {
               Padding(padding: EdgeInsets.only(left: MediaQuery.of(context).size.width * 0.04)),
               InkWell(
                 /// 알림 확인하는 부분
-                onTap: () { },
+                onTap: () {
+
+                },
                 child: Container(
                   width: MediaQuery.of(context).size.width * 0.74,
                   padding: const EdgeInsets.only(left: 10, top: 5, bottom: 5),

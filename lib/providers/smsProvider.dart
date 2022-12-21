@@ -253,13 +253,13 @@ class SmsProvider with ChangeNotifier {
               if(resultsLength == 0){
                 _recent_analysis_date = temp[resultsLength]["date"].toString().split(" ").first;
               }
-              notifyListeners();
+              // notifyListeners();
               continue;
             }
             dayList.add("--/--");
             data.add(LineChartModel(amount: 0, date: DateTime(2000, 1, 1)));
             resultsLength--;
-            notifyListeners();
+            // notifyListeners();
           }
           notifyListeners();
         } else if (results.isEmpty) {}

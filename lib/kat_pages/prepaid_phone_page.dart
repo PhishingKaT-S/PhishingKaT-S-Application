@@ -92,19 +92,22 @@ class _PrepaidPhonePageState extends State<PrepaidPhonePage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: const AppBarBack(title: '내 명의 핸드폰 개통확인'),
-      body: Container(
-        width: MediaQuery.of(context).size.width,
-        padding: EdgeInsets.only(left: MediaQuery.of(context).size.width * 0.1, right: MediaQuery.of(context).size.width * 0.1),
-        child: Column(
-          children: [
-            _title(),
-            _user_input_field(),
-            _check_button(),
-          ],
-        ),
-      ),
+    return const Scaffold (
+      appBar: AppBarBack(title: '내 명의 핸드폰 개통확인'),
+      body: Center(
+        child: Text("서비스 준비중입니다.", style: TextStyle(fontSize: 20),),
+      )
+      // Container(
+      //   width: MediaQuery.of(context).size.width,
+      //   padding: EdgeInsets.only(left: MediaQuery.of(context).size.width * 0.1, right: MediaQuery.of(context).size.width * 0.1),
+      //   child: Column(
+      //     children: [
+      //       _title(),
+      //       _user_input_field(),
+      //       _check_button(),
+      //     ],
+      //   ),
+      // ),
     );
   }
 }
