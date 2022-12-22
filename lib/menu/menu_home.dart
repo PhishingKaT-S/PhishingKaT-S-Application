@@ -429,7 +429,7 @@ class _MenuHomeState extends State<MenuHome> {
                                 MaterialPageRoute(
                                   builder: (context) => const SnsWebView(
                                       url:
-                                          "https://blog.naver.com/jubileeline21"),
+                                          "https://m.blog.naver.com/jubileeline21"),
                                 ),
                               );
                             },
