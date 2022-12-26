@@ -41,24 +41,24 @@ class LoginPage extends StatelessWidget {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              const Text(
-                '시작하기를 누르면',
-                style: AppTheme.start_caption,
-              ),
+              // const Text(
+              //   '시작하기를 누르면',
+              //   style: AppTheme.start_caption,
+              // ),
               TextButton(
                 onPressed: () {
                   Navigator.push(context,
                       MaterialPageRoute(builder: (context) => Policy()));
                 },
                 child: const Text(
-                  '이용약관 및 정책',
+                  '시작하기를 누르면 이용약관 및 정책 동의로 간주합니다',
                   style: AppTheme.start_caption_button,
                 ),
               ),
-              const Text(
-                '동의로 간주합니다',
-                style: AppTheme.start_caption,
-              ),
+              // const Text(
+              //   '동의로 간주합니다',
+              //   style: AppTheme.start_caption,
+              // ),
             ],
           ),
         ),
@@ -81,25 +81,25 @@ class LoginPage extends StatelessWidget {
       padding: const EdgeInsets.fromLTRB(0, 0, 0, 20),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          const Text(
-            '시작하기를 누르면',
+        children: const [
+          Text(
+            '시작하기를 누르면 이용약관 및 정책 동의로 간주합니다.',
             style: AppTheme.start_caption,
           ),
-          TextButton(
-            onPressed: () {
-              // Navigator.push(LoginPage.context,
-              //   MaterialPageRoute(builder: (context) => Policy()));
-            },
-            child: const Text(
-              '이용약관 및 정책',
-              style: AppTheme.start_caption_button,
-            ),
-          ),
-          const Text(
-            '동의로 간주합니다',
-            style: AppTheme.start_caption,
-          ),
+          // TextButton(
+          //   onPressed: () {
+          //     // Navigator.push(LoginPage.context,
+          //     //   MaterialPageRoute(builder: (context) => Policy()));
+          //   },
+          //   child: const Text(
+          //     '이용약관 및 정책',
+          //     style: AppTheme.start_caption_button,
+          //   ),
+          // ),
+          // const Text(
+          //   '동의로 간주합니다',
+          //   style: AppTheme.start_caption,
+          // ),
         ],
       ),
     );

@@ -1,4 +1,4 @@
-package com.example.phishing_kat_pluss;
+package com.aigoodwillvioce.phishing_kat_pluss;
 
 import static android.service.controls.ControlsProviderService.TAG;
 

@@ -1,6 +1,6 @@
-package com.example.phishing_kat_pluss;
+package com.aigoodwillvioce.phishing_kat_pluss;
 
-import static com.example.phishing_kat_pluss.SmsReceiver.selectBlack;
+import static com.aigoodwillvioce.phishing_kat_pluss.SmsReceiver.selectBlack;
 
 import android.annotation.SuppressLint;
 import android.content.BroadcastReceiver;

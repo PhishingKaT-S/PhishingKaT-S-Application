@@ -1,13 +1,13 @@
 
 
 
-package com.example.phishing_kat_pluss;
+package com.aigoodwillvioce.phishing_kat_pluss;
 
 import static android.Manifest.permission.READ_PHONE_NUMBERS;
 import static android.Manifest.permission.READ_PHONE_STATE;
 import static android.Manifest.permission.READ_SMS;
-import static com.example.phishing_kat_pluss.SmsReceiver.millidate;
-import static com.example.phishing_kat_pluss.SmsReceiver.smsRe;
+import static com.aigoodwillvioce.phishing_kat_pluss.SmsReceiver.millidate;
+import static com.aigoodwillvioce.phishing_kat_pluss.SmsReceiver.smsRe;
 
 import android.annotation.SuppressLint;
 import android.app.Notification;

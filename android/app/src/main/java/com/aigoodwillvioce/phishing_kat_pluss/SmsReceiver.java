@@ -1,8 +1,8 @@
-package com.example.phishing_kat_pluss;
+package com.aigoodwillvioce.phishing_kat_pluss;
 
 
-import static com.example.phishing_kat_pluss.MainActivity.lite_category;
-import static com.example.phishing_kat_pluss.MainActivity.lite_smish;
+import static com.aigoodwillvioce.phishing_kat_pluss.MainActivity.lite_category;
+import static com.aigoodwillvioce.phishing_kat_pluss.MainActivity.lite_smish;
 
 import android.content.BroadcastReceiver;
 import android.content.ContentResolver;
