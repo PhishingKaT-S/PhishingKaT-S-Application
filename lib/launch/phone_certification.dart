@@ -38,7 +38,8 @@ class _Phone_CRTState extends State<PhoneCRT> {
 
   //textfield가 포커스 아웃되면 인증번호 맞는지 아닌지 확인
   FocusNode textFocus = FocusNode();
-
+  bool initialPicture_phone= false; // 느낌표 때문
+  bool initialPicture_certification= false; // 느낌표 때문
   //
   String tokenbanner = "접속한 지 오래되어 휴대폰 재인증이 필요해요";
   String banner = "피싱 피해를 막기 위해\n휴대폰 본인 인증이 필요해요";
@@ -216,6 +217,7 @@ class _Phone_CRTState extends State<PhoneCRT> {
                             Expanded(
                               child: TextField(
                                 onSubmitted: (value) async { // 확인 눌렀을 때
+                                  initialPicture_phone=true; //느낌표 생성
                                   _correctCellphone = cellphoneREG.hasMatch(_textEditingController.text);
                                   if (_correctCellphone) {
                                     _phoneNumber = _textEditingController.text;
@@ -243,7 +245,7 @@ class _Phone_CRTState extends State<PhoneCRT> {
                                 height: MediaQuery.of(context).size.height * 0.1,
                                 decoration: BoxDecoration(
                                     image: DecorationImage(
-                                        scale: 8,
+                                        scale: initialPicture_phone ? 8 : 0,
                                         image:_correctCellphone ? AssetImage('assets/images/joinFeedback2.png') : AssetImage('assets/images/joinFeedback1.png') // 휴대폰 번호 형식이 맞으면 넘어감
                                     )
                                 ),
@@ -293,6 +295,7 @@ class _Phone_CRTState extends State<PhoneCRT> {
                             ),
                             InkWell(
                                   onTap: () {
+                                    initialPicture_certification=true;
                                     if (_certificationController.text ==
                                         verification) {
                                       _timer?.cancel();
@@ -306,7 +309,7 @@ class _Phone_CRTState extends State<PhoneCRT> {
                                     height: 60,
                                     decoration: BoxDecoration(
                                       image: DecorationImage(
-                                        scale: 8,
+                                          scale: initialPicture_certification ? 8 : 0,
                                         image:flag ?  AssetImage('assets/images/joinFeedback2.png',): AssetImage('assets/images/joinFeedback1.png')
                                       )
                                     ),
