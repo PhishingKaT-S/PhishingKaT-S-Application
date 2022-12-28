@@ -274,6 +274,7 @@ class _Phone_CRTState extends State<PhoneCRT> {
                             Expanded(
                               child: TextField(
                                   onSubmitted: ((value) {
+                                    initialPicture_certification=true;
                                     if (value == verification) {
                                       setState(() {
                                         _timer?.cancel();
@@ -295,7 +296,7 @@ class _Phone_CRTState extends State<PhoneCRT> {
                             ),
                             InkWell(
                                   onTap: () {
-                                    initialPicture_certification=true;
+
                                     if (_certificationController.text ==
                                         verification) {
                                       _timer?.cancel();
