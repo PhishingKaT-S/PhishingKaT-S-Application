@@ -243,12 +243,12 @@ class _Phone_CRTState extends State<PhoneCRT> {
                             Container(
                                 width: 50,
                                 height: MediaQuery.of(context).size.height * 0.1,
-                                decoration: BoxDecoration(
+                                decoration: initialPicture_phone ? BoxDecoration(
                                     image: DecorationImage(
-                                        scale: initialPicture_phone ? 8 : 0,
+                                        scale: 8,
                                         image:_correctCellphone ? AssetImage('assets/images/joinFeedback2.png') : AssetImage('assets/images/joinFeedback1.png') // 휴대폰 번호 형식이 맞으면 넘어감
                                     )
-                                ),
+                                ):null,
                               ),
                           ],
                         ), //국가 번호, 휴대폰번호, 아이콘이 flexible 1, 8, 1 비율로 있음
@@ -309,10 +309,11 @@ class _Phone_CRTState extends State<PhoneCRT> {
                                     width: 50,
                                     height: 60,
                                     decoration: BoxDecoration(
-                                      image: DecorationImage(
-                                          scale: initialPicture_certification ? 8 : 0,
+                                      image: initialPicture_certification ?
+                                        DecorationImage(
+                                          scale: 8,
                                         image:flag ?  AssetImage('assets/images/joinFeedback2.png',): AssetImage('assets/images/joinFeedback1.png')
-                                      )
+                                      ): null
                                     ),
                                   ),
                                 )
