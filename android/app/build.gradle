@@ -41,7 +41,7 @@ android {
 
     defaultConfig {
         // TODO: Specify your own unique Application ID (https://developer.android.com/studio/build/application-id.html).
-        applicationId "com.aigoodwillvoidce.phishing_kat_pluss"
+        applicationId "com.aigoodwillvoice.phishing_kat_pluss"
         minSdkVersion 23
         targetSdkVersion 32
         versionCode flutterVersionCode.toInteger()
