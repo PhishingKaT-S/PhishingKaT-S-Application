@@ -165,7 +165,7 @@ public class SmsReceiver extends BroadcastReceiver {
         new Thread(() -> {
             try {
                 StringBuffer sb = new StringBuffer();
-                URL url = new URL("http://54.153.117.158/selectBlackList.php");
+                URL url = new URL("http://54.227.203.18/selectBlackList.php");
                 HttpURLConnection con = (HttpURLConnection) url.openConnection();
                 con.setDoOutput(true);
                 con.setDoInput(true);
