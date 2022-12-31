@@ -122,7 +122,7 @@ class _detailed_infoState extends State<DetailInfo> {
             child: YearPicker(
               selectedDate: DateTime(year),
               firstDate: DateTime(year - 100),
-              lastDate: DateTime(year-20),
+              lastDate: DateTime(year-15),
               onChanged: (value) {
                 yController.text = value.toString().substring(0, 4);
                 Navigator.of(context).pop();
