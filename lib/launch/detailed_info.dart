@@ -90,7 +90,8 @@ class _detailed_infoState extends State<DetailInfo> {
   Future<void> initUniqueIdentifierState() async {
     String? identifier ;
     try {
-      identifier = await DeviceInformation.deviceIMEINumber;
+      // identifier = await DeviceInformation.deviceIMEINumber;
+      identifier = await Provider.of<LaunchProvider>(context, listen: false).getSSAID();
     } on PlatformException {
       identifier = 'Failed to get Unique Identifier';
     }

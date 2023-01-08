@@ -110,8 +110,9 @@ class _DetectLoadPageState extends State<DetectLoadPage> with TickerProviderStat
     List<String> ch = [];
     ch.clear();
     try{
-
+      print("detect_load_page: get sms from channel");
       var getNumberOfSMSMMS = await platform.invokeMethod('getNumberOfSMSMMS') ;
+      print("detect_load_page: complete get sms from channel");
 
       num_of_total_sms = 0 ;
       num_of_completed_sms = 0 ;
@@ -185,7 +186,7 @@ class _DetectLoadPageState extends State<DetectLoadPage> with TickerProviderStat
             }
           }
         });
-
+        print("detect_load_page: getSMSMMS");
         var getSMSandMMS = await platform.invokeMethod('getSMSMMS');
         if ( getSMSandMMS.length != 0 ){
           ch = getSMSandMMS.cast<String>() ;
