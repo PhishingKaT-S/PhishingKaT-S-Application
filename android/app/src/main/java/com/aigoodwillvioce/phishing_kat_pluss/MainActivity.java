@@ -111,7 +111,6 @@ public class MainActivity extends FlutterActivity {
                                 if (sms_permission == PackageManager.PERMISSION_GRANTED &&
                                         contact_permission == PackageManager.PERMISSION_GRANTED &&
                                         contact_state_permission == PackageManager.PERMISSION_GRANTED) {
-                                    System.out.println("MainActivity: get permission");
                                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                                         numOfSMSandMMS = 0 ;
 
