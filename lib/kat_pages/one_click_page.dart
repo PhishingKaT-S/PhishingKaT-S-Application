@@ -300,13 +300,13 @@ class _OneClickPageState extends State<OneClickPage> {
                 //}
               } else if (index == 1){
                 _launchCaller('15778787');
-                // Navigator.push(context, MaterialPageRoute(
-                  //builder: (context) => KaTWebView(title: titleList[index], url: urlList[index])));
+
               } else if (index == 2) {
                 Navigator.push(context, MaterialPageRoute(
                     builder: (context) => const PrepaidPhonePage()));
               } else if (index == 3) {
-                _launchCaller('01035708242');
+                Navigator.push(context, MaterialPageRoute(
+                  builder: (context) => KaTWebView(title: titleList[index], url: urlList[index])));
               }
             },
           );

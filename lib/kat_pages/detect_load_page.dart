@@ -118,11 +118,12 @@ class _DetectLoadPageState extends State<DetectLoadPage> with TickerProviderStat
       num_of_completed_sms = 0 ;
 
       String size = '[NUM_OF_MSG]' ;
+      int _userId = context
+          .read<LaunchProvider>()
+          .getUserInfo()
+          .userId;
       if ( getNumberOfSMSMMS.length != 0 ) {
-        int _userId = context
-            .read<LaunchProvider>()
-            .getUserInfo()
-            .userId;
+
         int _attendance_30 = await context.read<AttendanceProvider>()
             .get30Attendance(_userId);
         int _analysis_30 = await context.read<SmsProvider>().get30Analysis(
@@ -142,8 +143,18 @@ class _DetectLoadPageState extends State<DetectLoadPage> with TickerProviderStat
             setState(() {
               num_of_completed_sms++;
             });
-          } else if (num_of_completed_sms == num_of_total_sms) {
+          } else if (num_of_completed_sms >= num_of_total_sms) {
             _timer?.cancel();
+            context.read<LaunchProvider>().updateAnalysisDate(context
+                .read<LaunchProvider>()
+                .getUserInfo()
+                .userId);
+            context.read<LaunchProvider>().setScore(100);
+            context.read<LaunchProvider>().set_load_flag(true);
+            await context.read<SmsProvider>().insertScore(_userId, 100);
+            context.read<SmsProvider>().getInitialInfo(_userId);
+            context.read<SmsProvider>().getReportDate(_userId);
+            Navigator.pop(context);
 
             if (num_of_completed_sms == num_of_total_sms) {
               int _score = 0;
@@ -216,6 +227,18 @@ class _DetectLoadPageState extends State<DetectLoadPage> with TickerProviderStat
 
           await context.read<SmsProvider>().setSmsToSmsProvider(msgs);
         }
+      }
+      else{
+        context.read<LaunchProvider>().updateAnalysisDate(context
+            .read<LaunchProvider>()
+            .getUserInfo()
+            .userId);
+        context.read<LaunchProvider>().setScore(100);
+        context.read<LaunchProvider>().set_load_flag(true);
+        await context.read<SmsProvider>().insertScore(_userId, 100);
+        context.read<SmsProvider>().getInitialInfo(_userId);
+        context.read<SmsProvider>().getReportDate(_userId);
+        Navigator.pop(context);
       }
 
     } on PlatformException catch (e) {
