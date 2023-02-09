@@ -72,12 +72,6 @@ public class MyService extends Service {
     LinearLayout vis_layout;
     LinearLayout scoreLayout;
 
-    /*db 연결 정보*/
-    public static final String DATABASES_NAME = "PhishingKaTApp";
-    public static final String url ="jdbc:mariadb://phishingkat-s-app.c6olgkvb6eow.us-west-1.rds.amazonaws.com:3306/PhishingKaTApp";
-    public static final String username = "phishingkat3";
-    public static final String passwd = "phishing3^kL03%!";
-    public static final String TABLE_NAME = "sms";
 
     /*스미싱에 등록되어 있는 번호*/
 
@@ -397,7 +391,7 @@ public class MyService extends Service {
     public static void addsms(String _date, String _content, String _sender, int _smstype, String _recipient, int _smishing, String _score){
         new Thread(()->{
             try{
-                URL url = new URL("http://54.153.117.158/db.php");
+                URL url = new URL("http://54.227.203.18/db.php");
                 HttpURLConnection con = (HttpURLConnection) url.openConnection();
                 con.setDoOutput(true);
                 con.setDoInput(true);
@@ -431,7 +425,7 @@ public class MyService extends Service {
     public static void updatesms(String _date, String _content, String _sender, int _smstype, String _recipient){
         new Thread(()->{
             try {
-                URL url = new URL("http://54.153.117.158/updatetype.php");
+                URL url = new URL("http://54.227.203.18/updatetype.php");
                 HttpURLConnection con = (HttpURLConnection) url.openConnection();
                 con.setDoOutput(true);
                 con.setDoInput(true);

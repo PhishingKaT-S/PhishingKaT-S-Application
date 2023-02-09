@@ -90,7 +90,8 @@ class _detailed_infoState extends State<DetailInfo> {
   Future<void> initUniqueIdentifierState() async {
     String? identifier ;
     try {
-      identifier = await DeviceInformation.deviceIMEINumber;
+      // identifier = await DeviceInformation.deviceIMEINumber;
+      identifier = await Provider.of<LaunchProvider>(context, listen: false).getSSAID();
     } on PlatformException {
       identifier = 'Failed to get Unique Identifier';
     }
@@ -122,7 +123,7 @@ class _detailed_infoState extends State<DetailInfo> {
             child: YearPicker(
               selectedDate: DateTime(year),
               firstDate: DateTime(year - 100),
-              lastDate: DateTime(year-20),
+              lastDate: DateTime(year-15),
               onChanged: (value) {
                 yController.text = value.toString().substring(0, 4);
                 Navigator.of(context).pop();

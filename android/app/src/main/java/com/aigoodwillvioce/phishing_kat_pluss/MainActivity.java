@@ -72,7 +72,10 @@ public class MainActivity extends FlutterActivity {
                                 int sms_permission = ContextCompat.checkSelfPermission(this, Manifest.permission.READ_SMS);
                                 int contact_permission = ContextCompat.checkSelfPermission(this, Manifest.permission.READ_CONTACTS);
                                 int contact_state_permission = ContextCompat.checkSelfPermission(this, Manifest.permission.READ_PHONE_STATE);
-
+                                if(Build.VERSION.SDK_INT > 29){
+                                    contact_state_permission = ContextCompat.checkSelfPermission(this, Manifest.permission.READ_PHONE_NUMBERS);
+                                }
+                                System.out.println("MainActivity: sdk version: " + Build.VERSION.SDK_INT);
                                 if (sms_permission == PackageManager.PERMISSION_GRANTED &&
                                         contact_permission == PackageManager.PERMISSION_GRANTED &&
                                         contact_state_permission == PackageManager.PERMISSION_GRANTED) {
@@ -98,10 +101,13 @@ public class MainActivity extends FlutterActivity {
 
                                 result.success(sms);
                         } else if ( call.method.equals("getNumberOfSMSMMS") ) {
+                                System.out.println("MainActivity: getNumberOfSMSMMS: start get number of sms and mms");
                                 int sms_permission = ContextCompat.checkSelfPermission(this, Manifest.permission.READ_SMS);
                                 int contact_permission = ContextCompat.checkSelfPermission(this, Manifest.permission.READ_CONTACTS);
                                 int contact_state_permission = ContextCompat.checkSelfPermission(this, Manifest.permission.READ_PHONE_STATE);
-
+                                if(Build.VERSION.SDK_INT > 29){
+                                    contact_state_permission = ContextCompat.checkSelfPermission(this, Manifest.permission.READ_PHONE_NUMBERS);
+                                }
                                 if (sms_permission == PackageManager.PERMISSION_GRANTED &&
                                         contact_permission == PackageManager.PERMISSION_GRANTED &&
                                         contact_state_permission == PackageManager.PERMISSION_GRANTED) {
@@ -120,7 +126,7 @@ public class MainActivity extends FlutterActivity {
                                                 new String[]{"_id", "thread_id", "date", "read"}, null, null, "date DESC");
 
                                         numOfSMSandMMS += cursor_mms.getCount() ;
-
+                                        System.out.println(numOfSMSandMMS);
                                         result.success(Integer.toString(numOfSMSandMMS)) ;
                                     }
                                 }
@@ -145,6 +151,13 @@ public class MainActivity extends FlutterActivity {
                 final String url = call.argument("url");
                 Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
                 startActivity(intent);
+            }
+            else if(call.method.equals("getSSAID")){
+                checkPermission();
+                String android_id =
+                        Settings.Secure.getString(getApplicationContext().getContentResolver(), Settings.Secure.ANDROID_ID);
+
+                result.success(android_id);
             }
         });
 

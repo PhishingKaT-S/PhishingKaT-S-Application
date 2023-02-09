@@ -110,22 +110,25 @@ class _DetectLoadPageState extends State<DetectLoadPage> with TickerProviderStat
     List<String> ch = [];
     ch.clear();
     try{
-
+      print("detect_load_page: get sms from channel");
       var getNumberOfSMSMMS = await platform.invokeMethod('getNumberOfSMSMMS') ;
+      print("detect_load_page: complete get sms from channel");
 
       num_of_total_sms = 0 ;
       num_of_completed_sms = 0 ;
 
       String size = '[NUM_OF_MSG]' ;
+      int _userId = context
+          .read<LaunchProvider>()
+          .getUserInfo()
+          .userId;
       if ( getNumberOfSMSMMS.length != 0 ) {
-        int _userId = context
-            .read<LaunchProvider>()
-            .getUserInfo()
-            .userId;
+
         int _attendance_30 = await context.read<AttendanceProvider>()
             .get30Attendance(_userId);
         int _analysis_30 = await context.read<SmsProvider>().get30Analysis(
             _userId);
+        int subscription = 0;
 
         num_of_total_sms = int.parse(getNumberOfSMSMMS.toString());
         int _currScore = context
@@ -134,14 +137,24 @@ class _DetectLoadPageState extends State<DetectLoadPage> with TickerProviderStat
             .score;
 
 
-        _timer = Timer.periodic(Duration(milliseconds: (_currScore == -1)? 150:80), (timer) async {
+        _timer = Timer.periodic(Duration(milliseconds: (_currScore == -1)? 100:80), (timer) async {
           if (num_of_total_sms != 0 &&
               num_of_completed_sms < num_of_total_sms) {
             setState(() {
               num_of_completed_sms++;
             });
-          } else if (num_of_completed_sms == num_of_total_sms) {
+          } else if (num_of_completed_sms >= num_of_total_sms) {
             _timer?.cancel();
+            context.read<LaunchProvider>().updateAnalysisDate(context
+                .read<LaunchProvider>()
+                .getUserInfo()
+                .userId);
+            context.read<LaunchProvider>().setScore(100);
+            context.read<LaunchProvider>().set_load_flag(true);
+            await context.read<SmsProvider>().insertScore(_userId, 100);
+            context.read<SmsProvider>().getInitialInfo(_userId);
+            context.read<SmsProvider>().getReportDate(_userId);
+            Navigator.pop(context);
 
             if (num_of_completed_sms == num_of_total_sms) {
               int _score = 0;
@@ -155,18 +168,36 @@ class _DetectLoadPageState extends State<DetectLoadPage> with TickerProviderStat
               // 처음 검사할 때 문자 메세지 다 가져오기
               // print("sms list: $dataList");
               if (_currScore == -1) {
-                DBHelper().deleteAllSMS();
-                for (int i = 0; i < dataList.length; i++) {
-                  DBHelper().insertSMS(dataList[i]);
-                }
+                // DBHelper().deleteAllSMS();
+                // for (int i = 0; i < dataList.length; i++) {
+                //   DBHelper().insertSMS(dataList[i]);
+                // }
 
                 await context.read<SmsProvider>().insertSMSList(
                     context.read<SmsProvider>().getUnknownSmsList());
                 // print("TEST");
               }
 
-              _score = ((1 - (num_of_smishing_sms / num_of_total_sms)) * 50).toInt();
-              _score += (((_attendance_30 + _analysis_30) / 30) * 25).toInt();
+              if(subscription > 30){
+                _score = ((1 - (num_of_smishing_sms / num_of_total_sms)) * 60).toInt();
+                if(_attendance_30 > 9){
+                  _score += 20;
+                }
+                else{
+                  _score += _attendance_30 * 2;
+                }
+                if(_analysis_30 > 5){
+                  _score += 20;
+                }
+                else{
+                  _score += _analysis_30 * 4;
+                }
+              }
+              else{
+                _score = ((1 - (num_of_smishing_sms / num_of_total_sms)) * 60).toInt();
+                _score += 40;
+              }
+
 
               context.read<LaunchProvider>().updateAnalysisDate(context
                   .read<LaunchProvider>()
@@ -185,7 +216,7 @@ class _DetectLoadPageState extends State<DetectLoadPage> with TickerProviderStat
             }
           }
         });
-
+        print("detect_load_page: getSMSMMS");
         var getSMSandMMS = await platform.invokeMethod('getSMSMMS');
         if ( getSMSandMMS.length != 0 ){
           ch = getSMSandMMS.cast<String>() ;
@@ -196,6 +227,18 @@ class _DetectLoadPageState extends State<DetectLoadPage> with TickerProviderStat
 
           await context.read<SmsProvider>().setSmsToSmsProvider(msgs);
         }
+      }
+      else{
+        context.read<LaunchProvider>().updateAnalysisDate(context
+            .read<LaunchProvider>()
+            .getUserInfo()
+            .userId);
+        context.read<LaunchProvider>().setScore(100);
+        context.read<LaunchProvider>().set_load_flag(true);
+        await context.read<SmsProvider>().insertScore(_userId, 100);
+        context.read<SmsProvider>().getInitialInfo(_userId);
+        context.read<SmsProvider>().getReportDate(_userId);
+        Navigator.pop(context);
       }
 
     } on PlatformException catch (e) {
@@ -276,8 +319,6 @@ class _DetectLoadPageState extends State<DetectLoadPage> with TickerProviderStat
     //final url = Uri.parse('http://52.53.168.246:5000/api') ;
     int _score = 0;
     int _userId = context.read<LaunchProvider>().getUserInfo().userId;
-    int _attendance_30 = await context.read<AttendanceProvider>().get30Attendance(_userId);
-    int _analysis_30 = await context.read<SmsProvider>().get30Analysis(_userId);
     final List<SmsInfo> smsData = context.read<SmsProvider>().getUnknownSmsList();
     var ret_keyword=List.generate(10, (index) => 0.0);
     var ret =List.generate(15, (index) => 0.0);

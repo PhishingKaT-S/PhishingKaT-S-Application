@@ -16,18 +16,30 @@ class LaunchProvider extends ChangeNotifier {
   int _signUp = 0;
   UserInfo _userInfo = UserInfo();
   final platform = const MethodChannel("phishingkat.flutter.android");
+  final platform2 = const MethodChannel("onestore");
   LaunchProvider(){
     //Init();
   }
 
+  Future<String> getSdkVersion() async{
+    return await DeviceInformation.platformVersion;
+  }
+
   Future<int> Init() async {
     _signUp = 0;
-    await Future.delayed(const Duration(milliseconds: 500));
+    // await Future.delayed(const Duration(milliseconds: 500));
 
     await request_permission();
     //getMessage();
     //getContacts();
-    _userInfo.imei = await getIMEI() as String;
+    String sdkVersion = await getSdkVersion();
+    int androidSdkVersion = int.parse(sdkVersion.split(' ')[1]);
+    if(androidSdkVersion > 11){
+      _userInfo.imei = await getSSAID();
+    }
+    else{
+      _userInfo.imei = await getIMEI() as String;
+    }
     _userInfo.phoneNumber = await getPhoneNumber() as String;
     String _error_msg = "";
 
@@ -95,6 +107,17 @@ class LaunchProvider extends ChangeNotifier {
   void set_load_flag(bool new_value){
     _load_flag = new_value;
     notifyListeners();
+  }
+
+  Future<String> getSSAID() async{
+    String ssaid = "";
+    try{
+      ssaid = await platform2.invokeMethod('getSSAID');
+      print("launch_provider: SSAID: $ssaid");
+    } on PlatformException catch (e){
+      log("ERROR $e");
+    }
+    return ssaid;
   }
 
   void setScore(int score){

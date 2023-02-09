@@ -106,13 +106,34 @@ class SmsProvider with ChangeNotifier {
       return ;
     } else {
       await MySqlConnection.connect(Database.getConnection()).then((conn) async {
-        for (int i = 0 ; i < _unknownSmsList.length; i++) {
-          SmsInfo _smsInfo = _unknownSmsList[i];
+        // for (int i = 0 ; i < _unknownSmsList.length; i++) {
+        //   SmsInfo _smsInfo = _unknownSmsList[i];
+        List<Object> query_data_list = [];
+        for (int i = 0 ; i < _unknownSmsList.length; i+=100) {
+          String query_string = "INSERT INTO smsdata VALUES ";
+          query_data_list.clear();
+          for(int j = i ; j < i+100 ; j++){
+            if(j == _unknownSmsList.length){
+              break;
+            }
+            query_data_list.add(_unknownSmsList[j].body);
+            query_data_list.add(DateFormat('yyyy-MM-dd HH:mm:ss').parse(_unknownSmsList[i].date, true));
+
+            if(j == 99 + i || j == _unknownSmsList.length - 1){
+              query_string += "(NULL, ?, ?)";
+            }
+            else{
+              query_string += "(NULL, ?, ?),";
+            }
+
+          }
           await conn.query(
-              "INSERT INTO smsData VALUES (NULL, ?, ?)", [
-            _smsInfo.body, DateFormat('yyyy-MM-dd HH:mm:ss').format(
-                DateTime.now()),
-          ]).then((results) {
+          //     "INSERT INTO smsData VALUES (NULL, ?, ?)", [
+          //   _smsInfo.body, DateFormat('yyyy-MM-dd HH:mm:ss').format(
+          //       DateTime.now()),
+          // ]
+            query_string, query_data_list
+          ).then((results) {
             if (results.isNotEmpty) {} else if (results.isEmpty) {}
           }).onError((error, stackTrace) {
             print("error: $error");
@@ -131,19 +152,63 @@ class SmsProvider with ChangeNotifier {
       return ;
     } else {
       await MySqlConnection.connect(Database.getConnection()).then((conn) async {
-        for (int i = 0 ; i < _SmsList.length; i++) {
-          Sms _smsInfo = _SmsList[i];
+        List<Object> query_data_list = [];
+        for (int i = 0 ; i < _SmsList.length; i+=100) {
+          String query_string = "INSERT INTO sms VALUES ";
+          query_data_list.clear();
+          for(int j = i ; j < i+100 ; j++){
+            if(j == _SmsList.length){
+              break;
+            }
+            query_data_list.add(userId);
+            query_data_list.add(DateFormat('yyyy-MM-dd HH:mm:ss').parse(_SmsList[i].date, true));
+            query_data_list.add(_SmsList[j].sender);
+            query_data_list.add(_SmsList[j].type);
+            query_data_list.add(_SmsList[j].smishing);
+            if(j == 99 + i || j == _SmsList.length - 1){
+              query_string += "(NULL, ?, ?, ?, ?, ?, 0)";
+            }
+            else{
+              query_string += "(NULL, ?, ?, ?, ?, ?, 0),";
+            }
+
+        }
+          // Sms _smsInfo = _SmsList[i];
           // print("sms Provider ${_smsInfo.smishing}");
           await conn.query(
-              "INSERT INTO sms VALUES (NULL, ?, ?, ?, ?, ?, 0)", [
-            userId, DateFormat('yyyy-MM-dd HH:mm:ss').parse(_smsInfo.date, true),_smsInfo.sender, _smsInfo.type, _smsInfo.smishing,
-          ]).then((results) {
+            query_string,
+              // "INSERT INTO sms VALUES (NULL, ?, ?, ?, ?, ?, 0), (NULL, ?, ?, ?, ?, ?, 0), (NULL, ?, ?, ?, ?, ?, 0), (NULL, ?, ?, ?, ?, ?, 0), (NULL, ?, ?, ?, ?, ?, 0), (NULL, ?, ?, ?, ?, ?, 0), (NULL, ?, ?, ?, ?, ?, 0), (NULL, ?, ?, ?, ?, ?, 0), (NULL, ?, ?, ?, ?, ?, 0), (NULL, ?, ?, ?, ?, ?, 0)",
+              // [
+            // userId, DateFormat('yyyy-MM-dd HH:mm:ss').parse(_SmsList[i].date, true),_SmsList[i].sender, _SmsList[i].type, _SmsList[i].smishing,
+            // userId, DateFormat('yyyy-MM-dd HH:mm:ss').parse(_SmsList[i+1].date, true),_SmsList[i+1].sender, _SmsList[i].type, _SmsList[i+1].smishing,
+            // userId, DateFormat('yyyy-MM-dd HH:mm:ss').parse(_SmsList[i+2].date, true),_SmsList[i+2].sender, _SmsList[i+2].type, _SmsList[i+2].smishing,
+            // userId, DateFormat('yyyy-MM-dd HH:mm:ss').parse(_SmsList[i+3].date, true),_SmsList[i+3].sender, _SmsList[i+3].type, _SmsList[i+3].smishing,
+            // userId, DateFormat('yyyy-MM-dd HH:mm:ss').parse(_SmsList[i+4].date, true),_SmsList[i+4].sender, _SmsList[i+4].type, _SmsList[i+4].smishing,
+            // userId, DateFormat('yyyy-MM-dd HH:mm:ss').parse(_SmsList[i+5].date, true),_SmsList[i+5].sender, _SmsList[i+5].type, _SmsList[i+5].smishing,
+            // userId, DateFormat('yyyy-MM-dd HH:mm:ss').parse(_SmsList[i+6].date, true),_SmsList[i+6].sender, _SmsList[i+6].type, _SmsList[i+6].smishing,
+            // userId, DateFormat('yyyy-MM-dd HH:mm:ss').parse(_SmsList[i+7].date, true),_SmsList[i+7].sender, _SmsList[i+7].type, _SmsList[i+7].smishing,
+            // userId, DateFormat('yyyy-MM-dd HH:mm:ss').parse(_SmsList[i+8].date, true),_SmsList[i+8].sender, _SmsList[i+8].type, _SmsList[i+8].smishing,
+            // userId, DateFormat('yyyy-MM-dd HH:mm:ss').parse(_SmsList[i+9].date, true),_SmsList[i+9].sender, _SmsList[i+9].type, _SmsList[i+9].smishing
+          // ]
+              query_data_list).then((results) {
             if (results.isNotEmpty) {} else if (results.isEmpty) {}
           }).onError((error, stackTrace) {
             print("error: $error");
           });
         }
-
+        // i -= 10;
+        // for (; i < _SmsList.length; i++) {
+        //   Sms _smsInfo = _SmsList[i];
+        //   // print("sms Provider ${_smsInfo.smishing}");
+        //   await conn.query(
+        //       "INSERT INTO sms VALUES (NULL, ?, ?, ?, ?, ?, 0)", [
+        //     userId, DateFormat('yyyy-MM-dd HH:mm:ss').parse(_smsInfo.date, true),_smsInfo.sender, _smsInfo.type, _smsInfo.smishing,
+        //   ]).then((results) {
+        //     if (results.isNotEmpty) {} else if (results.isEmpty) {}
+        //   }).onError((error, stackTrace) {
+        //     print("error: $error");
+        //   });
+        // }
         conn.close();
       }).onError((error, stackTrace) {
         print("error2: $error");
@@ -193,6 +258,28 @@ class SmsProvider with ChangeNotifier {
   //   });
   // }
 
+  Future<void> getWhiteList() async{
+    await MySqlConnection.connect(Database.getConnection()).then((conn) async {
+      await conn.query(
+          "SELECT phone_nuimber FROM phone WHERE blacklist = 0 "
+          ).then((results) {
+        if (results.isNotEmpty) {
+          List<Object> white_list = results.toList();
+          for (int i = 0 ; i < white_list.length ; i++){
+            _user_contact.add(white_list[i].toString());
+          }
+        } else if (results.isEmpty) {
+        }
+      }).onError((error, stackTrace) {
+        print("error: $error");
+      });
+      conn.close();
+    }).onError((error, stackTrace) {
+      print("error2: $error");
+    });
+  }
+
+
   Future<bool> getContacts() async {
     var status = await Permission.contacts.status;
     if (status.isGranted) {
@@ -202,6 +289,7 @@ class SmsProvider with ChangeNotifier {
           _user_contact.add(temp[i].phones!.first.value.toString().replaceAll("-", ""));
         }
       }
+      await getWhiteList();
       return true;
     } else if (status.isDenied) {
       Permission.contacts.request();
