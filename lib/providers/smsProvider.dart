@@ -261,7 +261,7 @@ class SmsProvider with ChangeNotifier {
   Future<void> getWhiteList() async{
     await MySqlConnection.connect(Database.getConnection()).then((conn) async {
       await conn.query(
-          "SELECT phone_nuimber FROM phone WHERE blacklist = 0 "
+          "SELECT phone_number FROM phone WHERE blacklist = 0 "
           ).then((results) {
         if (results.isNotEmpty) {
           List<Object> white_list = results.toList();
