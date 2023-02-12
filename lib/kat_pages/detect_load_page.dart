@@ -137,7 +137,7 @@ class _DetectLoadPageState extends State<DetectLoadPage> with TickerProviderStat
             .score;
 
 
-        _timer = Timer.periodic(Duration(milliseconds: (_currScore == -1)? 100:80), (timer) async {
+        _timer = Timer.periodic(Duration(milliseconds: (_currScore == -1)? 160:80), (timer) async {
           if (num_of_total_sms != 0 &&
               num_of_completed_sms < num_of_total_sms) {
             setState(() {
@@ -149,26 +149,15 @@ class _DetectLoadPageState extends State<DetectLoadPage> with TickerProviderStat
                 .read<LaunchProvider>()
                 .getUserInfo()
                 .userId);
-            context.read<LaunchProvider>().setScore(100);
-            context.read<LaunchProvider>().set_load_flag(true);
-            await context.read<SmsProvider>().insertScore(_userId, 100);
-            context.read<SmsProvider>().getInitialInfo(_userId);
-            context.read<SmsProvider>().getReportDate(_userId);
-            Navigator.pop(context);
 
             if (num_of_completed_sms == num_of_total_sms) {
               int _score = 0;
-
-
-              _currScore = context
-                  .read<LaunchProvider>()
-                  .getUserInfo()
-                  .score;
-
               // 처음 검사할 때 문자 메세지 다 가져오기
               // print("sms list: $dataList");
               if (_currScore == -1) {
-                // DBHelper().deleteAllSMS();
+                DBHelper().deleteAllSMS();
+                print("DATA LENGTH: " + dataList.length.toString()) ;
+                DBHelper().insertSMS(dataList) ;
                 // for (int i = 0; i < dataList.length; i++) {
                 //   DBHelper().insertSMS(dataList[i]);
                 // }
@@ -198,11 +187,7 @@ class _DetectLoadPageState extends State<DetectLoadPage> with TickerProviderStat
                 _score += 40;
               }
 
-
-              context.read<LaunchProvider>().updateAnalysisDate(context
-                  .read<LaunchProvider>()
-                  .getUserInfo()
-                  .userId);
+              print("SCORE: " + _score.toString()) ;
 
               context.read<LaunchProvider>().setScore(_score);
               context.read<LaunchProvider>().set_load_flag(true);
@@ -210,7 +195,6 @@ class _DetectLoadPageState extends State<DetectLoadPage> with TickerProviderStat
               context.read<SmsProvider>().getInitialInfo(_userId);
               context.read<SmsProvider>().getReportDate(_userId);
               // context.read<SmsProvider>().updateScore(context.read<LaunchProvider>().getUserInfo().userId);
-
 
               Navigator.pop(context);
             }

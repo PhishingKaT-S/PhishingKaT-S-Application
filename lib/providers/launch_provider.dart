@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'dart:developer';
 import 'package:contacts_service/contacts_service.dart';
@@ -11,6 +12,7 @@ import 'package:mysql1/mysql1.dart';
 import 'package:unique_identifier/unique_identifier.dart';
 
 import '../db_conn.dart';
+import '../splash/network_error.dart';
 
 class LaunchProvider extends ChangeNotifier {
   int _signUp = 0;
@@ -47,20 +49,20 @@ class LaunchProvider extends ChangeNotifier {
     print("phonenumber: ${_userInfo.phoneNumber}");
     await MySqlConnection.connect(Database.getConnection()).then((conn) async {
       await conn.query(
-          "SELECT * FROM users WHERE IMEI = ? AND phone_number = ?",
+          "SELECT * FROM tb_users WHERE USER_IMEI = ? AND USER_PHONE = ?",
           [_userInfo.imei, _userInfo.phoneNumber]).then((results) {
         if (results.isNotEmpty) {
           if (results.length == 1) {
             _signUp = 1;
             _error_msg = "success";
-            _userInfo.userId = results.first["id"];
+            _userInfo.userId = results.first["USER_ID"];
             //_userInfo.analysisDate = results.first["analysis_date"];
-            _userInfo.gender = (results.first["gender"] == "1") ? true : false;
-            _userInfo.profession = results.first["profession"];
-            _userInfo.year = results.first["year"];
-            _userInfo.nickname = results.first["nickname"];
+            _userInfo.gender = (results.first["USER_GENDER"] == "1") ? true : false;
+            _userInfo.profession = results.first["USER_PROFESSION"];
+            _userInfo.year = results.first["USER_YEAR"];
+            _userInfo.nickname = results.first["USER_NICKNAME"];
             //_userInfo.updateDate = results.first["update_date"];
-            _userInfo.score = results.first["score"];
+            _userInfo.score = results.first["USER_SCORE"];
 
             notifyListeners();
           }
@@ -120,12 +122,12 @@ class LaunchProvider extends ChangeNotifier {
     return ssaid;
   }
 
-  void setScore(int score){
+  void setScore(int score) {
     _userInfo.score = score;
     notifyListeners();
     MySqlConnection.connect(Database.getConnection()).then((conn) async {
       await conn.query(
-          "UPDATE users SET score = ? WHERE id = ?;",
+          "UPDATE tb_users SET USER_SCORE = ? WHERE USER_ID = ?;",
           [
             score,
             _userInfo.userId
@@ -149,7 +151,7 @@ class LaunchProvider extends ChangeNotifier {
   void setUpdate(){
     MySqlConnection.connect(Database.getConnection()).then((conn) async {
       await conn.query(
-          "INSERT INTO users (update_date) SELECT ? where id = ?",
+          "UPDATE tb_users SET USER_UPDATE_DATE=? WHERE id = ?",
           [
             DateFormat('yyyy-MM-dd').format(
                 DateTime.now()),
@@ -265,6 +267,8 @@ class LaunchProvider extends ChangeNotifier {
     return number;
   }
 
+  /* NOT USED
+  *
   Future _getDateInfo() async {
     await MySqlConnection.connect(Database.getConnection())
         .then((conn) async => {
@@ -278,6 +282,7 @@ class LaunchProvider extends ChangeNotifier {
     })
         .onError((error, stackTrace) => {});
   }
+  */
 
   void set_userinfo(String nickname, String year, bool gender, String profession){
     _userInfo.nickname = nickname;
@@ -289,15 +294,13 @@ class LaunchProvider extends ChangeNotifier {
   Future updateAnalysisDate(int userId) async {
     await MySqlConnection.connect(Database.getConnection()).then((conn) async {
       await conn.query(
-          "UPDATE users SET analysis_date=now() WHERE users.id=?", [
+          "UPDATE tb_users SET USER_ANALYSIS_DATE=now() WHERE tb_users.USER_ID=?", [
           userId,
       ]).then((results) {
-        if (results.isNotEmpty) {
-        } else if (results.isEmpty) {}
+        conn.close();
       }).onError((error, stackTrace) {
         print("error: $error");
       });
-      conn.close();
     }).onError((error, stackTrace) {
       print("error2: $error");
     });

@@ -37,6 +37,7 @@ class _SettingPageState extends State<SettingPage> {
 
     () async {
       user_id = Provider.of<LaunchProvider>(context, listen: false).getUserInfo().userId ;
+
       await _getSettingStatus(user_id) ;
       setState(() {
         for (int i = 0 ; i < _status.length ;i++) {
@@ -53,11 +54,11 @@ class _SettingPageState extends State<SettingPage> {
   }
 
   Future<bool> _getSettingStatus(int user_id) async {
-    const List<String> alarm_cols = ['news_alarm', 'events_alarm', 'preview_alarm', 'push_alarm'] ;
+    const List<String> alarm_cols = ['NEWS_ALARM', 'EVENTS_ALARM', 'PREVIEW_ALARM', 'PUSH_ALARM'] ;
 
     await MySqlConnection.connect(Database.getConnection())
         .then((conn) async {
-      await conn.query("SELECT * FROM alarm_setting WHERE user_id = ?", [user_id])
+      await conn.query("SELECT * FROM tb_alarm_setting WHERE USER_ID = ?", [user_id])
           .then((results) {
         if ( results.isNotEmpty ) {
           for (var res in results )  {
@@ -84,7 +85,7 @@ class _SettingPageState extends State<SettingPage> {
   Future _saveStatus(int user_id) async {
     await MySqlConnection.connect(Database.getConnection())
         .then((conn) async {
-      await conn.query("UPDATE alarm_setting SET news_alarm = ?, events_alarm = ?, preview_alarm = ?, push_alarm = ? WHERE user_id = ?",
+      await conn.query("UPDATE tb_alarm_setting SET NEWS_ALARM = ?, EVENTS_ALARM = ?, PREVIEW_ALARM = ?, PUSH_ALARM = ? WHERE USER_ID = ?",
           [_status[0], _status[1], _status[2], _status[3], user_id])
           .then((results) {
       }).onError((error, stackTrace) {

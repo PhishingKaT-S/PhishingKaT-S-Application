@@ -32,20 +32,19 @@ class _NoticePageState extends State<NoticePage> {
     if(!update_flag) {
       await MySqlConnection.connect(Database.getConnection())
           .then((conn) async {
-        await conn.query("SELECT * FROM notice WHERE view = 1")
+        await conn.query("SELECT * FROM tb_notice WHERE NOTICE_VIEW = 1")
             .then((results) {
           if (results.isNotEmpty) {
             for (var res in results) {
-              _title.add(res['title']);
-
-              DateTime _datetime = res['day'] as DateTime;
+              _title.add(res['NOTICE_TITLE']);
+              DateTime _datetime = res['NOTICE_REGISTRATION'] as DateTime;
               int _year = _datetime.year;
               int _month = _datetime.month;
               int _day = _datetime.day;
 
               _written_date.add('$_year. $_month. $_day');
 
-              _content.add(res['content']);
+              _content.add(res['NOTICE_CONTENT']);
 
               _notice_tap.add(false);
 

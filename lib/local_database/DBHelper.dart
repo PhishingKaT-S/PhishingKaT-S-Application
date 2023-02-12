@@ -49,11 +49,58 @@ class DBHelper {
     );
   }
 
-  insertSMS(Sms sms) async {
+  insertSMS(List<Sms> smsList) async {
     final db = await database;
-    var res = await db.rawInsert('INSERT INTO $tableName(id, sender, text, date, type, prediction, smishing) VALUES(?, ?, ?, ?, ?, ?, ?)',
-                                [sms.id, sms.sender, sms.text, sms.date, sms.type, sms.prediction, sms.smishing]);
-    return res;
+    // var res = await db.rawInsert('INSERT INTO $tableName(id, sender, text, date, type, prediction, smishing) VALUES(?, ?, ?, ?, ?, ?, ?)',
+    //     [sms.id, sms.sender, sms.text, sms.date, sms.type, sms.prediction, sms.smishing]);
+    bool result = false;
+    List<Object> query_data_list = [];
+    for (int i = 0 ; i < smsList.length; i+=100) {
+      String query_string = "INSERT INTO $tableName(id, sender, text, date, type, prediction, smishing) VALUES ";
+      query_data_list.clear();
+      for(int j = i ; j < i+100 ; j++){
+        if(j == smsList.length){
+          break;
+        }
+        query_data_list.add(smsList[j].id);
+        query_data_list.add(smsList[j].sender);
+        query_data_list.add(smsList[j].text);
+        query_data_list.add(smsList[j].date);
+        query_data_list.add(smsList[j].type);
+        query_data_list.add(smsList[j].prediction);
+        query_data_list.add(smsList[j].smishing);
+        // query_data_list.add(DateFormat('yyyy-MM-dd HH:mm:ss').parse(smsList[i].date, true));
+
+        if(j == 99 + i || j == smsList.length - 1){
+          query_string += "(?, ?, ?, ?, ?, ?, ?)";
+        }
+        else{
+          query_string += "(?, ?, ?, ?, ?, ?, ?),";
+        }
+
+      }
+      print("LENGTH: " + query_data_list.length.toString()) ;
+      var res = await db.rawInsert(query_string, query_data_list) ;
+      if ( res == 0 ) {
+        print("sms.db 데이터 삽입 문제");
+        result = true ;
+      } else {
+        print("sms.db 데이터 삽입 성공");
+      }
+      // await conn.query(
+      //   //     "INSERT INTO smsData VALUES (NULL, ?, ?)", [
+      //   //   _smsInfo.body, DateFormat('yyyy-MM-dd HH:mm:ss').format(
+      //   //       DateTime.now()),
+      //   // ]
+      //     query_string, query_data_list
+      // ).then((results) {
+      //   if (results.isNotEmpty) {} else if (results.isEmpty) {}
+      // }).onError((error, stackTrace) {
+      //   print("error: $error");
+      // });
+    }
+
+    return result;
   }
 
   //Read

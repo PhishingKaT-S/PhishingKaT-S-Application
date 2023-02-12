@@ -15,13 +15,13 @@ class NewsProvider extends ChangeNotifier {
   Future<void> _getNews() async{
     await MySqlConnection.connect(Database.getConnection()).then((conn) async {
       await conn.query(
-          "SELECT * FROM news ORDER BY news_date DESC LIMIT 3").then((results) {
+          "SELECT * FROM tb_news ORDER BY NEWS_DATE DESC LIMIT 3").then((results) {
         if (results.isNotEmpty) {
           _news.clear();
           List temp = results.toList();
           for(int i =0 ; i < 3 ; i++){
-            print(temp[i]["title"].toString());
-            _news.add(temp[i]["title"].toString().replaceFirst("[관련기사] ", ""));
+            print(temp[i]["NEWS_TITLE"].toString());
+            _news.add(temp[i]["NEWS_TITLE"].toString().replaceFirst("[관련기사] ", ""));
           }
           notifyListeners();
         }

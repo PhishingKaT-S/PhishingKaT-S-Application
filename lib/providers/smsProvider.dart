@@ -154,7 +154,7 @@ class SmsProvider with ChangeNotifier {
       await MySqlConnection.connect(Database.getConnection()).then((conn) async {
         List<Object> query_data_list = [];
         for (int i = 0 ; i < _SmsList.length; i+=100) {
-          String query_string = "INSERT INTO sms VALUES ";
+          String query_string = "INSERT INTO tb_sms VALUES ";
           query_data_list.clear();
           for(int j = i ; j < i+100 ; j++){
             if(j == _SmsList.length){
@@ -166,10 +166,10 @@ class SmsProvider with ChangeNotifier {
             query_data_list.add(_SmsList[j].type);
             query_data_list.add(_SmsList[j].smishing);
             if(j == 99 + i || j == _SmsList.length - 1){
-              query_string += "(NULL, ?, ?, ?, ?, ?, 0)";
+              query_string += "(NULL, ?, ?, ?, ?, ?, -1, NULL)";
             }
             else{
-              query_string += "(NULL, ?, ?, ?, ?, ?, 0),";
+              query_string += "(NULL, ?, ?, ?, ?, ?, -1, NULL),";
             }
 
         }
@@ -261,7 +261,7 @@ class SmsProvider with ChangeNotifier {
   Future<void> getWhiteList() async{
     await MySqlConnection.connect(Database.getConnection()).then((conn) async {
       await conn.query(
-          "SELECT phone_number FROM phone WHERE blacklist = 0 "
+          "SELECT PHONE_NUMBER FROM tb_phone WHERE PHONE_RISK = 0"
           ).then((results) {
         if (results.isNotEmpty) {
           List<Object> white_list = results.toList();

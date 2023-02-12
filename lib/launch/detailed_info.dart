@@ -312,13 +312,14 @@ class _detailed_infoState extends State<DetailInfo> {
     final conn = await MySqlConnection.connect(Database.getConnection());
 
     var register = await conn.query(
-        'insert into users (phone_number, IMEI, nickname, year, gender, profession, score) select ?, ?, ?,?, ?, ?, ? where not exists (select * from users where phone_number like (?))', [user.phone, user.IMEI, user.nickname, user.year, user.gender, user.type, -1, user.phone]);
+        'INSERT INTO tb_users (USER_PHONE, USER_IMEI, USER_NICKNAME, USER_YEAR, USER_GENDER, USER_PROFESSION, USER_SCORE, USER_JOIN_DATE) select ?, ?, ?, ?, ?, ?, ?, NOW() WHERE NOT EXISTS (SELECT * FROM TB_USERS where USER_PHONE like (?))', [user.phone, user.IMEI, user.nickname, user.year, user.gender, user.type, -1, user.phone]);
 
     conn.close();
 
 
     Provider.of<LaunchProvider>(context, listen: false).set_userinfo(user.nickname, user.year, user.gender, user.type.toString());
     context.read<LaunchProvider>().Init();
+
     if(register.isNotEmpty){
       print('회원 추가 완료');
       Provider.of<LaunchProvider>(context, listen: false).setSignUp(1);

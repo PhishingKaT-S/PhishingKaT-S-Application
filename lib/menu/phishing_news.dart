@@ -45,15 +45,15 @@ class _NewsWebViewState extends State<NewsWebView> {
     List<News> _newsInfoList = [] ;
     await MySqlConnection.connect(Database.getConnection())
         .then((conn) async {
-      await conn.query("SELECT * FROM news ORDER BY news_date DESC LIMIT 3")
+      await conn.query("SELECT * FROM tb_news ORDER BY NEWS_DATE DESC LIMIT 3")
           .then((results) {
         if ( results.isNotEmpty ) {
           for ( var res in results )  {
-            DateTime _date = res['news_date'] as DateTime ;
-            News _news = News(title: res['title'], content: res['content'],
+            DateTime _date = res['NEWS_DATE'] as DateTime ;
+            News _news = News(title: res['NEWS_TITLE'], content: res['NEWS_CONTENT'],
                               news_date: '${_date.year}.${_date.month}.${_date.day}',
-                              num_of_chat: res['num_of_chat'] as int,
-                              url: res['url']) ;
+                              num_of_chat: res['NEWS_NUM_OF_CHAT'] as int,
+                              url: res['NEWS_URL']) ;
 
             _newsInfoList.add(_news) ;
           }
@@ -191,8 +191,8 @@ class _NewsWebViewState extends State<NewsWebView> {
                       ),
 
                       Container(
-                        height: 50,
-                        child: Text(_newsList[index].content, overflow: TextOverflow.clip,),
+                        height: MediaQuery.of(context).size.height * 0.08,
+                        child: Text(_newsList[index].content, overflow: TextOverflow.fade,),
                       ),
 
                       Container(

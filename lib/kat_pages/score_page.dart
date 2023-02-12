@@ -80,12 +80,12 @@ class _ScorePage extends State<ScorePage> {
     int t = 0 ;
     await MySqlConnection.connect(Database.getConnection())
         .then((conn) async {
-      await conn.query("SELECT type, COUNT(*) AS num_of_sms FROM sms WHERE user_id = ? AND smishing = 1 GROUP BY type ORDER BY COUNT(*) DESC LIMIT 5", [user_id])
+      await conn.query("SELECT SMS_TYPE, COUNT(*) AS NUM_OF_SMS FROM tb_sms WHERE USER_ID = ? AND SMS_SMISHING = 1 GROUP BY SMS_TYPE ORDER BY COUNT(*) DESC LIMIT 5", [user_id])
           .then((results) {
         if ( results.isNotEmpty ) {
           for ( var res in results )  {
-            int type = res['type'] as int;
-            int num_of_sms = res['num_of_sms'] as int;
+            int type = res['SMS_TYPE'] as int;
+            int num_of_sms = res['NUM_OF_SMS'] as int;
 
             print(types[type]+ " " + num_of_sms.toString()) ;
 
